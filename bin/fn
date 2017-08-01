@@ -1,14 +1,49 @@
-#!/bin/sh
+#!/usr/bin/env ruby
 
-if [ $# = 1 ]; then
-    if [ "$FIND_ROOT" = "" ]; then
-        dir="."
-    else
-        dir="$FIND_ROOT"
-    fi
+usage = <<'EOF'
+使用例:
+    fn \*.c
+    fn \*.c -vi
+    fn \*.c -ls
+EOF
+
+def system_e(*args)
+  system(*args) || (p args; raise "Error: command failed")
+end
+
+cmd = nil
+
+args = ARGV
+
+commands = {
+  "vi" => "vim",
+  "ls" => "ls -l",
+}
+
+commands.each do |k, v|
+  flag = "-" + k
+  if args.include?(flag)
+    args = args.select {|x| x != flag}
+    cmd = v
+  end
+end
+
+if args.length == 0
+  print usage
+elsif args.length == 1
+  name = args[0]
+  if ENV["FN_ROOT"].to_s == ""
+    dir = "."
+  else
+    dir = ENV["FN_ROOT"]
+  end
 else
-    dir="$1"
-    shift
-fi
-#set -x
-exec find "$dir" -name "$@"
+  dir = args[0]
+  name = args[1]
+end
+
+if cmd
+  system_e("#{cmd} $(find #{dir} -name '#{name}')")
+else
+  system_e("find #{dir} -name '#{name}'")
+end
