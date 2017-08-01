@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# カレントディレクトリのindex.htmlを生成するスクリプト
+# httphereと組み合わせて使うと良い
+
+require "erb"
+require "json"
+
+script_dir = File.expand_path(File.dirname(__FILE__))
+template_path = File.join(script_dir, "mkindexhtml.erb")
+
+@dir = File.expand_path(".")
+@filenames = Dir.entries(@dir).sort
+
+@images = @filenames.select {|x| x =~ /\.(jpg|jpeg|png|gif|svg)\z/i}
+
+out_filename = "index.html"
+
+erb = ERB.new(File.read(template_path))
+html= erb.result(binding)
+
+if File.exist?(out_filename)
+  puts "#{out_filename} が存在します。上書きしますか？(y/N)"
+  if STDIN.gets.chomp.downcase != "y"
+    exit
+  end
+end
+
+File.write(out_filename, html)
+puts "wrote #{out_filename}"

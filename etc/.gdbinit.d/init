@@ -1,0 +1,7 @@
+dashboard -layout source
+dashboard -style divider_fill_char_primary "-"
+dashboard -style divider_fill_char_secondary "."
+dashboard -style style_selected_1 "7;37"
+dashboard -style prompt '(gdb)'
+dashboard -style syntax_highlighting "emacs"
+dashboard source -style context 12

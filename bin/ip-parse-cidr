@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# 160.16.85.61/23という形式からネットワークアドレスを取り出す
+
+def ip_mask(str)
+  if str.match(/(\d+)\.(\d+)\.(\d+)\.(\d+)\/(\d+)/)
+    bits = $5.to_i
+    ip_bits = sprintf('%08b%08b%08b%08b', $1, $2, $3, $4)
+    masked = ip_bits[0...bits] + ('0' * (32 - bits))
+    ret = sprintf('%d.%d.%d.%d/%d',
+                  masked[0...8].to_i(2),
+                  masked[8...16].to_i(2),
+                  masked[16...24].to_i(2),
+                  masked[24...32].to_i(2),
+                  bits)
+    puts "IPアドレス = #{str}"
+    puts "長さ = #{bits}"
+    puts "利用可能なIPアドレスの数 = 2^#{32 - bits} - 2 = #{2 ** (32 - bits) - 2}"
+    puts "ネットワークアドレス = #{ret}"
+  else
+    raise "not match"
+  end
+end
+
+ARGV.each do |arg|
+  ip_mask(arg)
+end

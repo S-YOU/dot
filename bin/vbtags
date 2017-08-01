@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+f = open("tags", "w")
+tags = []
+ARGF.each_line do |line|
+  ARGF.skip if /tags/i =~ ARGF.filename
+  a = line.gsub("(", " ").gsub(")", " ").split
+  next if not a[0]
+
+  case a[0].downcase
+  when "sub", "function", "const"
+    tags.push "#{a[1]}\t#{ARGF.filename}\t/^#{line.chomp}$/;\"\tf"
+  when "private", "public"
+    case a[1].downcase
+    when "enum", "function", "sub" # type
+      tags.push "#{a[2]}\t#{ARGF.filename}\t/^#{line.chomp}$/;\"\tt"
+    else  # variable
+      tags.push "#{a[1]}\t#{ARGF.filename}\t/^#{line.chomp}$/;\"\tv"
+    end
+  when "property"
+    ident = a[2].gsub(/\(.*/, "")
+    tags.push "#{ident}\t#{ARGF.filename}\t/^#{line.chomp}$/;\"\tf" 
+  end
+end
+f.puts tags.sort
+f.close

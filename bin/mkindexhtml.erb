@@ -1,0 +1,121 @@
+<%
+  def format_size(size)
+    if size < 1024
+      return size.to_s
+    elsif size < 1024 * 1024
+      return sprintf("%.1f KB", size / 1024.0)
+    elsif size < 1024 * 1024 * 1024
+      return sprintf("%.1f MB", size / (1024.0*1024))
+    else
+      return sprintf("%.1f GB", size / (1024.0*1024*1024))
+    end
+  end
+%>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= @dir %></title>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+<style>
+  .align_right { text-align: right; }
+  td {  padding-right: 1em; }
+
+  div.image_viewer { margin: 1em; }
+
+  img.each_image { display: block; margin-bottom: 1em; }
+</style>
+<script>
+  var images = <%= JSON.dump(@images) %>;
+  var index = 0;
+  $(function() {
+    $("body").keydown(function(e) {
+      if (e.keyCode == 39) {
+        move(1);
+      }
+      else if (e.keyCode == 37) {
+        move(-1);
+      }
+    });
+
+    $(".image").mousedown(function(e) {
+        if (e.button == 0) {
+            move(1);
+        } else if (e.button == 2) {
+            move(-1);
+            e.preventDefault();
+        }
+    }).on("contextmenu", function() {
+        return false;
+    });
+  });
+
+  function move(delta) {
+    index += delta;
+    if (index > images.length - 1)
+      index = images.length - 1;
+    if (index < 0)
+      index = 0;
+    if (images.length > 0) {
+      $('.image_filename').text(images[index]);
+      $('.image').attr('src', images[index]);
+    }
+  }
+
+  function showAllImages() {
+    var $all_images = $('.all_images');
+    images.forEach(function(image) {
+      $all_images.append($('<span>').text(image));
+      $all_images.append($('<img>').attr('src', image).addClass("each_image"));
+    });
+  }
+
+</script>
+</head>
+<body>
+  <table>
+  <% @filenames.each do |f| %>
+    <%
+      begin
+        stat = File.stat(f)
+      rescue
+        stat = nil
+      end
+    %>
+    <% if stat && stat.file? %>
+      <tr>
+        <td>
+          <a href="<%= f %>"><%= f %></a>
+        </td>
+        <td class="align_right">
+          <%= format_size(stat.size) %>
+        </td>
+        <td class="align_right">
+          <%= stat.size %>
+        </td>
+        <td>
+          <%= stat.mtime %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+  </table>
+
+  <hr>
+
+  <div class="image_viewer">
+    <a href="#" onclick="move(-1)">←</a>, <a href="#" onclick="move(1)">→</a>キーで前後の画像を表示します。<br>
+    <% if !@images.empty? %>
+      <div class="image_filename"><%= @images.first %></div>
+      <br>
+      <img class="image" src="<%= @images.first %>">
+    <% end %>
+  </div>
+
+  <button onclick="showAllImages()">すべての画像を表示（<%= @images.length %> 個）</button>
+  <div class="all_images">
+  </div>
+</body>
+</html>

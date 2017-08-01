@@ -1,0 +1,87 @@
+# カレントディレクトリの.gdbinitを読み込む
+set auto-load local-gdbinit
+# まだシンボルが読み込まれていない状態でブレークポイントを張ることを許す
+set breakpoint pending on
+# listコマンドで表示する行数
+set listsize 50
+# TUIでASCIIによる罫線表示（UTF-8の罫線文字を使うと画面が乱れるため）
+set tui border-kind ascii
+
+# http://0xcc.net/blog/archives/000126.html
+set history save on
+set history size 10000
+set history filename ~/.gdb_history
+set print pretty on
+# C++のstaticメンバをpコマンドで表示しない
+set print static-members off
+
+# 配列の要素を全て表示する
+set print elements 0
+
+alias a = advance
+alias w = disp
+alias uw = undisp
+alias wp = watch
+alias ib = info b
+alias ia = info args
+alias il = info locals
+alias bd = clear
+
+# 停止する度に実行されるフック
+define hook-stop
+end
+
+# 終了時に確認しない
+define hook-quit
+    set confirm off
+end
+
+define enable-breakpoint
+    enable breakpoints $arg0
+    info b
+end
+
+define disable-breakpoint
+    disable breakpoints $arg0
+    info b
+end
+
+alias -a enab = enable-breakpoint
+alias -a disb = disable-breakpoint
+
+# xxdに似た形式でメモリを16進ダンプする
+# 例：xxd &argc 10
+# https://stackoverflow.com/a/34485939/5209556
+define xxd
+    dump binary memory /tmp/dump.bin $arg0 ((char*)$arg0)+$arg1
+    eval "shell xxd-o %p /tmp/dump.bin", $arg0
+end
+
+define d2h
+    printf "0x%02lx\n", $arg0
+end
+
+define h2d
+    printf "%ld\n", $arg0
+end
+
+# listコマンドの改良
+define l
+    set logging file /tmp/gdb-l.tmp
+    set logging redirect 
+    set logging overwrite on
+    set logging on
+    frame
+    list *$pc
+    set logging off
+    shell gdb-l < /tmp/gdb-l.tmp && rm /tmp/gdb-l.tmp
+end
+
+# 現在行を指定してエディタを起動する
+def ed
+    edit *$pc
+end
+
+
+## GDBの使い方
+# https://www.evernote.com/shard/s211/nl/22440320/a615f211-aeef-4b80-b075-70ff2592d6c8

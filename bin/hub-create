@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+REPO_NAME="$1"
+if [ "$REPO_NAME" = "" ]; then
+    REPO_NAME=`basename $PWD`
+fi
+USER_NAME="aoyama-val"
+
+echo "USER_NAME = $USER_NAME"
+echo "REPO_NAME = $REPO_NAME"
+
+curl -u "$USER_NAME" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}'
+
+git remote add origin https://github.com/$USER_NAME/$REPO_NAME.git
+
+git push -u origin master

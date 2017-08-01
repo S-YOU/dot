@@ -1,0 +1,8 @@
+#!/usr/bin/env perl
+
+# Usage:
+#   $0 e3 81 82
+#   ⇒ あ
+
+$str = pack('C*', map { hex($_) } @ARGV);
+print $str;

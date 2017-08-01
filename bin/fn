@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ $# = 1 ]; then
+    if [ "$FIND_ROOT" = "" ]; then
+        dir="."
+    else
+        dir="$FIND_ROOT"
+    fi
+else
+    dir="$1"
+    shift
+fi
+#set -x
+exec find "$dir" -name "$@"

@@ -1,0 +1,8 @@
+:set prompt ">>> "
+
+-- 複数行モード
+:set +m
+
+-- 無限ループに陥った場合はCtrl-Cで停止して、:historyでどうして無限ループになったか調べられる
+-- https://wiki.haskell.org/Debugging
+-- :set -fbreak-on-error

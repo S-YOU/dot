@@ -1,0 +1,128 @@
+#!/usr/bin/env perl
+# rm の代替のごみ箱ユーティリティ
+#
+
+use File::Copy;
+use File::Basename;
+use Cwd;
+
+$HOME = $ENV{"HOME"};
+$DIR = "$HOME/.gomi";
+$LOG = "$DIR/LOG";
+$PURGE_AFTER_DAYS = 30;	# これ以上日数が経過したファイルを完全に削除する
+
+$debug = 0;
+
+if (($#ARGV + 1) == 0 || $ARGV[0] eq '-h' || $ARGV[0] eq '--help') {
+	print "Usage:\n";
+	print "gm [-d] FILES...          : ファイルをごみ箱に移動する。\n";
+	print "    -d                    : デバッグ出力を有効にする。\n";
+	print "gm -l|--log               : 削除したファイルを復元するためのコマンドを表示する。\n";
+	print "\n";
+	print "ごみ箱のディレクトリ = $DIR\n";
+	print "ごみ箱の中のファイルは$PURGE_AFTER_DAYS日後に削除されます。\n";
+	exit 0;
+}
+
+
+if (($#ARGV + 1) == 0 || $ARGV[0] eq '-l' || $ARGV[0] eq '--log') {
+	my @command = ('tail', '-n60', $LOG);
+	system(@command) && die "gm: ページャを実行できませんでした";
+	exit 0;
+}
+if (($#ARGV + 1) == 0 || $ARGV[0] eq '-d' || $ARGV[0] eq '--debug') {
+	$debug = 1;
+	print "デバッグ出力を有効にします。\n";
+}
+
+mkdir $DIR;
+if (! -d $DIR) {
+	print "gm: $DIR not exist!";
+	exit 1;
+}
+
+while ($ARGV[0] =~ /^-/) {
+	shift @ARGV;
+}
+
+$date = `date +"%Y-%m-%d_%H:%M:%S"`;
+chomp($date);
+
+$cwd = Cwd::getcwd();
+if ($debug) {
+	print "cwd=[$cwd]\n";
+}
+
+# ごみ箱へ移動
+for my $i (@ARGV) {
+	if (-e $i || -l $i) {
+		my ($basename, $dir) = fileparse($i);
+		my $from;
+		if (substr($i, 0, 1) eq '/') {
+			$from   =  $i;
+		}
+		else {
+			$from   =  $cwd . '/' . $i;
+		}
+		my $target = "$DIR/$basename.$date";
+		if ($debug) {
+			print "from = [$from]\n";
+			print "target = [$target]\n";
+		}
+
+		my @command = ('/bin/mv', '-v', $from, $target);
+		system(@command) && die "Failed to mv";
+
+		# ログに復元コマンドを書き込み
+		open(FH, ">> $LOG");
+		# シングルクォートをエスケープ
+		$target_escaped = $target;
+		$target_escaped =~ s/'/'\\''/;
+		$from_escaped = $from;
+		$from_escaped =~ s/'/'\\''/;
+		print FH "mv '$target_escaped' '$from_escaped'\n";
+		close(FH);
+	}
+	else {
+		print STDERR "gm: No such file or directory: $i\n";
+	}
+}
+
+# 一定確率でごみ箱の中の古いファイルを削除する
+if (int(rand(10)) == 0) {
+	print "ごみ箱の中の古いファイルを削除します...\n";
+	#system("find '$DIR' -maxdepth 1 -atime +$PURGE_AFTER_DAYS -print0 | xargs -0 /bin/rm -rf &");
+	
+	my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time - 60 * 60 * 24 * $PURGE_AFTER_DAYS); $year += 1900; $mon += 1;
+	my $delete_date = sprintf("%04d-%02d-%02d_%02d:%02d:%02d", $year, $mon, $mday, $hour, $min, $sec);
+
+	use File::Temp;
+	my($tmp_fh, $tmp_filename) = File::Temp::tempfile(UNLINK => 1);
+	#print "tmp_filename = $tmp_filename\n";
+
+	# ディレクトリオープン
+	opendir(DIR, $DIR);
+
+	# ディレクトリエントリの取得
+	foreach (readdir(DIR)) {
+		if ($_ eq "." || $_ eq "..") {
+			next;
+		}
+		$_ =~ /.*\.([^.]*)$/;
+		if ($1 le $delete_date) {
+			# 削除すべきファイルを一時ファイルに書き込む
+			print $tmp_fh $_, "\0";
+		}
+	}
+
+	# ディレクトリクローズ
+	closedir(DIR);
+
+	close($tmp_fh);
+
+	# rm実行
+	$ret = system("cd $DIR && /usr/bin/xargs -0 /bin/rm -rf < $tmp_filename");
+	if ($ret != 0) {
+		print "gm: rmが失敗しました\n";
+	}
+}

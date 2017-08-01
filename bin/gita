@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# 複数のファイルをいっぺんにgit addするためのスクリプト
+# エディタを起動してgit addするファイルを選択できる
+
+echomsg() {
+    echo -ne "\x1b[0;32m"; echo "$@"; echo -ne "\x1b[0m"
+}
+
+echoquestion() {
+    echo -ne "\x1b[1;33m"; echo "$@"; echo -ne "\x1b[0m"
+}
+
+# ~/.gitconfigを読みこまないようにする
+# もっといい方法はないか？
+OLD_HOME=$HOME
+export HOME=/
+
+TMP=/tmp/gita.tmp.$$
+DIFF=/tmp/gita.diff.$$.gitcommit
+
+cat > $TMP <<EOF
+# addしたい行を残して保存してください。
+# 先頭の M や ?? は残っていても構いません
+# diffを見るにはファイル名の上で<C-d>
+
+EOF
+
+# ファイル一覧を一時ファイルに保存
+git -c core.excludesfile=$OLD_HOME/.gitignore -c color.ui=never status --short | awk '$0 !~ /^( D|D )/ {print}' >> $TMP
+cp -a $TMP $TMP.orig
+# 一時ファイルの更新日時を古くしておく（そうしないと、エディタ起動して即保存終了したとき変更が検出されない）
+touch -t 200001010000 $TMP
+
+cat > $DIFF <<EOF
+# ------------------------ diff ------------------------
+EOF
+git diff >> $DIFF
+
+HOME="$OLD_HOME" vim -o $TMP $DIFF
+
+# 一時ファイルの更新日時が新しくなっていたら（エディタで保存されていたら）
+if [ $TMP -nt $TMP.orig ]; then
+    # git add実行
+    CMD="git add $(cat $TMP | awk '$0 !~ /^#/ {print $NF}' | tr '\n' ' ' | sed -e 's/\s\+/ /g')"
+    echomsg "$CMD"
+    eval "$CMD"
+
+    HOME=$OLD_HOME
+    # git commit -vでdiffを表示することもできる
+    git commit
+
+    # 質問してgit pushする機能。無効にしておく
+    #echoquestion "git push? (y/N)"
+    #read -n 1 ans
+    #echo
+    #case "$ans" in
+    #    y|Y)
+    #        echomsg "git push"
+    #        git push
+    #        ;;
+    #    *)
+    #        ;;
+    #esac
+else
+    echomsg "何もしません"
+fi
+
+# addした後のstatusを表示
+git status --short
+
+# 一時ファイル削除
+rm -f $TMP $TMP.orig $DIFF

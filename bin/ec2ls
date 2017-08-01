@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# AWS CLI の query による絞り込み - Qiita
+# http://qiita.com/draco/items/fa09ae0c2f51de9de449 
+
+exec aws "$@" ec2 describe-instances --filters "Name=tag:Name,Values=rmap*" --query 'sort_by(Reservations[].Instances[].{InstanceId:InstanceId,Name:Tags[?Key==`Name`].Value|[0],InstanceType:InstanceType,State:State.Name,PrivateIp:PrivateIpAddress,AZ:Placement.AvailabilityZone,PublicIp:PublicIpAddress}, &Name)' --output table

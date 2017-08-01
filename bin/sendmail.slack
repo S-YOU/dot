@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+
+# ln -s /usr/bin/sendmail.slack /usr/bin/sendmail
+# してsendmailの代わりとして使うスクリプト
+
+require "json"
+require "net/https"
+
+# str_url: URL（文字列）
+# data:    ポストするデータ（ハッシュ）
+def http_post_general(str_url, data="", headers={})
+  uri = URI.parse(str_url)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  if uri.scheme == "https"
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  end 
+
+  req = Net::HTTP::Post.new(uri.path)
+  headers.each do |k, v|
+    req[k] = v
+  end
+  req.body = data
+  res = http.request(req)
+  return res
+end
+
+# aosho235
+url = "https://hooks.slack.com/services/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"
+
+message = $stdin.read
+
+if ARGV[0] == "success"
+  color = "#36a64f"
+elsif ARGV[0] == "failure"
+  color = "#ff0000"
+else
+  color = nil
+end
+
+payload = {
+  "channel": "#general",
+  "username": "sendmail.slack",
+  "icon_emoji": ":hamster:",
+  "text": message,
+}
+
+#payload = 
+#{
+#  "channel": "#general",
+#  "username": "sendmail.slack",
+#  "icon_emoji": ":hamster:",
+#  "attachments": [
+#    {
+#      "text": message,
+#    }
+#  ]
+#}
+
+if color
+  payload["attachments"][0]["color"] = color
+end
+
+res = http_post_general(url, JSON.generate(payload), { "Content-Type" => "application/json" })
+puts res.code
+puts res.message
+puts res.body

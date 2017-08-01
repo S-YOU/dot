@@ -1,0 +1,17 @@
+# CentOSからコピペ
+# $PATHにディレクトリを1個追加するシェル関数
+# 使い方：
+# pathmunge "/usr/local/bin"
+
+pathmunge () {
+    case ":${PATH}:" in
+        *:"$1":*)
+            ;;
+        *)
+            if [ "$2" = "after" ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}

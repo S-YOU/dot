@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+	echo "Usage: $0 COMMAND [ARGS...]"
+	exit 1
+fi
+
+TITLE="$1"
+
+screen -X title "$TITLE"
+eval "$@"
+
+screen -X eval remove

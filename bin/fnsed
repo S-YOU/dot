@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# sedでファイル名を置換し、リネームする
+# 例： fnsed 's@hoge@moge@' hoge*
+
+set -e
+
+pattern="$1"
+shift
+
+for i in "$@"; do
+    mv -v "$i" $(echo "$i" | sed -e "$pattern")
+done

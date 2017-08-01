@@ -1,0 +1,387 @@
+/* vim: set ts=2 sts=2 sw=2 expandtab list: */
+@charset 'UTF-8';
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #eeeeee;
+  font-size: 14px;
+  line-height: 150%;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Droid Sans", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ Pro W3", "メイリオ", Meiryo, "ＭＳ Ｐゴシック", "돋움", Dotum, sans-serif;
+  margin-bottom: 1em;
+}
+
+h2 {
+  border-left: 10px solid #58a7d2;
+  background: #e8f2f9;
+  padding: 3px 10px 3px 10px;
+  font-size: 16px;
+}
+
+h3 {
+  border-left: 6px solid #58a7d2;
+  padding: 3px 10px 3px 10px;
+  font-size: 14px;
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+input[type="button"], button {
+    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(255, 255, 255) 0px 0px 2px 0px inset;
+    color: rgb(68, 68, 68);
+    cursor: pointer;
+    height: 30px;
+    min-height: 0px;
+    text-shadow: rgb(255, 255, 255) 0px 1px 0px, rgba(255, 255, 255, 0) 0px 0px 0px;
+    vertical-align: middle;
+    min-width: 130px;
+    background: rgba(0, 0, 0, 0) -webkit-linear-gradient(top, rgb(246, 246, 246) 0%, rgb(224, 224, 224)) repeat scroll 0% 0% / auto padding-box border-box;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px 5px 5px 5px;
+    font: normal normal bold normal 14px / 18.2px 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+    margin: 0px 5px 0px 0px;
+    outline: rgb(68, 68, 68) none 0px;
+    padding: 5px 10px;
+}/*#BUTTON_1*/
+
+input[type="button"]:hover, button:hover {
+    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(255, 255, 255) 0px 0px 2px 0px inset;
+    color: rgb(68, 68, 68);
+    cursor: pointer;
+    height: 30px;
+    min-height: 0px;
+    text-shadow: rgb(255, 255, 255) 0px 1px 0px, rgba(255, 255, 255, 0) 0px 0px 0px;
+    vertical-align: middle;
+    background: rgba(0, 0, 0, 0) -webkit-linear-gradient(top, rgb(246, 246, 246) 0%, rgb(204, 204, 204)) repeat scroll 0% 0% / auto padding-box border-box;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 5px 5px 5px 5px;
+    font: normal normal bold normal 14px / 18.2px 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+    margin: 0px 5px 0px 0px;
+    outline: rgb(68, 68, 68) none 0px;
+    padding: 5px 10px;
+}/*#BUTTON_1*/
+
+input[type="button"], button.btn-primary {
+    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(119, 170, 204) 0px 0px 2px 0px inset;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    height: 30px;
+    min-height: 0px;
+    text-shadow: rgb(25, 84, 167) 0px 1px 0px, rgba(255, 255, 255, 0) 0px 0px 0px;
+    vertical-align: middle;
+    perspective-origin: 80px 15px;
+    transform-origin: 80px 15px;
+    background: rgba(0, 0, 0, 0) -webkit-linear-gradient(top, #38d 0%, #16b);
+    border: 1px solid rgb(17, 102, 187);
+    border-radius: 5px 5px 5px 5px;
+    font: normal normal bold normal 14px / 18.2px 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+    margin: 0px 5px 0px 0px;
+    outline: rgb(255, 255, 255) none 0px;
+    padding: 5px 10px;
+}/*#BUTTON_1*/
+
+input[type="button"]:hover, button.btn-primary:hover {
+  color: #fff;
+  border: 1px solid #16b;
+  background: -webkit-linear-gradient(top, #38d 0%, #05a);
+  text-shadow: 0 1px 0 rgba(025, 084, 167, 1),0 0 0 rgba(255, 255, 255, 0);
+}
+
+td > input[type="text"], td > input[type="password"] {
+  width: 100%;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid #000000;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+td,th {
+  background: #ffffff;
+  border: 1px solid #000000;
+  padding: 4px 6px;
+}
+
+th {
+  background: #e8f2f9;
+}
+
+ul,ol {
+  list-style-position: inside;
+}
+
+ul {
+  padding-left: 10px;
+}
+
+b {
+  font-weight:bold; color: #ff0000;
+}
+
+span > code {
+  color: #c7254e;
+  background: #f9f2f4;
+  padding: 2px 4px;
+}
+
+.container1 {
+  background:#ffffff;
+  margin:auto;
+  width:750px;
+}
+@media screen and (max-width: 750px) {
+  .container1 {
+    width:100%;
+  }
+}
+
+.container2 {
+  background:#ffffff;
+  margin:auto;
+  padding:0.5em 1em 1em 1em;
+}
+
+.round { border-radius: 3px; }
+
+.box1 { margin-left: 1em; margin-right:1em; }
+.box2 { margin-left: 2em; margin-right:2em; }
+.box3 { margin-left: 3em; margin-right:3em; }
+.box4 { margin-left: 4em; margin-right:4em; }
+.box5 { margin-left: 5em; margin-right:5em; }
+.box6 { margin-left: 6em; margin-right:6em; }
+.box7 { margin-left: 7em; margin-right:7em; }
+.box8 { margin-left: 8em; margin-right:8em; }
+.box9 { margin-left: 9em; margin-right:9em; }
+
+.indent1 { margin-left:1em; }
+.indent2 { margin-left:2em; }
+.indent3 { margin-left:3em; }
+.indent4 { margin-left:4em; }
+.indent5 { margin-left:5em; }
+.indent6 { margin-left:6em; }
+.indent7 { margin-left:7em; }
+.indent8 { margin-left:8em; }
+.indent9 { margin-left:9em; }
+
+.margin-bottom1 { margin-bottom: 1em; }
+.margin-bottom2 { margin-bottom: 2em; }
+.margin-bottom3 { margin-bottom: 3em; }
+
+/*----------------------------------------------------------------------------
+* ▼ヘッダー・フッター
+*---------------------------------------------------------------------------*/
+div.header {
+  background: white;
+  border-bottom: solid 2px #58a7d2;
+  padding: 5px 10px 5px 10px;
+}
+
+span.title {
+  color: #277aae;
+  font-size:20px;
+  font-weight: bold;
+}   
+
+div.header_links {
+  float: right; 
+  width: 25em; 
+  text-align: right;
+}       
+
+div.header_links a {
+  margin-left: 0.7em;
+}   
+
+div.header img {
+  vertical-align: -8px;
+  margin-right: 10px;
+}
+
+div.footer {
+  background: white;
+  border-top: solid 1px #58a7d2;
+  color: #277aae;
+  padding: 4px;
+  text-align: right;
+}
+/*----------------------------------------------------------------------------
+* ▲ヘッダー・フッター
+*---------------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------------
+* ▼グローバルナビ
+*---------------------------------------------------------------------------*/
+/*
+<div class="gnavi">
+  <ul>
+    <li><a href="#">ホーム</a></li>
+    <li class="active"><a href="#">会社情報</a></li>
+    <li><a href="#">製品情報</a></li>
+    <li><a href="#">お問い合わせ</a></li>
+  </ul>
+</div>
+*/
+div.gnavi,
+div.gnavi ul,
+div.gnavi ul li,
+div.gnavi ul li a {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+  line-height: 1;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+}
+div.gnavi {
+  width: auto;
+}
+div.gnavi ul {
+  /* activeでない場合の色 */
+  background: #1275ae;
+}
+div.gnavi:after,
+div.gnavi ul:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+/* activeでない場合の li */
+div.gnavi ul li {
+  float: left;
+  display: block;
+  border-right: 1px solid rgba(0, 0, 0, 0.22);
+  z-index: 1;
+}
+/* activeでない場合の a */
+div.gnavi ul li a {
+  display: block;
+  padding: 10px 30px;
+  text-decoration: none;
+  font-size: 12px;
+  color: #ffffff;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 3;
+}
+/* hoverまたはactiveな場合の a */
+div.gnavi ul li a:hover,
+div.gnavi ul li.active a {
+  color: #ffffff;
+}
+/* hoverまたはactiveな場合の li */
+div.gnavi ul li:hover,
+div.gnavi ul li.active {
+  background: #1692da;
+}
+/*----------------------------------------------------------------------------
+* ▲グローバルナビ
+*---------------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------------
+* ▼テキスト
+*---------------------------------------------------------------------------*/
+/* プログラムコード */
+pre > code {
+  background:#eeeeee;
+  border-radius: 3px;
+  border:1px solid #808000;
+  display: block;
+  margin-bottom: 1em;
+  padding: 0.3em 1em;
+}
+
+div.message {
+  background:#e9ffd9;
+  border:1px solid #a6ca8a;
+  border-radius: 3px;
+  margin-bottom: 1em;
+  padding: 0.3em 1em;
+}
+
+div.error {
+  background: #fff0ff;
+  border-radius: 3px;
+  border: 1px solid #ff6699;
+  color:red;
+  font-weight:bold;
+  margin-bottom: 1em;
+  padding: 0.3em 1em;
+}
+
+div.note {
+  background: #e3f7fc;
+  border-radius: 3px;
+  border:1px solid #8ed9f6;
+  margin-bottom: 1em;
+  padding: 0.3em 1em;
+}
+
+/* 説明文 */
+.guide {
+  color: #999999;
+}
+
+/* Webアプリにおいてデータを表示している部分 */
+span.data {
+  color: #c7254e;
+  background: #f9f2f4;
+}
+
+/*----------------------------------------------------------------------------
+* ▲テキスト
+*---------------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------------
+* ▼フォーム
+*---------------------------------------------------------------------------*/
+table.form {
+}
+
+table.form th {
+  width:150px;
+}
+
+table.form td {
+  padding:4px 10px 4px 6px;
+}
+
+table.form td input[type=text] {
+  width:100%;
+  margin-right:5px;
+}
+/*----------------------------------------------------------------------------
+* ▲フォーム
+*---------------------------------------------------------------------------*/
+
+
+
+/*----------------------------------------------------------------------------
+* ▼ページャ
+*---------------------------------------------------------------------------*/
+.pager      { margin: 20px 0px; }
+.pager span.current { background:#3366ff; font-size:16px; border:1px solid #3366ff; color:#ffffff; font-weight:bold; padding:7px 9px; margin-right:10px; } 
+.pager a    { text-decoration:none; font-size:16px; border:1px solid #3366ff; font-weight:bold; padding:7px 9px; margin-right:7px; }
+.pager a:hover,a:active { background:#aaddff; text-decoration:none; }
+/*----------------------------------------------------------------------------
+* ▲ページャ
+*---------------------------------------------------------------------------*/

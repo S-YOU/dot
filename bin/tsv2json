@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+separator = "\t"
+
+header_line = gets.chomp
+header = header_line.split(separator)
+
+ret = []
+
+while line = gets
+  line.chomp!
+  cols = line.split(separator)
+
+  hash = {}
+  header.each_with_index do |h, i|
+    hash[h] = cols[i]
+  end
+  ret << hash
+end
+
+puts ret.to_json

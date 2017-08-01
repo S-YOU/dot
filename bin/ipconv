@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'ipaddr'
+
+# IPアドレスのマスクを計算する
+
+help =<<EOF
+例:
+> 192.168.33.5 & 255.255.255.0
+192.168.33.0
+> 192.168.33.5/24
+192.168.33.0
+
+EOF
+
+puts help
+
+while true
+  print "> "
+  $stdout.flush
+  line = $stdin.gets
+  if not line
+    exit(0)
+  end
+  line.strip!
+  a = line.split
+  if a.length == 1
+    result = IPAddr.new(a[0]).to_s
+  elsif a.length == 3
+    if a[1] == "&"
+      result = IPAddr.new(a[0]).mask(a[2]).to_s
+    else
+      syntax_error()
+    end
+  end
+  puts result
+end

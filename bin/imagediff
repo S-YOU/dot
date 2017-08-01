@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ "$2" = "" ]; then
+    echo "Usage: $0 FROM_FILE TO_FILE [OUT_FILE]"
+    exit 1
+fi
+
+FROM_FILE="$1"
+TO_FILE="$2"
+OUT_FILE=${OUT_FILE:-diff.png}
+
+echo "FROM_FILE = $1"
+echo "TO_FILE   = $2"
+echo "OUT_FILE  = $OUT_FILE"
+
+exec composite -compose difference "$FROM_FILE" "$TO_FILE" "$OUT_FILE"

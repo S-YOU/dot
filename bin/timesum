@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+# 時間の合計を計算するスクリプト
+#
+# 例：
+# a.txt------------------------
+# 0:46
+# 0:04
+# 0:23
+# 0:02
+# -0:06
+# 0:14
+# 0:40
+# 0:21
+# 0:03
+# 0:47
+# 0:39
+# -1:23
+# a.txt------------------------
+#
+# timesum a.txt
+
+def mins_to_hm(minutes)
+  h = minutes / 60
+  m = minutes % 60
+  return sprintf("%02d:%02d", h, m)
+end
+
+def hm_to_mins(hm)
+  sign = hm[0] == "-" ? -1 : 1
+  hm =~ /([0-9]+):([0-9]+)/
+  h = sign * $1.to_i
+  m = sign * $2.to_i
+  return 60 * h + m
+end
+
+total_mins = 0
+
+matches = ARGF.read.scan(/[-0-9]+:[0-9]+/)
+matches.each do |m|
+  mins = hm_to_mins(m)
+  total_mins += mins
+  puts "#{m}\t#{mins}"
+end
+
+puts
+puts "#{matches.length} matches"
+puts "Total: #{mins_to_hm(total_mins)}\t#{total_mins}"

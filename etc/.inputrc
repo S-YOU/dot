@@ -1,0 +1,38 @@
+# see man readline
+#set meta-flag on
+#set input-meta on
+#set output-meta on
+#set convert-meta off
+
+#DEL:delete-char
+
+set completion-ignore-case on
+set blink-matching-paren on
+
+
+
+$if Gdb
+# F5 : continue
+"\e[15~": "c \C-m"
+# F10 : next
+"\e[21~": "n \C-m"
+# F11 : step
+"\e[23~": "s \C-m"
+$endif
+
+
+
+$if Python
+$else
+tab: complete
+C-d: delete-char-or-list
+
+"\C-x\C-d":dump-macros
+"\C-x\C-f":dump-functions
+$endif
+
+
+
+$if mysql
+"\C-g":"\C-e\\G\r"
+$endif

@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+#
+# 数値を3桁区切り
+#
+# Usage: echo 12345 | number_format
+
+def number_format(n)
+  n.to_s.gsub(/(\d)(?=(\d{3})+(?!\d))/, '\1,')
+end
+
+input = STDIN.read()
+
+output = input.gsub(/\d+/) { |num| number_format(num) }
+
+print output

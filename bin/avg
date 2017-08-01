@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+total = 0
+count = 0
+
+while gets
+  value = $_.to_f
+  total += value
+  count += 1
+end
+
+puts "Total    #{total}"
+puts "Count    #{count}"
+puts "Average  #{count == 0 ? 'N/A' : total / count}"

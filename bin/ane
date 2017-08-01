@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+progname = "ane"
+
+@help = <<EOF
+hoge, moge, sage
+
+を
+
+#{progname} '\\3 = \\2 + \\1' ,
+
+で
+
+sage = moge + hoge
+
+と置換するスクリプト
+
+Usage  : #{progname} TEMPLATE [DELIMITER]
+Example: #{progname} 'UPDATE \\1 SET \\2 = \\3;'
+EOF
+
+def help_exit
+  puts @help
+  exit 1
+end
+
+template  = ARGV.shift || help_exit
+delimiter = ARGV.shift || nil
+
+while line = gets
+  line.chomp!
+  fields = line.split(delimiter)
+  replaced = template.gsub(/\\(\d+)/) {|x|
+    i = $1.to_i - 1
+    fields[i].nil? ? "" : fields[i].strip
+  }
+  puts replaced
+end

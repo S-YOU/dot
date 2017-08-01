@@ -1,0 +1,293 @@
+include "109.mayu"
+
+# global **************************************************************
+
+mod ctrl += âpêî
+key *âpêî = *LCtrl
+
+key *ïœä∑ = *Esc
+key *ñ≥ïœä∑ = *îºäp/ëSäp
+
+mod mod0 = !!ñ≥ïœä∑
+
+
+key M0-j = Down
+key M0-k = Up
+
+key C-S-F12 = &LoadSetting &HelpMessage(Mayu, çƒì«çûäÆóπ)
+
+key C-S-A-pageup = &PlugIn("sound_volume", "master", "+10", true)
+key C-S-A-pagedown = &PlugIn("sound_volume", "master", "-10", true)
+
+key C-A-Right   = A-Esc
+key C-A-Left    = A-S-Esc
+key A-S-Right = &WindowMove(15,0)
+key A-S-Left  = &WindowMove(-15,0)
+key A-S-Up    = &WindowMove(0,-15)
+key A-S-Down  = &WindowMove(0,15)
+key C-A-Up    = &WindowMaximize
+key C-A-Down  = &WindowMinimize
+#key C-Q = &WindowClose
+keyseq $WindowSize/wplus  = A-Space s Right Right Right Enter
+keyseq $WindowSize/wminus = A-Space s Right Left  Left  Left  Enter
+keyseq $WindowSize/hplus  = A-Space s Down  Down  Down  Enter
+keyseq $WindowSize/hminus = A-Space s Down  Up    Up    Up    Enter
+#key A-S-Right = $WindowSize/wplus
+#key A-S-Left  = $WindowSize/wminus
+#key A-S-Down  = $WindowSize/hplus
+#key A-S-Up    = $WindowSize/hminus
+
+
+# end of global **************************************************************
+
+#------------------------------------------------------
+# edit control
+
+#window EditControl /:Edit$/ : Global
+keyseq	$Edit/kill-line		= Home S-End Del Del
+key C-A = Home
+key C-E = End
+key C-U = $Edit/kill-line
+
+#======================================================
+# for Cygwin
+#======================================================
+keymap Terminal : Global
+
+# common (copy and paste belows)
+key C-U = &Default
+key C-A-Right   = A-Esc
+key C-A-Left    = A-S-Esc
+key A-S-Right = &WindowMove(15,0)
+key A-S-Left  = &WindowMove(-15,0)
+key A-S-Up    = &WindowMove(0,-15)
+key A-S-Down  = &WindowMove(0,15)
+key C-A-Up    = &WindowMaximize
+key C-A-Down  = &WindowMinimize
+#key C-Q = &WindowClose
+mod ctrl += âpêî
+key *âpêî = *LCtrl
+#key *LCtrl = *âpêî 
+key *ïœä∑ = *Esc
+
+#key *ñ≥ïœä∑ = A-äøéö
+key *ñ≥ïœä∑ = *îºäp/ëSäp
+
+key Delete = &Default
+key C-a = &Default
+key C-e = &Default
+
+window Cygwin /ConsoleWindowClass/ : Terminal
+window Ck     /ck\.exe/ : Terminal
+window Ck2     /ck2\.exe/ : Terminal
+window Mintty      /mintty\.exe/ : Terminal
+# end of cygwin **************************************************************
+
+#======================================================
+#   for Vim
+#======================================================
+window Vim /gvim\.exe/ : Global
+key C-A = &Default
+key C-E = &Default
+key C-U = &Default
+
+window VisualStudioNET /devenv\.exe/ : Global
+key C-U = &Default
+
+#======================================================
+#   for xyzzy
+#======================================================
+window Xyzzy /xyzzy\.exe/ : Global
+key C-A = &Default
+key C-E = &Default
+key C-U = &Default
+
+# pdic **************************************************************
+window Pdic /pdicw32\.exe/ : Global
+key *ïœä∑ = &WindowMinimize
+
+# Visual SlickEdit **************************************************
+window SlickEditDialog /vs.exe:#32770:vs_list/ : Global
+key J = Down
+key K = Up
+
+# vi binding for notepad ********************************************
+
+keyseq $forward-char            = Right
+keyseq $backward-char           = Left
+
+keyseq $select-word             = C-S-Right
+keyseq $beginning-of-word       = C-Left
+keyseq $forward-word            = C-Right
+keyseq $backward-word           = C-Left
+
+keyseq $beginning-of-line       = Home
+keyseq $end-of-line             = End
+keyseq $next-line               = Down
+keyseq $previous-line           = Up
+
+keyseq $beginning-of-buffer     = C-Home
+keyseq $end-of-buffer           = C-End
+
+keyseq $delete-char             = Del
+keyseq $kill-char               = S-Right S-Del
+keyseq $backward-delete-char    = S-Left S-Del
+
+keyseq $kill-line               = S-End S-Del
+keyseq $select-whole-line       = Home S-Down
+keyseq $kill-whole-line         = $select-whole-line S-Del
+
+keyseq $insert-mode             = &Toggle(Lock0) &HelpMessage(Mayu, "-- INSERT --")
+keyseq $normal-mode				= &Toggle(Lock0) &HelpMessage()
+keyseq $newline                 = Enter
+
+keyseq $search-forward          = C-f
+keyseq $search-backward         = C-f &Wait(500) A-u A-n
+keyseq $search-next             = F3
+keyseq $search-previous         = S-F3
+
+keyseq $delete					= Del
+keyseq $kill					= C-x
+keyseq $yank                    = C-c
+keyseq $put                     = C-v
+keyseq $deselect				= Right Left
+
+keyseq $undo                    = C-z
+keyseq $redo                    = C-y
+
+keyseq $scroll-up               = Pageup
+keyseq $scroll-down             = Pagedown
+
+keyseq $open-manual				= F1
+
+keymap2 NotepadG
+ key L0-G = $beginning-of-buffer
+
+keymap2 NotepadD
+ key L0-d = $kill-whole-line
+ key L0-w = $select-word $kill
+ key L0-b = C-S-Left $kill
+ key L0-e = C-S-Right $kill
+ key L0-S-G = C-S-End	$kill
+ key L0-_0 = S-Home $kill
+ key L0-S-_4 = S-End $kill
+
+# ìÆÇ©Ç»Ç¢
+keymap2 NotepadC
+ key L0-c = Home S-End $kill &Wait(500) $insert-mode
+ key L0-w = $select-word $kill 
+ key L0-b = C-S-Left $kill 
+ key L0-e = C-S-Right $kill 
+ key L0-S-G = C-S-End	$kill 
+ key L0-_0 = S-Home $kill 
+ key L0-S-_4 = S-End $kill 
+
+keymap2 NotepadY
+ key L0-y = $select-whole-line $yank $deselect Up
+ key L0-S-_0 = S-Home $yank $deselect
+ key L0-w = $select-word $yank $deselect
+ key L0-b = C-S-Left $yank $deselect
+ key L0-e = C-S-Right $yank $deselect
+ key L0-S-G = C-S-End $yank $deselect
+ key L0-_0 = S-Home $yank $deselect
+ key L0-S-_4 = S-End $yank $deselect
+
+keymap ViForNotepad : Global
+key Esc = $normal-mode
+
+#mod shift += L0-v
+
+key L0-S-_4 = $end-of-line
+key L0-_0 = $beginning-of-line 
+key L0-Caret = $beginning-of-line
+key L0-Slash = $search-forward
+key L0-S-Slash = $search-backward
+
+key L0-a = $forward-char $insert-mode
+key L0-b = $backward-word
+key L0-c = &Prefix(NotepadC)
+key L0-d = &Prefix(NotepadD)
+key L0-e = $forward-word $backward-char
+key L0-f = &Undefined
+key L0-g = &Prefix(NotepadG)
+key L0-h = $backward-char
+key L0-i = $insert-mode
+key L0-j = $next-line
+key L0-k = $previous-line
+key L0-l = $forward-char
+key L0-m = &Undefined
+key L0-n = $search-next
+key L0-o = $end-of-line $newline $insert-mode
+key L0-p = $put
+key L0-q = &Undefined
+key L0-r = &Undefined
+key L0-s = &Undefined
+key L0-t = &Undefined
+key L0-u = $undo
+key L0-v = &Undefined
+key L0-w = $forward-word
+key L0-x = $kill-char
+key L0-y = &Prefix(NotepadY)
+key L0-z = &Undefined
+
+key L0-S-A = $end-of-line $forward-char $insert-mode
+key L0-S-B = $backward-word
+key L0-S-C = $kill-whole-line $newline $previous-line $insert-mode
+key L0-S-D = $kill-line
+key L0-S-E = $forward-word $backward-char
+key L0-S-F = &Undefined
+key L0-S-G = $end-of-buffer
+key L0-S-H = &Undefined
+key L0-S-I = $beginning-of-line $insert-mode
+key L0-S-J = $end-of-line $delete-char
+key L0-S-K = $open-manual
+key L0-S-L = &Undefined
+key L0-S-M = &Undefined
+key L0-S-N = $search-previous
+key L0-S-O = $previous-line $end-of-line $newline $insert-mode
+key L0-S-P = $backward-char $put
+key L0-S-Q = &Undefined
+key L0-S-R = &Undefined
+key L0-S-S = $kill-whole-line $newline $previous-line $insert-mode
+key L0-S-T = &Undefined
+key L0-S-U = &Undefined
+key L0-S-V = $select-whole-line
+key L0-S-W = $forward-word
+key L0-S-X = $backward-delete-char
+key L0-S-Y = $select-whole-line $yank
+key L0-S-Z = &Undefined
+
+key L0-C-a = &Undefined
+key L0-C-b = $scroll-up
+key L0-C-c = &Undefined
+key L0-C-d = $scroll-down
+key L0-C-e = &Undefined
+key L0-C-f = $scroll-down
+key L0-C-g = &Undefined
+key L0-C-h = $backward-char
+key L0-C-i = &Undefined
+key L0-C-j = $next-line
+key L0-C-k = &Undefined
+key L0-C-l = &Undefined
+key L0-C-m = $next-line
+key L0-C-n = $next-line
+key L0-C-o = &Undefined
+key L0-C-p = $previous-line
+key L0-C-q = &Undefined
+key L0-C-r = $redo
+key L0-C-s = &Undefined
+key L0-C-t = &Undefined
+key L0-C-u = $scroll-up
+key L0-C-v = &Undefined
+key L0-C-w = &Undefined
+key L0-C-x = &Undefined
+key L0-C-y = &Undefined
+key L0-C-z = &WindowMinimize
+
+# end of vi **************************************************
+
+window Notepad /notepad\.exe:Notepad:Edit/ : ViForNotepad
+key ïœä∑ = $normal-mode
+
+window FFFTP /ffftp\.exe/ : Global
+key C-U = &Default

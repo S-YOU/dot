@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# Apacheのアクセスログから1秒/1分/1時間当たりのアクセス数を数えるスクリプト
+
+if [ $# = 0 ]; then
+	echo "Usage: $0 [-h|-m|-s] FILENAME"
+	exit 1
+fi
+
+OPT='-m'
+
+case "$1" in
+	-h) OPT=-h; shift ;;
+	-m) OPT=-m; shift ;;
+	-s) OPT=-s; shift ;;
+esac
+
+THIS_DIR=`dirname $0`
+
+FILE="$1"
+
+OUT="$FILE.count"
+
+case "$FILE" in
+	*.gz) CAT=zcat ;;
+	*) CAT=cat ;;
+esac
+
+$CAT "$FILE" | ruby "$THIS_DIR"/access-log-count.rb $OPT | sort -n -r -k 3 > "$OUT"
+
+echo "$OUT に出力しました"

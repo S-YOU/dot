@@ -1,0 +1,95 @@
+#!/usr/bin/python
+
+# 入力テキストはスペースまたはタブ1個でインデントとする
+
+import sys
+
+def getLevel(s):
+    return len(s) - len(s.lstrip())
+
+
+def parseLines(lines):
+    if len(lines) == 0:
+        return None
+
+    if lines[0].strip() == "":
+        return None
+
+
+    first_line = lines[0].rstrip()
+    first_level = getLevel(first_line)
+    children = []
+
+    #print("enter parse [%s] %d" % (first_line, first_level))
+
+
+    i = 1
+    while i < len(lines):
+        if lines[i].strip() == "":
+            break
+        if getLevel(lines[i]) <= first_level:
+            break
+        if getLevel(lines[i]) == first_level + 1:
+            children.append(parseLines(lines[i:]))
+        i += 1
+    return [first_line, children]
+
+S_LAST_CHILD    = "└──"
+S_NO_LAST_CHILD = "├──"
+S_BAR           = "│    "
+S_SPACE         = "      "
+
+def printTree(root, level=0, prevhead="", isLastChild=True):
+    #print("value = " + str(node[0]))
+    if level == 0:
+        head = ""
+    else:
+        if isLastChild:
+            head = prevhead + S_LAST_CHILD
+        else:
+            head = prevhead + S_NO_LAST_CHILD
+
+    print(head + root[0].lstrip())
+
+    ci = 0
+    for child in root[1]:
+        ci += 1
+        childIsLastChild = (ci == len(root[1]))
+        if isLastChild:
+            if level == 0:
+                printTree(child, level + 1, prevhead, childIsLastChild)
+            else:
+                printTree(child, level + 1, prevhead + S_SPACE, childIsLastChild)
+        else:
+            printTree(child, level + 1, prevhead + S_BAR, childIsLastChild)
+
+def test():
+    a = """1-1
+ 2-1
+  2-1-1
+   2-1-1-1
+  2-1-2
+   2-1-2-1
+    2-1-2-1-1
+ 2-2
+  2-2-1
+1-2
+"""
+
+    tree = parseLines(a.split("\n"))
+    #print(tree)
+    printTree(tree)
+    print(a)
+
+if __name__ == '__main__':
+    lines = sys.stdin.readlines()
+    if len(lines) == 0:
+        sys.exit(0)
+    first_level = getLevel(lines[0])
+    for line in lines[1:]:
+        line = line.rstrip()
+        if line != "" and getLevel(line) == first_level:
+            print("インデント0の行が2行以上あります。インデント0はルートノード1個だけにしてください")
+            sys.exit(1)
+    tree = parseLines(lines)
+    printTree(tree)

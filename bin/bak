@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+# 超簡易ファイルバックアップスクリプト
+# ファイルを .YYYYmmddHHMMSS.bak つきでコピーする
+
+use utf8;		# このスクリプトがUTF-8で書かれていることを示す
+
+use strict;
+use warnings;
+
+binmode(STDIN,  ":utf8");	# STDINから読み込む文字列はUTF-8であると仮定する
+binmode(STDOUT, ":utf8");	# UTF-8に変換してSTDOUTへ書き込むようにする
+binmode(STDERR, ":utf8");	# UTF-8に変換してSTDERRへ書き込むようにする
+
+use File::Find;
+use File::Basename;
+use File::Path;
+use File::stat;
+use Cwd;
+
+my $HOME = $ENV{"HOME"};
+my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday ) = localtime( time );
+$year += 1900; # 西暦
+$mon++; # 月
+
+my $target = $ARGV[0];
+my $bak	   = $target . sprintf(".%04d%02d%02d_%02d%02d%02d.bak", $year, $mon, $mday, $hour, $min, $sec);
+
+sub usage() {
+	print "Usage: $0 TARGET\n";
+}
+
+if ($#ARGV == -1) {
+	usage();
+	exit 1;
+}
+
+if (! -e $target) {
+	print "Target not found: " . $target . "\n";
+	exit 1;
+}
+
+$target =~ s/"/\\"/g;
+$bak    =~ s/"/\\"/g;
+my $cmd = sprintf('cp -Rvp "%s" "%s"', $target, $bak);
+print $cmd, "\n";
+system($cmd);
+

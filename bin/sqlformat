@@ -1,0 +1,46 @@
+#!/bin/sh
+
+exec sqlformat.rb "$@"
+exit
+# never reach here
+
+# SQLをフォーマットするスクリプト
+# curlで
+# http://www.dpriver.com/pp/sqlformat.htm
+# にアクセスしている
+
+TMP='sqlformat.tmp'
+
+cat > $TMP
+
+SQL=`cat $TMP | sed -e 's@<@\&lt;@g; s@>@\&gt;@g;'`
+
+curl -s 'http://www.dpriver.com/cgi-bin/ppserver' -H 'Origin: http://www.dpriver.com' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: ja,en-US;q=0.8,en;q=0.6' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.125 Safari/537.36' -H 'Content-Type: application/xml;charset=UTF-8' -H 'Accept: */*' -H 'Referer: http://www.dpriver.com/pp/sqlformat.htm' -H 'Cookie: __utmt=1; __utma=143873120.851493198.1438315047.1438315047.1438325854.2; __utmb=143873120.3.10.1438325854; __utmc=143873120; __utmz=143873120.1438315047.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __atuvc=4%7C30; __atuvs=55bb1c5df35ca429002' -H 'Proxy-Connection: keep-alive' --data-binary '
+<sqlpp_request>
+   <clientid>dpriver-9094-8133-2031</clientid>
+   <dbvendor>generic</dbvendor>
+   <outputfmt>SQL</outputfmt>
+   <inputsql>'"$SQL"'</inputsql>
+   <formatoptions>
+      <keywordcs>Uppercase</keywordcs>
+      <tablenamecs>Lowercase</tablenamecs>
+      <columnnamecs>Lowercase</columnnamecs>
+      <functioncs>InitCap</functioncs>
+      <datatypecs>Uppercase</datatypecs>
+      <variablecs>Unchanged</variablecs>
+      <aliascs>Unchanged</aliascs>
+      <quotedidentifiercs>Unchanged</quotedidentifiercs>
+      <identifiercs>Lowercase</identifiercs>
+      <lnbrwithcomma>before</lnbrwithcomma>
+      <liststyle>stack</liststyle>
+      <salign>sleft</salign>
+	  <andorunderwhere>yes</andorunderwhere>
+	  <removelnbr>yes</removelnbr>
+      <quotechar>"</quotechar>
+      <maxlenincm>80</maxlenincm>
+   </formatoptions>
+</sqlpp_request>
+' --compressed \
+	| sed -e 's@.*<formattedsql>@@; s@</formattedsql>.*@@; s@&lt;@<@g; s@&gt;@>@g'
+
+rm -f $TMP

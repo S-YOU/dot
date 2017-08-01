@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+def help
+  puts "sc - 新しいscreenウィンドウを開いてそこでコマンドを起動するスクリプト"
+  puts "example: sc ./bin/rails s"
+end
+
+if ARGV.empty?
+  cmd = ['screen', '-X', 'eval', "chdir #{Dir.pwd}", 'screen']
+  system(*cmd)
+else
+  cmd = ['screen', '-t', ARGV[0], 'bash', '-c', "cd #{Dir.pwd}; #{ARGV.join(' ')}"]
+  #p cmd
+  system(*cmd)
+end
+

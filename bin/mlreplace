@@ -1,0 +1,320 @@
+#!/usr/bin/env ruby
+#
+# テキストファイル置換ツール
+#
+
+usage = <<EOS
+Usage: mlreplace [options] [files...]
+テキストファイル置換ツール
+・置換前にdiffをとってプレビュー可能
+・.bakつきでバックアップをとります
+・複数行対応
+・正規表現対応
+・置換対象ファイルの改行コード自動判別
+・ファイルが指定されない場合は、カレントディレクトリ以下の全ファイルを対象
+
+使用例：
+  git ls-files | mlreplace -f-
+
+Linux環境での複数ファイルテキスト置換のベスト・プラクティス
+
+1. 対象ディレクトリをgitに入れる。
+　 もし入っていなかったら、git init && git add . && git commit -m init
+   で入れる。
+2. git ls-files | xargs perl -pi -e 's@before@after@g'
+3. git diffで差分を確認する。もし意図しない差分があったらgit checkoutで元に戻す。
+EOS
+
+require 'fileutils'
+require 'optparse'
+require 'nkf'
+require 'open3'
+
+# バックアップファイルの拡張子
+suffix = '.bak'
+# 無視するファイルのglobパターン（~/.mlreplace.rbにより上書きされる可能性あり）
+$ignore_patterns = ENV['MLREPLACE_IGNORE'].nil? ? [".svn", ".git", "CVS", "*.bak", ".DS_Store", ".bundle", "node_modules", "tags"] : ENV['MLREPLACE_IGNORE'].split(':')
+
+# 置換文字列設定ファイルのパス
+settingFile = (ENV['HOME'] || File.dirname(__FILE__)) + '/.mlreplace.rb'
+# 置換文字列設定ファイルの編集に使うエディタ
+editor = ENV['EDITOR'] || 'vi'
+
+
+#=============================================================================
+#   引数を解析
+#============================================================================= 
+opt = OptionParser.new(usage=usage)
+$opt_b = false
+$opt_d = true
+$opt_g = false
+$opt_r = false
+$opt_e = false
+$opt_j = false
+$opt_s = false
+$opt_f = false
+$opt_l = false
+opt.on('-b', '--backup',      'バックアップを取ります')                                   {|v| $opt_b = true }
+opt.on('-d', '--diff',        '各ファイルを置換する前にdiffを表示し、確認を求めます（デフォルト）。')   {|v| $opt_d = true }
+opt.on('-g', '--argument',    '置換文字列を引数から取得します。')                         {|v| $opt_g = true }
+opt.on('-r', '--revert',      'バックアップファイルを元のファイルに戻します。')           {|v| $opt_r = true }
+opt.on('-e', '--euc',         '置換対象ファイルがEUC-JPであると仮定します。')             {|v| $opt_e = true }
+opt.on('-j', '--jis',         '置換対象ファイルがISO-2022-JPであると仮定します。')        {|v| $opt_j = true }
+opt.on('-s', '--sjis',        '置換対象ファイルがShift_JISであると仮定します。')          {|v| $opt_s = true }
+opt.on('-f FILE', '--file=FILE',   '置換対象ファイル名をファイルから読み込みます。1行に1個。"-"は標準入力')   {|v| $opt_f = v }
+opt.on('-l', '--listE',   '置換対象ファイル名を出力するだけで置換を行いません。')   {|v| $opt_l = v }
+opt.parse!(ARGV)
+
+def confirm(msg)
+  print "\x1b[0;34m" + msg + "\x1b[0m "
+  $stdout.flush()
+  a = $stdin.readline().strip().upcase
+  return a
+end
+
+# 無視対象ファイルかどうか
+def ignore?(filename)
+  if $ignore_patterns.any? {|pattern| File.fnmatch(pattern, filename)}
+    return true
+  else
+    return false
+  end
+end
+
+def info(msg)
+  puts "\x1b[0;34m#{msg}\x1b[0m"
+end
+
+def color_diff(file1, file2)
+  out, err, status = Open3.capture3("diff", "-u", file1, file2)
+  print out.gsub(/^(\+.*)$/) { "\x1b[0;32m#{$1}\x1b[0m" }.gsub(/^(-.*)$/) { "\x1b[0;31m#{$1}\x1b[0m" }
+end
+
+# mlreplace.rbがなければ作る
+if not File.readable?(settingFile)
+  f = open(settingFile, 'w')
+  f.print DATA.read()
+  f.close()
+end
+
+#=============================================================================
+#   対象ファイルのリストを作成
+#=============================================================================
+# 引数なしで実行された場合は、カレントディレクトリ以下のすべてのファイルが対象
+if $opt_f != false
+  if $opt_f == "-"
+    $opt_f = "/dev/stdin"
+  end
+  files = open($opt_f).readlines().map {|line| line.chomp}
+elsif ARGV.length == 0
+  require 'pathname'
+
+  # Find.findはシンボリックリンクをたどらないので、自前でファイルを検索する
+  def all_files_under(*paths)
+    paths.flatten!
+    paths.map! { |p|
+      begin
+        Pathname.new(p)
+      rescue
+      end
+    }
+    files = paths.select { |p| p.file? }.select { |p|
+      if ignore?(p.basename.to_s)
+        info "ファイルを無視します: #{p.basename}"
+        false
+      else
+        true
+      end
+    }
+    paths.select { |p| p.directory? }.each do |dir|
+      dirname = dir.to_s
+      if ignore?(dirname)
+        info "ディレクトリを無視します: #{dirname}"
+      else
+        files << all_files_under(dir.children)
+      end
+    end
+    files.flatten
+  end
+
+  files = all_files_under('.').map {|x| x.to_s}
+else
+  if $opt_g
+    $from = ARGV[0]
+    $to   = ARGV[1]
+    files = ARGV[2..-1]
+  else
+    files = ARGV
+  end
+end
+
+if $opt_l
+  puts files
+  exit
+end
+
+
+#=============================================================================
+#   -r の場合
+#=============================================================================
+if $opt_r
+  revertCount = 0
+  files.each do |filename|
+    if File.readable?(filename + suffix)
+      FileUtils.mv(filename + suffix, filename, :force => true)
+      info 'Revert: ' + filename
+      revertCount += 1
+    end
+  end
+
+  info "#{revertCount} 個のファイルを復元しました。"
+  exit
+end
+
+#=============================================================================
+#   置換文字列設定ファイル読み込み
+#=============================================================================
+if not $opt_g
+  mtime_old = File.mtime(settingFile)
+  #unless system(editor, settingFile)
+  STDIN.reopen("/dev/tty", "r")
+  unless system(editor + " '#{settingFile}'")
+    puts "エディタ起動に失敗しました。editor = [#{editor}] settingFile = [#{settingFile}]"
+  end
+  if mtime_old == File.mtime(settingFile)
+    info "置換設定ファイルが編集されていません。終了します。"
+    exit
+  end
+  load(settingFile)
+end
+
+begin
+  if $opt_s
+    $from = NKF.nkf('-s', $from)
+    $to   = NKF.nkf('-s', $to)
+  elsif $opt_e
+    $from = NKF.nkf('-e', $from)
+    $to   = NKF.nkf('-e', $to)
+  elsif $opt_j
+    $from = NKF.nkf('-j', $from)
+    $to   = NKF.nkf('-j', $to)
+  end
+rescue
+  info 'Cannot open ' + settingFile
+  info $!
+  exit 1
+end
+
+if not $opt_d
+  info '置換対象ファイル:'
+  files.each do |f|
+    info f
+  end
+  info "From = [#{$from}]"
+  info "To   = [#{$to}]"
+
+  a = confirm('置換を実行してよろしいですか？(y/n)')
+  if a == 'N'
+    exit
+  end
+else
+  info "From = [#{$from}]"
+  info "To   = [#{$to}]"
+end
+
+
+#=============================================================================
+#   置換実行
+#=============================================================================
+changedCount = 0
+files.each do |filename|
+  begin
+    f = open(filename, 'rb')
+  rescue
+    next
+    #puts 'Cannot open ' + filename
+    #exit 1
+  end
+
+  content = f.read()
+
+  f.close()
+  if content.include?("\r\n")
+    if $from.instance_of?(String)
+      from = $from.gsub("\n", "\r\n")
+    else
+      from = $from
+    end
+    to = $to.gsub("\n", "\r\n")
+  else
+    from = $from
+    to = $to
+  end
+
+  content.force_encoding(Encoding::BINARY)
+  from.force_encoding(Encoding::BINARY)
+  to.force_encoding(Encoding::BINARY)
+
+  replaced = content.gsub(from, to)
+
+  if content == replaced
+    #puts "UNCHANGED: " + filename
+  else
+    # .tmpに書き出し
+    tmpfilename = filename + '.tmp'
+    of = open(tmpfilename, 'wb')
+    of.print replaced
+    of.close()
+    if $opt_d
+      color_diff(filename, tmpfilename)
+
+
+      puts "\x1b[0;34m" + filename + "\x1b[0m"
+      a = confirm('このファイルの置換を実行してよろしいですか？(Y/n/q/a)')
+      if a == 'N'
+        info "Skipped: #{filename}"
+        FileUtils.rm(tmpfilename)
+        next
+      elsif a == 'Q'
+        info "Skipped: #{filename}"
+        FileUtils.rm(tmpfilename)
+        exit
+      elsif a == 'A'
+        $opt_d = false
+      end
+    end
+    begin
+      if $opt_b
+        # 元のファイルをバックアップする
+        FileUtils.mv(filename, filename + suffix)
+      end
+      FileUtils.mv(tmpfilename, filename)
+    rescue
+      info $!
+      info 'File move failed'
+      exit 1
+    end
+    info 'Changed: ' + filename
+    changedCount += 1
+  end
+end
+info "#{changedCount} 個のファイルを置換しました。"
+
+
+__END__
+$ignore_patterns = [".svn", ".git", "CVS", "*.bak", ".DS_Store"]
+
+$from = <<'EOF'
+firstline
+secondline
+EOF
+
+
+$to = <<'EOF'
+1st line
+2nd line
+EOF
+
+
+#$from = /include <(.*)>/
+#$to   = 'require "\1"'

@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+#
+# Excelのtsvをhtmlテーブルに変換するスクリプト
+#
+
+SEPARATOR = "\t"
+
+def escapeHTML(str)
+  str.gsub!("&", "&amp;")
+  str.gsub!("\"", "&quot;")
+  str.gsub!("<", "&lt;")
+  str.gsub!(">", "&gt;")
+  return str
+end
+
+csv = STDIN.read()
+
+puts <<EOF
+<style>
+.resultTable {
+  border:1px solid #cccccc;
+  border-collapse:collapse;
+}
+
+.resultTable th,td {
+  border:1px solid #cccccc;
+}
+
+</style>
+EOF
+
+puts '<table class="resultTable">'
+
+lines = csv.split("\r\n")
+lines.each do |line|
+  puts "<tr>"
+  fields = line.split(SEPARATOR)
+  fields.each do |f|
+    if f.length > 0 && f[0].chr == '"' && f[-1].chr == '"'
+      f = f[1...-1].gsub('""', '"')
+    end
+    puts "<td>" + escapeHTML(f).gsub("\n", "<br>") + "</td>"
+  end
+  puts "</tr>"
+end
+
+puts "</table>"

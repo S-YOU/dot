@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# ２つのファイルのファイル名を交換する
+# 引数なしで実行されたときは、前回の交換を再実行する（元に戻る）
+
+TMP=/tmp
+
+if [ "$1" = "" ]; then
+	F1=`cat "$TMP/swap.name1"`
+	F2=`cat "$TMP/swap.name2"`
+else
+	F1="$1"
+	F2="$2"
+fi
+
+mv -v "$F1" swap.tmp
+mv -v "$F2" "$F1"
+mv -v swap.tmp "$F2"
+
+echo -n "$F1" > "$TMP/swap.name1"
+echo -n "$F2" > "$TMP/swap.name2"

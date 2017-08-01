@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+#$KCODE = "UTF-8"
+require "uri"
+
+if ARGV.length == 0
+	while gets
+		print URI.unescape($_)
+	end
+else
+	puts URI.unescape(ARGV.join(" "))
+end

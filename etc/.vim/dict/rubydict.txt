@@ -1,0 +1,8 @@
+initialize
+number_with_delimiter
+pretty_inspect
+distance_of_time_in_words_to_now
+each_with_index
+attr_accessor
+attr_reader
+attr_writer

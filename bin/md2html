@@ -1,0 +1,28 @@
+#!/bin/bash
+
+OUT="$1.html"
+
+cat > "$OUT" <<EOF
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<style>
+body { font-size: 12px; }
+h1 { font-size: 140%; margin: 5px 0px 5px 0px; border-bottom: 1px solid #000; text-align: center; }
+h2 { font-size: 120%; margin: 5px 0px 5px 0px; border-bottom: 1px solid #000; }
+h3 { font-size: 100%; font-weight: bold; margin: 5px 0px 5px 0px; }
+code { padding: 10px; display:block; background: #eee; line-height:100%; }
+</style>
+</head>
+<body>
+EOF
+
+
+gfm "$1" >> "$OUT"
+
+cat >> "$OUT" <<EOF
+</body>
+</html>
+EOF
+

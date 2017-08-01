@@ -1,0 +1,75 @@
+#!/bin/sh
+
+print_line() {
+	echo '---------------------------------------------------------------------'
+}
+
+if [ $# -gt 0 ]; then
+	case "$1" in
+		*.c)
+			OUTFILE=$(basename `echo "$1" | sed -e 's@\..*@@'`)
+			gcc -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
+			;;
+		*.cpp|*.cc)
+			OUTFILE=$(basename `echo "$1" | sed -e 's@\..*@@'`)
+			g++ -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
+			;;
+		*.hs)
+			if which stack > /dev/null; then
+				stack --verbosity silent runghc -- "$@"
+			else
+				runghc "$@"
+			fi
+			;;
+		*.js)
+			if which js; then
+				js "$@"
+			elif which node; then
+				node "$@"
+			else
+				echo "JavaScript interpreter not found"
+			fi
+			;;
+		*.go)
+			go run "$@"
+			;;
+		*.rb)
+			ruby "$@"
+			;;
+		*.py)
+			python "$@"
+			;;
+		*.pl)
+			perl "$@"
+			;;
+		*.cs)
+			mcs "$1" && mono $(basename -s .cs "$1").exe
+			;;
+		*)
+			;;
+	esac
+	exit
+fi
+
+# Makefileがあるならmake実行
+if [ -f Makefile ]; then
+	make > /dev/null || exit 1
+fi
+
+if [ -f ./a.out ]; then
+	./a.out "$@"
+elif [ -f ./a ]; then
+	./a "$@"
+elif [ -f ./a.exe ]; then
+	./a.exe "$@"
+else
+	# どれも見つからなければカレントディレクトリから実行ファイルを探す
+	# 実行ファイルが1個だけ見つかったらそれを実行
+	EXECUTABLES=`find . -maxdepth 1 -type f -perm -100`
+	CNT=`echo "$EXECUTABLES" | wc -l`
+	if [ "$CNT" = 1 ]; then
+		$EXECUTABLES "$@"
+	else
+		echo "a not found"
+	fi
+fi

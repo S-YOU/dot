@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ "$1" = "" ]; then
+    #echo "Set title for xterm/ck"
+    #echo "Usage: $0 TITLE"
+	echo -en "\033]0;${USER}@${HOST}\007"
+    exit 0
+fi
+
+echo -e "\E]2;$1"  
+

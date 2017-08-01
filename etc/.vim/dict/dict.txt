@@ -1,0 +1,5 @@
+SQL_CALC_FOUND_ROWS
+FOUND_ROWS
+private
+protected
+public

@@ -1,0 +1,559 @@
+#!/usr/bin/env python
+# coding: utf-8
+import sys
+
+if len(sys.argv) == 1:
+    print "Usage: human-readable-termcap ENTRY"
+    sys.exit(1)
+
+searchEntry = sys.argv[1]
+
+DATA = \
+"""  auto_left_margin        bw      cursor_left は桁 0 から最後の桁に回り込む
+     auto_right_margin       am      端末は自動マージンを持つ
+     no_esc_ctlc             xb      beehive (f1=escape, f2=ctrl C)
+     ceol_standout_glitch    xs      強調表示は上書きによって消去されない (hp)
+     eat_newline_glitch      xn      80 桁より後の改行は無視される (concept)
+     erase_overstrike        eo      空白を上打ちすることで消去可能
+     generic_type            gn      一般的な行タイプ
+     hard_copy               hc      ハードコピー端末
+     has_meta_key            km      メタキーを持ち、最上位ビットをセットする
+     has_status_line         hs      追加のステータス行を持つ
+     insert_null_glitch      in      挿入モードはナルを区別する
+     memory_above            da      画面より上の描画が保存される
+     memory_below            db      画面より下の描画が保存される
+     move_insert_mode        mi      挿入モードでの移動が安全
+     move_standout_mode      ms      強調表示モードでの移動が安全
+     over_strike             os      端末は上打ちが可能
+     status_line_esc_ok      es      ステータス行でエスケープを使用可能
+     dest_tabs_magic_smso    xt      破壊的タブ、強調文字の奇妙な動作 (t1061)
+     tilde_glitch            hz      ~ を印字できない (hazeltine)
+     transparent_underline   ul      下線文字の上打ち
+     xon_xoff                xo      端末は xon/xoff のハンドシェークを使用
+     needs_xon_xoff          nx      パディングは動作しないので xon/xoff が必要
+     prtr_silent             5i      プリンタ出力は画面にエコーしない
+     hard_cursor             HC      カーソルが見にくい
+     non_rev_rmcup           NR      enter_ca_mode は exit_ca_mode を反転しない
+     no_pad_char             NP      パディング文字が存在しない
+     non_dest_scroll_region  ND      スクロール領域が非破壊的
+     can_change              cc      端末は既存の色を再定義可能
+     back_color_erase        ut      画面は背景色で消される
+     hue_lightness_saturation        hl      端末は HLS カラー表現のみ使用(tektronix)
+     col_addr_glitch         YA      桁位置指定および micro_column_addressケーパビリティは正方向の動きのみ
+     cr_cancels_micro_mode   YB      cr を使用するとマイクロモードがオフになる
+     has_print_wheel         YC      オペレータが文字セットを変更する必要があるプリンタ
+     row_addr_glitch         YD      row_address および micro_row_address は正方向の動きのみ
+     semi_auto_right_margin  YE      最終桁で印字すると cr となる
+     cpi_changes_res         YF      文字ピッチを変えると解像度が変わる
+     lpi_changes_res         YG      行ピッチを変えると解像度が変わる
+     columns                 co      1 行の桁数
+     init_tabs               it      タブの初期設定は # 個の空白ごと
+     lines                   li      画面もしくはページの行数
+     lines_of_memory         lm      行より大きい場合はメモリの行数、0 の場合はさまざま
+     magic_cookie_glitch     sg      enter_standout_mode や exit_standout_modeが残す空白文字数
+     padding_baud_rate       pb      パディングが必要な最低ボーレート
+     virtual_terminal        vt      仮想端末番号 (CB/unix)
+     width_status_line       ws      ステータス行の桁数
+     num_labels              Nl      画面上のラベル数
+     label_height            lh      各ラベルの行数
+     label_width             lw      各ラベルの桁数
+     max_attributes          ma      端末が扱える属性の最大の組み合わせ
+     maximum_windows         MW      定義可能なウィンドウ数の最大
+     magic_cookie_glitch_ul  ug      下線により残される空白数
+     max_colors              Co      画面上の最大色数
+     max_pairs               pa      画面上の色の組の最大数
+     no_color_video          NC      色付きでは使用できないビデオ属性
+     buffer_capacity         Ya      印字前にバッファされるバイト数
+     dot_vert_spacing        Yb      1 インチあたりのピン数で表した垂直ピン間隔
+     dot_horz_spacing        Yc      1 インチあたりのドット数で表した水平ドット間隔
+     max_micro_address       Yd      micro_..._address での最大値
+     max_micro_jump          Ye      parm_..._micro での最大値
+     micro_char_size         Yf      マイクロモードでの文字サイズ
+     micro_line_size         Yg      マイクロモードでの行サイズ
+     number_of_pins          Yh      プリントヘッドのピン数
+     output_res_char         Yi      行あたりのユニット数による水平解像度
+     output_res_line         Yj      行あたりのユニット数による垂直解像度
+     output_res_horz_inch    Yk      インチあたりのユニット数による水平解像度
+     output_res_vert_inch    Yl      インチあたりのユニット数による垂直解像度
+     print_rate              Ym      1 秒あたりの文字数による印字レート
+     wide_char_size          Yn      倍幅モードでの文字ステップサイズ
+     buttons                 BT      マウスのボタン数
+     bit_image_entwining     Yo      各ビットイメージ行として渡される数
+     bit_image_type          Yp      ビットイメージデバイスのタイプ
+     back_tab                bt      後退タブ (P)
+     bell                    bl      可聴シグナル (ベル) (P)
+     carriage_return         cr      キャリッジリターン (P*)
+     change_scroll_region    cs      領域を行 #1 から行 #2 までに変更 (P)
+     clear_all_tabs          ct      全タブストップをクリア (P)
+     clear_screen            cl      画面を消去しカーソルをホームに移動 (P*)
+     clr_eol                 ce      行末までクリア (P)
+     clr_eos                 cd      画面末までクリア (P*)
+     column_address          ch      絶対指定での水平位置 #1 (P)
+     command_character       CC      端末がプロトタイプで設定可能なコマンド文字
+     cursor_address          cm      行 #1 桁 #2 に移動
+     cursor_down             do      1 行下に移動
+     cursor_home             ho      カーソルをホームに移動
+     cursor_invisible        vi      カーソルを見えなくする
+     cursor_left             le      1 つ左に移動
+     cursor_mem_address      CM      メモリ相対のカーソル位置指定
+     cursor_normal           ve      通常のカーソル表示にする(cursor_invisible/cursor_visible の無効化)
+     cursor_right            nd      1 つ右に移動
+     cursor_to_ll            ll      最終行の最初の桁
+     cursor_up               up      1 行上に移動
+     cursor_visible          vs      カーソルを非常に見易くする
+     delete_character        dc      文字削除 (P*)
+     delete_line             dl      行削除 (P*)
+     dis_status_line         ds      ステータス行を無効にする
+     down_half_line          hd      半行下に移動
+     enter_alt_charset_mode  as      別の文字セット開始 (P)
+     enter_blink_mode        mb      点滅オン
+     enter_bold_mode         md      ボールド (さらに明るい) モードオン
+     enter_ca_mode           ti      cursor_address を使用するプログラムを開始する文字列
+     enter_delete_mode       dm      削除モードへ入る
+     enter_dim_mode          mh      半輝度モードオン
+     enter_insert_mode       im      挿入モードへ入る
+     enter_secure_mode       mk      ブランクモードオン (文字が見えません)
+     enter_protected_mode    mp      保護モードオン
+     enter_reverse_mode      mr      反転表示モードオン
+     enter_standout_mode     so      強調表示モード開始
+     enter_underline_mode    us      下線モード開始
+     erase_chars             ec      #1 個文字を削除 (P)
+     exit_alt_charset_mode   ae      別の文字セット終了 (P)
+     exit_attribute_mode     me      全属性をオフ
+     exit_ca_mode            te      cup 使用のプログラムを終了する文字列
+     exit_delete_mode        ed      削除モード終了
+     exit_insert_mode        ei      挿入モードから抜ける
+     exit_standout_mode      se      強調表示モードから抜ける
+     exit_underline_mode     ue      下線モードから抜ける
+     flash_screen            vb      可視ベル (カーソルは移動しません)
+     form_feed               ff      ハードコピー端末でのページ排出 (P*)
+     from_status_line        fs      ステータス行からの復帰
+     init_1string            i1      初期化文字列
+     init_2string            is      初期化文字列
+     init_3string            i3      初期化文字列
+     init_file               if      初期化ファイルの名前
+     insert_character        ic      文字挿入 (P)
+     insert_line             al      行挿入 (P*)
+     insert_padding          ip      挿入された文字の後にパディングを挿入
+     key_backspace           kb      backspace キー
+     key_catab               ka      clear-all-tabs キー
+     key_clear               kC      clear-screen または erase キー
+     key_ctab                kt      clear-tab キー
+     key_dc                  kD      delete-character キー
+     key_dl                  kL      delete-line キー
+     key_down                kd      down-arrow キー
+     key_eic                 kM      挿入モードで mir や smir により送られる
+     key_eol                 kE      clear-to-end-of-line キー
+     key_eos                 kS      clear-to-end-of-screen キー
+     key_f0                  k0      F0 ファンクションキー
+     key_f1                  k1      F1 ファンクションキー
+     key_f10                 k;      F10 ファンクションキー
+     key_f2                  k2      F2 ファンクションキー
+     key_f3                  k3      F3 ファンクションキー
+     key_f4                  k4      F4 ファンクションキー
+     key_f5                  k5      F5 ファンクションキー
+     key_f6                  k6      F6 ファンクションキー
+     key_f7                  k7      F7 ファンクションキー
+     key_f8                  k8      F8 ファンクションキー
+     key_f9                  k9      F9 ファンクションキー
+     key_home                kh      home キー
+     key_ic                  kI      insert-character キー
+     key_il                  kA      insert-line キー
+     key_left                kl      left-arrow キー
+     key_ll                  kH      last-line キー
+     key_npage               kN      next-page キー
+     key_ppage               kP      prev-page キー
+     key_right               kr      right-arrow キー
+     key_sf                  kF      scroll-forward キー
+     key_sr                  kR      scroll-backward キー
+     key_stab                kT      set-tab キー
+     key_up                  ku      up-arrow キー
+     keypad_local            ke      ’キーボード送出’ モードから抜ける
+     keypad_xmit             ks      ’キーボード送出’ モードに入る
+     lab_f0                  l0      非 f0 の時、ファンクションキー f0 のラベル
+     lab_f1                  l1      非 f1 の時、ファンクションキー f1 のラベル
+     lab_f10                 la      非 f10 の時、ファンクションキー f10 のラベル
+     lab_f2                  l2      非 f2 の時、ファンクションキー f2 のラベル
+     lab_f3                  l3      非 f3 の時、ファンクションキー f3 のラベル
+     lab_f4                  l4      非 f4 の時、ファンクションキー f4 のラベル
+     lab_f5                  l5      非 f5 の時、ファンクションキー f5 のラベル
+     lab_f6                  l6      非 f6 の時、ファンクションキー f6 のラベル
+     lab_f7                  l7      非 f7 の時、ファンクションキー f7 のラベル
+     lab_f8                  l8      非 f8 の時、ファンクションキー f8 のラベル
+     lab_f9                  l9      非 f9 の時、ファンクションキー f9 のラベル
+     meta_off                mo      メタモードオフ
+     meta_on                 mm      メタモードオン (8 ビット目をオン)
+     newline                 nw      改行 (cr の後に lf が来たように振舞います)
+     pad_char                pc      パディング文字 (ナルの代り)
+     parm_dch                DC      #1 文字を削除 (P*)
+     parm_delete_line        DL      #1 行を削除 (P*)
+     parm_down_cursor        DO      #1 行下に移動 (P*)
+     parm_ich                IC      #1 文字を挿入 (P*)
+     parm_index              SF      #1 行の前進スクロール (P)
+     parm_insert_line        AL      #1 行を挿入 (P*)
+     parm_left_cursor        LE      #1 文字左に移動 (P)
+     parm_right_cursor       RI      #1 文字右に移動 (P*)
+     parm_rindex             SR      #1 行の後退スクロール (P)
+     parm_up_cursor          UP      #1 行上に移動 (P*)
+     pkey_key                pk      文字列 #2 をタイプするプログラムファンクションキー #1
+     pkey_local              pl      文字列 #2 を実行するプログラムファンクションキー #1
+     pkey_xmit               px      文字列 #2 を転送するプログラムファンクションキー #1
+     print_screen            ps      画面の内容を印字
+     prtr_off                pf      プリンタオフ
+     prtr_on                 po      プリンタオン
+     repeat_char             rp      文字 #1 を #2 回繰り返す (P*)
+     reset_1string           r1      リセット文字列
+     reset_2string           r2      リセット文字列
+     reset_3string           r3      リセット文字列
+     reset_file              rf      リセットファイルの名前
+     restore_cursor          rc      save_cursor の最後の位置へカーソルを戻す
+     row_address             cv      絶対指定での垂直位置 #1 (P)
+     save_cursor             sc      現在のカーソル位置を保存 (P)
+     scroll_forward          sf      テキストを上にスクロール (P)
+     scroll_reverse          sr      テキストを下にスクロール (P)
+     set_attributes          sa      ビデオ属性 #1-#9 を定義 (PG9)
+     set_tab                 st      全ての行において今いる桁にタブを設定
+     set_window              wi      現在のウィンドウを、行 #1-#2 桁 #3-#4 に設定
+     tab                     ta      次の 8 スペースハードウェアタブストップへタブ
+     to_status_line          ts      ステータス行へ移動
+     underline_char          uc      文字に下線を引きその後に移動
+     up_half_line            hu      半行上に移動
+     init_prog               iP      初期化プログラムのパス名
+     key_a1                  K1      キーパッドの左上キー
+     key_a3                  K3      キーパッドの右上キー
+     key_b2                  K2      キーパッドの中央キー
+     key_c1                  K4      キーパッドの左下キー
+     key_c3                  K5      キーパッドの右下キー
+     prtr_non                pO      #1 バイトだけプリンタをオンする
+     termcap_init2           i2      2 番目の初期化文字列
+     termcap_reset           rs      端末リセット文字
+     char_padding            rP      insert_padding と似ていますが挿入モード時に使用
+     acs_chars               ac      図形文字セットの組 - def=vt100
+     plab_norm               pn      プログラムラベル #1 は文字列 #2 を表示
+     key_btab                kB      back-tab キー
+     enter_xon_mode          SX      xon/xoff ハンドシェークオン
+     exit_xon_mode           RX      xon/xoff ハンドシェークオフ
+     enter_am_mode           SA      自動マージンオン
+     exit_am_mode            RA      自動マージンオフ
+     xon_character           XN      XON 文字
+     xoff_character          XF      XOFF 文字
+     ena_acs                 eA      別の文字セットを有効にする
+     label_on                LO      ソフトラベルオン
+     label_off               LF      ソフトラベルオフ
+     key_beg                 @1      begin キー
+     key_cancel              @2      cancel キー
+     key_close               @3      close キー
+     key_command             @4      command キー
+     key_copy                @5      copy キー
+     key_create              @6      create キー
+     key_end                 @7      end キー
+     key_enter               @8      enter/send キー
+     key_exit                @9      exit キー
+     key_find                @0      find キー
+     key_help                %1      help キー
+     key_mark                %2      mark キー
+     key_message             %3      message キー
+     key_move                %4      move キー
+     key_next                %5      next キー
+     key_open                %6      open キー
+     key_options             %7      options キー
+     key_previous            %8      previous キー
+     key_print               %9      print キー
+     key_redo                %0      redo キー
+     key_reference           &1      reference キー
+     key_refresh             &2      refresh キー
+     key_replace             &3      replace キー
+     key_restart             &4      restart キー
+     key_resume              &5      resume キー
+     key_save                &6      save キー
+     key_suspend             &7      suspend キー
+     key_undo                &8      undo キー
+     key_sbeg                &9      シフト状態の begin キー
+     key_scancel             &0      シフト状態の cancel キー
+     key_scommand            *1      シフト状態の command キー
+     key_scopy               *2      シフト状態の copy キー
+     key_screate             *3      シフト状態の create キー
+     key_sdc                 *4      シフト状態の delete char キー
+     key_sdl                 *5      シフト状態の delete line キー
+     key_select              *6      select キー
+     key_send                *7      シフト状態の end キー
+     key_seol                *8      シフト状態の end-of-line キー
+     key_sexit               *9      シフト状態の exit キー
+     key_sfind               *0      シフト状態の find キー
+     key_shelp               #1      シフト状態の help キー
+     key_shome               #2      シフト状態の home キー
+     key_sic                 #3      シフト状態の insert char キー
+     key_sleft               #4      シフト状態の left キー
+     key_smessage            %a      シフト状態の message キー
+     key_smove               %b      シフト状態の move キー
+     key_snext               %c      シフト状態の next キー
+     key_soptions            %d      シフト状態の options キー
+     key_sprevious           %e      シフト状態の previous キー
+     key_sprint              %f      シフト状態の print キー
+     key_sredo               %g      シフト状態の redo キー
+     key_sreplace            %h      シフト状態の replace キー
+     key_sright              %i      シフト状態の right キー
+     key_srsume              %j      シフト状態の resume キー
+     key_ssave               !1      シフト状態の save キー
+     key_ssuspend            !2      シフト状態の suspend キー
+     key_sundo               !3      シフト状態の undo キー
+     req_for_input           RF      次の入力文字を送る (pty で使用)
+     key_f11                 F1      F11 ファンクションキー
+     key_f12                 F2      F12 ファンクションキー
+     key_f13                 F3      F13 ファンクションキー
+     key_f14                 F4      F14 ファンクションキー
+     key_f15                 F5      F15 ファンクションキー
+     key_f16                 F6      F16 ファンクションキー
+     key_f17                 F7      F17 ファンクションキー
+     key_f18                 F8      F18 ファンクションキー
+     key_f19                 F9      F19 ファンクションキー
+     key_f20                 FA      F20 ファンクションキー
+     key_f21                 FB      F21 ファンクションキー
+     key_f22                 FC      F22 ファンクションキー
+     key_f23                 FD      F23 ファンクションキー
+     key_f24                 FE      F24 ファンクションキー
+     key_f25                 FF      F25 ファンクションキー
+     key_f26                 FG      F26 ファンクションキー
+     key_f27                 FH      F27 ファンクションキー
+     key_f28                 FI      F28 ファンクションキー
+     key_f29                 FJ      F29 ファンクションキー
+     key_f30                 FK      F30 ファンクションキー
+     key_f31                 FL      F31 ファンクションキー
+     key_f32                 FM      F32 ファンクションキー
+     key_f33                 FN      F33 ファンクションキー
+     key_f34                 FO      F34 ファンクションキー
+     key_f35                 FP      F35 ファンクションキー
+     key_f36                 FQ      F36 ファンクションキー
+     key_f37                 FR      F37 ファンクションキー
+     key_f38                 FS      F38 ファンクションキー
+     key_f39                 FT      F39 ファンクションキー
+     key_f40                 FU      F40 ファンクションキー
+     key_f41                 FV      F41 ファンクションキー
+     key_f42                 FW      F42 ファンクションキー
+     key_f43                 FX      F43 ファンクションキー
+     key_f44                 FY      F44 ファンクションキー
+     key_f45                 FZ      F45 ファンクションキー
+     key_f46                 Fa      F46 ファンクションキー
+     key_f47                 Fb      F47 ファンクションキー
+     key_f48                 Fc      F48 ファンクションキー
+     key_f49                 Fd      F49 ファンクションキー
+     key_f50                 Fe      F50 ファンクションキー
+     key_f51                 Ff      F51 ファンクションキー
+     key_f52                 Fg      F52 ファンクションキー
+     key_f53                 Fh      F53 ファンクションキー
+     key_f54                 Fi      F54 ファンクションキー
+     key_f55                 Fj      F55 ファンクションキー
+     key_f56                 Fk      F56 ファンクションキー
+     key_f57                 Fl      F57 ファンクションキー
+     key_f58                 Fm      F58 ファンクションキー
+     key_f59                 Fn      F59 ファンクションキー
+     key_f60                 Fo      F60 ファンクションキー
+     key_f61                 Fp      F61 ファンクションキー
+     key_f62                 Fq      F62 ファンクションキー
+     key_f63                 Fr      F63 ファンクションキー
+     clr_bol                 cb      行頭までクリア
+     clear_margins           MC      左右のソフトマージンをクリア
+     set_left_margin         ML      左のソフトマージンを設定
+     set_right_margin        MR      右のソフトマージンを設定
+     label_format            Lf      ラベルフォーマット
+     set_clock               SC      時刻を #1 時 #2 分 #3 秒に設定
+     display_clock           DK      位置 (#1,#2) に時計を表示
+     remove_clock            RC      時計を取り除く
+     create_window           CW      ウィンドウ #1 を #2, #3 から #4, #5 までと定義
+     goto_window             WG      ウィンドウ #1 に移動
+     hangup                  HU      電話をハングアップする
+     dial_phone              DI      番号 #1 にダイヤルする
+     quick_dial              QD      チェックせずに番号 #1 にダイヤルする
+     tone                    TO      タッチトーンダイヤルを選択
+     pulse                   PU      パルスダイヤルを選択
+     flash_hook              fh      スイッチフックをフラッシュする
+     fixed_pause             PA      2-3 秒待つ
+     wait_tone               WA      ダイヤルトーンを待つ
+     user0                   u0      ユーザ文字列 #0
+     user1                   u1      ユーザ文字列 #1
+     user2                   u2      ユーザ文字列 #2
+     user3                   u3      ユーザ文字列 #3
+     user4                   u4      ユーザ文字列 #4
+     user5                   u5      ユーザ文字列 #5
+     user6                   u6      ユーザ文字列 #6
+     user7                   u7      ユーザ文字列 #7
+     user8                   u8      ユーザ文字列 #8
+     user9                   u9      ユーザ文字列 #9
+     orig_pair               op      デフォルトのペアを元の値に戻す
+     orig_colors             oc      色のペア全てを元に戻す
+     initialize_color        Ic      色 #1 を (#2,#3,#4) に設定
+     initialize_pair         Ip      色のペア #1 を fg=(#2,#3,#4), bg=(#5,#6,#7) に設定
+     set_color_pair          sp      現在の色のペアを #1 に設定
+     set_foreground          Sf      前景色を #1 に設定
+     set_background          Sb      背景色を #1 に設定
+     change_char_pitch       ZA      1 インチあたりの文字数を変更
+     change_line_pitch       ZB      1 インチあたりの行数を変更
+     change_res_horz         ZC      水平解像度を変更
+     change_res_vert         ZD      垂直解像度を変更
+     define_char             ZE      文字を定義
+     enter_doublewide_mode   ZF      倍幅モードに入る
+     enter_draft_quality     ZG      ドラフト印字モードに入る
+     enter_italics_mode      ZH      イタリックモードに入る
+     enter_leftward_mode     ZI      キャリッジの左向き移動開始
+     enter_micro_mode        ZJ      マイクロ移動モードに入る
+     enter_near_letter_quality       ZK      NLQ 印字モードに入る
+     enter_normal_quality    ZL      通常品質印字モードに入る
+     enter_shadow_mode       ZM      シャドウプリントモード開始
+     enter_subscript_mode    ZN      下付き文字モード
+     enter_superscript_mode  ZO      上付き文字モード
+     enter_upward_mode       ZP      キャリッジの上向き移動開始
+     exit_doublewide_mode    ZQ      倍幅印字モード終了
+     exit_italics_mode       ZR      イタリックモード終了
+     exit_leftward_mode      ZS      左向き移動モード終了
+     exit_micro_mode         ZT      マイクロ移動モード終了
+     exit_shadow_mode        ZU      シャドウプリントモード終了
+     exit_subscript_mode     ZV      下付き文字モード終了
+     exit_superscript_mode   ZW      上付き文字モード終了
+     exit_upward_mode        ZX      逆向き文字移動終了
+     micro_column_address    ZY      マイクロモードの column_address
+     micro_down              ZZ      マイクロモードの cursor_down
+     micro_left              Za      マイクロモードの cursor_left
+     micro_right             Zb      マイクロモードの cursor_right
+     micro_row_address       Zc      マイクロモードの row_address
+     micro_up                Zd      マイクロモードの cursor_up
+     order_of_pins           Ze      ソフトウェアビットを印字ヘッドピンにあわせる
+     parm_down_micro         Zf      マイクロモードの parm_down_cursor
+     parm_left_micro         Zg      マイクロモードの parm_left_cursor
+     parm_right_micro        Zh      マイクロモードの parm_right_cursor
+     parm_up_micro           Zi      マイクロモードの parm_up_cursor
+     select_char_set         Zj      文字セットの選択
+     set_bottom_margin       Zk      現在の行を下マージンに設定
+     set_bottom_margin_parm  Zl      下マージンを行 #1 または下から #2 行に設定
+     set_left_margin_parm    Zm      左 (右) マージンを桁 #1 (#2) に設定
+     set_right_margin_parm   Zn      右マージンを桁 #1 に設定
+     set_top_margin          Zo      上マージンを現在の行に設定
+     set_top_margin_parm     Zp      上 (下) マージンを行 #1 (#2) に設定
+     start_bit_image         Zq      ビットイメージグラフィクスの印刷開始
+     start_char_set_def      Zr      文字セットの定義開始
+     stop_bit_image          Zs      ビットイメージグラフィクスの印刷停止
+     stop_char_set_def       Zt      文字セットの定義終了
+     subscript_characters    Zu      下付き文字となりうる文字のリスト
+     superscript_characters  Zv      上付き文字となりうる文字のリスト
+     these_cause_cr          Zw      印字すると CR となる文字
+     zero_motion             Zx      次の文字表示では移動しない
+     char_set_names          Zy      文字セット名のリスト
+     key_mouse               Km      マウスイベントが発生した
+     mouse_info              Mi      マウス状態の情報
+     req_mouse_pos           RQ      マウス位置の要求
+     get_mouse               Gm      curses がボタンイベントを取得すべき
+     set_a_foreground        AF      ANSI 前景色を設定
+     set_a_background        AB      ANSI 背景色を設定
+     pkey_plab               xl      文字列 #2 をタイプし、文字列 #3 を表示するプログラムファンクションキー
+     device_type             dv      言語/コードセットサポートの表示
+     code_set_init           ci      複数コードセットシーケンスの初期化
+     set0_des_seq            s0      コードセット 0 へシフト(EUC セット 0, ASCII)
+     set1_des_seq            s1      コードセット 1 へシフト
+     set2_des_seq            s2      コードセット 2 へシフト
+     set3_des_seq            s3      コードセット 3 へシフト
+     set_lr_margin           ML      左右マージンをそれぞれ #1, #2 に設定
+     set_tb_margin           MT      上下マージンをそれぞれ #1, #2 に設定
+     bit_image_repeat        Xy      ビットイメージセル #1 を #2 回繰り返す
+     bit_image_newline       Zz      ビットイメージの次の行に移動
+     bit_image_carriage_return       Yv      同一行の先頭に移動
+     color_names             Yw      色 #1 の名前を与える
+     define_bit_image_region Yx      長方形のビットイメージ領域を定義
+     end_bit_image_region    Yy      ビットイメージ領域の終了
+     set_color_band          Yz      色リボン #1 に変更
+     set_page_length         YZ      ページ長を #1 行に設定
+     display_pc_char         S1      PC 文字を表示
+     enter_pc_charset_mode   S2      PC 文字表示モードに入る
+     exit_pc_charset_mode    S3      PC 文字表示モード終了
+     enter_scancode_mode     S4      PC スキャンコードモードに入る
+     exit_scancode_mode      S5      PC スキャンコードモードから抜ける
+     pc_term_options         S6      PC 端末オプション
+     scancode_escape         S7      スキャンコードエミュレーションのためのエスケープ
+     alt_scancode_esc        S8      スキャンコードエミュレーションのための別のエスケープ
+     enter_horizontal_hl_mode        Xh      水平ハイライトモードに入る
+     enter_left_hl_mode      Xl      左ハイライトモードに入る
+     enter_low_hl_mode       Xo      下ハイライトモードに入る
+     enter_right_hl_mode     Xr      右ハイライトモードに入る
+     enter_top_hl_mode       Xt      上ハイライトモードに入る
+     enter_vertical_hl_mode  Xv      垂直ハイライトモードに入る
+     linefeed_is_newline     NL      ^J で下に移動
+     even_parity             EP      端末は偶数パリティを要求
+     odd_parity              OP      端末は奇数パリティを要求
+     half_duplex             HD      端末は半 2 重
+     lower_case_only         LC      端末は小文字のみ持つ
+     upper_case_only         UC      端末は大文字のみ持つ
+     has_hardware_tabs       pt      ^I で起動される 8 文字タブがある
+     return_does_clr_eol     xr      リターンは行をクリアする
+     tek_4025_insert_line    xx      Tektronix 4025 の insert-line グリッチ
+     backspaces_with_bs      bs      左に移動するために ^H を使用
+     crt_no_scrolling        ns      crt はスクロールできない
+     no_correctly_working_cr nc      行頭に行く手段が無い
+     backspace_delay         dB      ^H に必要なパディング
+     form_feed_delay         dF      ^L に必要なパディング
+     horizontal_tab_delay    dT      ^I に必要なパディング
+     vertical_tab_delay      dV      ^V に必要なパディング
+     number_of_function_keys kn      ファンクションキーの数
+     carriage_return_delay   dC      CR に必要なパディング
+     new_line_delay          dN      LF に必要なパディング
+     other_non_function_keys ko      自己にマップされたキーのリスト
+     arrow_key_map           ma      矢印キーをマップ
+     memory_lock_above       ml      現在の行より上の画面で見える部分のメモリをロック
+     memory_unlock           mu      現在の行より上の画面で見える部分のメモリのロックを解除
+     linefeed_if_not_lf      nl      下に移動するために使用
+     backspace_if_not_bs     bc      ^H でない場合に左に移動
+"""
+
+lines = DATA.split("\n")
+records = []
+dict = {}
+
+for line in lines:
+    fields = line.split(None, 2)
+    if len(fields) == 3:
+        dict[fields[1]] = fields[2]
+
+termcap = "/etc/termcap"
+f = open(termcap, "r")
+lines = f.readlines()
+
+def lis_compare(a, b):
+    return cmp(a[2], b[2])
+    
+lis = []
+print """
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>""" + searchEntry + """のエスケープシーケンス</title>
+</head>
+"""
+print "<table>"
+print "<h1>%s</h1>" % (searchEntry)
+for i in xrange(len(lines)):
+    line = lines[i]
+    if line.startswith(searchEntry + "|"):
+        for j in xrange(i + 1, len(lines)):
+            line2 = lines[j]
+            line2 = line2.rstrip("\\\n")
+            if not line2.startswith("\t"):
+                lis.sort(lis_compare)
+                for x in lis:
+                    print "<tr><td>%s</td><td>%s</td><td>%s</td></tr>" % (x[0], x[1], x[2])
+
+                print "</table>"
+                print """
+                </body>
+                </html>
+                """
+                sys.exit(0)
+            a = line2.split(":")
+            for cap in a:
+                cap = cap.strip()
+                if cap == "":
+                    continue
+                elif "=" in cap:
+                    (name, val) = cap.split("=", 1)
+                else:
+                    name = cap
+                    val = "オン"
+                desc = dict.get(name, name)
+                lis.append((desc, name, val))
+                #print "<tr><td>%s</td><td>%s</td><td>%s</td></tr>" % (desc, name, val)

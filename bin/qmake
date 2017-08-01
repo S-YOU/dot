@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+"""
+qmake - a script quick making make template
+
+Example:
+    1) qmake
+    2) qmake -ohello gl sdl sdl_mixer sdl_ttf
+"""
+
+
+import re
+import sys
+import os
+
+# If no argument is given, this default setting is used.
+TARGET = 'a.out'
+CC = 'gcc'
+CFLAGS = ''
+LIBS = ''
+SUF = 'c'
+
+#outfp = sys.stdout
+outfp = open("Makefile", "w")
+
+# parse args
+for i in sys.argv[1:]:
+    arg = i.lower()
+
+    if arg.startswith('-o'):
+        TARGET = arg[2:]
+    elif arg == '-m':
+        outfp = open("Makefile", "w")
+
+    # using libraries
+
+    # OpenGL
+    if arg == 'glui':
+        LIBS += ' -lglui -lglut -lGLU -lGL'
+    elif arg == 'glut':
+        LIBS += ' -lglut -lGLU -lGL'
+    elif arg == 'gl':
+        LIBS += ' -lGLU -lGL'
+    # OpenAL
+    if arg == 'openal':
+        LIBS += '-lvorbisfile -lvorbis -logg -lopenal'
+    # SDL
+    if arg == 'sdl':
+        CFLAGS += ' `sdl-config --cflags`'
+        LIBS += ' `sdl-config --libs`'
+    if arg == 'sdl_mixer':
+        LIBS += ' -lSDL_mixer'
+    if arg == 'sdl_image':
+        LIBS += ' -lSDL_image'
+    if arg == 'sdl_ttf':
+        LIBS += ' -lSDL_ttf'
+    if arg == 'sdl_gfx':
+        LIBS += ' -lSDL_gfx'
+    # wxWidgets
+    if arg == 'wx':
+        CFLAGS += ' `wx-config --cflags`'
+        LIBS += ' `wx-config --libs`'
+    # Lua
+    if arg == 'lua':
+        CFLAGS += ''
+        LIBS += '-llua -llualib'
+
+# detect source language and set SUF, CC
+ls = os.listdir(".")
+for i in ls:
+    if i[-2:] == '.c':
+        SUF = 'c'
+    if i[-4:] == '.cpp':
+        SUF = 'cpp'
+        CC = 'g++' 
+    if i[-3:] == '.cc':
+        SUF = 'cc'
+        CC = 'g++' 
+    if i[-2:] == '.d':
+        SUF = 'd'
+        CC = 'dmd'
+
+# output text format
+content = """TARGET = %s
+
+CC = %s
+CFLAGS = -W -Wall -Wfloat-equal -Wcast-qual -Wshadow -O2 -g
+CFLAGS += %s
+LIBS = 
+LIBS += %s
+
+SRCS = $(wildcard *.%s)
+OBJS = $(SRCS:.%s=.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+\t$(CC) -o $(TARGET) $(OBJS) $(LIBS)
+
+.%s.o:
+\t$(CC) -c $< $(CFLAGS)
+
+depend:
+\tmakedepend $(SRCS) $(CFLAGS) 
+
+touch:
+\ttouch *
+
+prof: $(OBJS)
+\tmake touch
+\t$(CC) -o $(TARGET) -g $(OBJS) $(LIBS)
+
+clean:
+\trm -f $(OBJS)
+""" % (TARGET, CC, CFLAGS, LIBS, SUF, SUF, SUF)
+
+outfp.write(content)

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+S3_PATH="$1"
+
+SUFFIX=$(echo "$S3_PATH" | grep -o '\.[^.]*$')
+
+TMPFILE="$(mktemp -t s3edit)${SUFFIX}"
+ORIGFILE="$TMPFILE.orig"
+
+aws s3 cp "$S3_PATH" "$TMPFILE"
+
+cp -a "$TMPFILE" "$ORIGFILE"
+
+vim "$TMPFILE"
+
+if `cmp "$TMPFILE" "$ORIGFILE" > /dev/null`; then
+    echo "Not changed"
+else
+    echo "Changed"
+    aws s3 cp "$TMPFILE" "$S3_PATH"
+fi
+
+rm -f "$TMPFILE" "$ORIGFILE"

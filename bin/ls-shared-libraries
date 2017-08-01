@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# プロセスが使用している共有ライブラリの一覧を表示する
+# Linux専用
+
+if [ "$1" = "" ]; then
+    echo "Usage: $0 PID"
+    exit 1
+fi
+
+PID="$1"
+
+cat /proc/$PID/maps | awk '{print $6}' | grep '\.so' | sort | uniq

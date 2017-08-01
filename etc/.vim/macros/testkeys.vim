@@ -1,0 +1,26 @@
+new
+nnoremap <buffer> <F1>        :echo "F1"<CR>
+nnoremap <buffer> <F2>        :echo "F2"<CR>
+nnoremap <buffer> <F3>        :echo "F3"<CR>
+nnoremap <buffer> <F4>        :echo "F4"<CR>
+nnoremap <buffer> <F5>        :echo "F5"<CR>
+nnoremap <buffer> <F6>        :echo "F6"<CR>
+nnoremap <buffer> <F7>        :echo "F7"<CR>
+nnoremap <buffer> <F8>        :echo "F8"<CR>
+nnoremap <buffer> <F9>        :echo "F9"<CR>
+nnoremap <buffer> <F10>       :echo "F10"<CR>
+nnoremap <buffer> <F11>       :echo "F11"<CR>
+nnoremap <buffer> <F12>       :echo "F12"<CR>
+nnoremap <buffer> <Right>     :echo "Right"<CR>
+nnoremap <buffer> <Left>      :echo "Left"<CR>
+nnoremap <buffer> <Down>      :echo "Down"<CR>
+nnoremap <buffer> <Up>        :echo "Up"<CR>
+nnoremap <buffer> <S-Right>   :echo "S-Right"<CR>
+nnoremap <buffer> <S-Left>    :echo "S-Left"<CR>
+nnoremap <buffer> <Down>      :echo "Down"<CR>
+nnoremap <buffer> <Insert>    :echo "Insert"<CR>
+nnoremap <buffer> <Delete>    :echo "Delete"<CR>
+nnoremap <buffer> <Home>      :echo "Home"<CR>
+nnoremap <buffer> <End>       :echo "End"<CR>
+nnoremap <buffer> <PageUp>    :echo "PageUp"<CR>
+nnoremap <buffer> <PageDown>  :echo "PageDown"<CR>

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# GNU diff >= 3.4
+#diff -u --color=auto "$@"
+
+if [ -t 1 -o "$FORCE_COLOR" = "true" ]; then
+    script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
+    diff -u "$@" | ruby "$script_dir/colorize_diff.rb"
+else
+    diff -u "$@"
+fi

@@ -1,0 +1,105 @@
+escape ^T^T
+
+# vimでEscの反応が遅くなるのを防ぐため
+maptimeout 0
+
+# terminfoでなくtermcapのケーパビリティ名で指定する
+# Co#256                                    # 256色対応
+# AB=\E[48;5;%dm                            # 背景色設定
+# AF=\E[38;5;%dm                            # 文字色設定
+# k1=\E[11~                                 # F1が効くようにする
+# k2=\E[12~                                 # F2が効くようにする
+# k3=\E[13~                                 # F3が効くようにする
+# k4=\E[14~                                 # F4が効くようにする
+# hs@                                       # ハードステータス
+# is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'     # is: xtermの初期化文字列（端末エミュレータのウィンドウサイズが変わらないようにしておく）
+termcapinfo xterm* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm:k1=\E[11~:k2=\E[12~:k3=\E[13~:k4=\E[14~:hs@:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+
+# erase/insert/scroll/clear 操作でクリアされるすべての文字は、現在の背景色で表示されることになる
+defbce on
+
+defencoding utf8
+#encoding utf8 utf8
+defscrollback 2000
+ignorecase on
+startup_message off
+vbell off
+altscreen on
+cjkwidth on
+#multiuser on
+# Enable non-blocking mode to better cope with flaky ssh connections.
+defnonblock 5
+
+# %-w   前のウィンドウ
+# %{ }  カラー指定 r赤 g緑 b青 y黄 cシアン mマジェンダ
+# %n    ウィンドウ番号
+# %t	ウィンドウ名
+# %{-}  カラーリセット
+# %+w   後のウィンドウ
+# %=    パディング
+# %l    システム負荷
+#
+# %? A  %?    条件Aが真ならAを表示
+# %? B %: C %?    条件Bが真ならBを、偽ならCを表示
+hardstatus alwayslastline "[%H] %-w%{.b}%n %t%{-}%+w %= %?%E.%? %f"
+caption splitonly "%?%F%{.b}%?%n %t"
+
+# ^T Aでタイトル設定（デフォルトのキーバインド）
+
+# focus 次のリージョンにフォーカスを移す
+# split	リージョン分割
+# smart split
+bind ^k eval "focus up"
+bind ^j eval "focus down"
+# ^h *mini*を分割して表示する
+bind ^h eval "focus up" only split "focus down" "resize 10" "select *mini*"
+bind . source $HOME/.screenrc
+bind + resize +5
+bind - resize -5
+bind = resize =
+bind w remove						# ブラウザと同じC-w
+bind ^w remove						# ブラウザと同じC-w
+bind q remove						# ブラウザと同じC-w
+bind o only
+bind ^o only
+# カレントディレクトリで新しいウィンドウを開く（カレントウィンドウでシェルのプロンプトが出ている状態でないといけない）
+#bind c stuff "screen -X chdir \$PWD;screen^M"
+
+# Pageup, Pagedownでウィンドウ切り替え
+bindkey "^[[5~" prev
+bindkey "^[[6~" next
+# F11 F12
+# vim起動中も有効にするためには、-aつきでも定義しないといけない
+#bindkey -k -a F1 prev
+#bindkey -k -a F2 next
+
+# hardcopyは文字化けするのでこの方法で
+# bind h eval "readreg t" "msgminwait 0" "copy" "stuff \"H L$ \"" "writebuf $HOME/tmp/screen-hardcopy.txt" "paste t ."
+
+bind H
+
+bind h eval "hardcopy -h $HOME/tmp/screen-hardcopy"
+
+setenv BUFFERFILE "$HOME/.yank" 
+bufferfile "$BUFFERFILE"
+
+bind ^v eval readbuf "paste ."
+
+bind S eval "split"    focus next next
+bind | eval "split -v" focus next next
+
+markkeys ^K=3k
+
+
+# いくつかウィンドウを開いておく
+#screen
+#screen -t db 1
+#screen -t *mini* 9
+#select 0
+
+# backtick の例
+# caption always "%0`"
+# backtick 0 5 5 vmstat
+# backtick 1 60 60 date +'%H:%M'
+
+#source $HOME/.screenrc.local

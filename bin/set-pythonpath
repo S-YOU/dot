@@ -1,0 +1,22 @@
+#!/bin/sh
+
+orig_dir=$(pwd)
+
+while true; do
+    if [ -e PYTHONPATH ]; then
+        str="export PYTHONPATH='$(cat PYTHONPATH)'"
+        if [ "$QUIET" = "" ]; then
+            echo -e "\x1b[0;33m$(realpath PYTHONPATH) loaded" 1>&2
+            echo -e "$str\x1b[0m" 1>&2
+        fi
+        eval "$str"
+        break
+    fi
+    if [ `pwd` = "/" ]; then
+        break
+    fi
+    cd ..
+done
+
+cd "$orig_dir"
+command python "$@"

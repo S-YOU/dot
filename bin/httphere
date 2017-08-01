@@ -1,0 +1,15 @@
+#!/bin/sh
+
+export port=${port:-7000}
+
+screen -t httphere ruby -rwebrick -e 'WEBrick::HTTPServer.new(:DocumentRoot => "./", :Port => '$port').start'
+
+url="http://localhost:${port}"
+
+case "$OSTYPE" in 
+    darwin*)
+        open "$url"
+        ;;
+    *)
+        ;;
+esac

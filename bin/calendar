@@ -1,0 +1,19 @@
+#!/bin/sh
+
+FILE=/home/ao/calendar
+
+to='shoutarou.aoyama@betatechnology.jp,jod2357@docomo.ne.jp'
+
+DATE=`date +%Y.%m.%d`
+#echo "DATE=$DATE"
+CONTENT=`grep "$DATE" $FILE | grep -v '^#'`
+
+if [ -n "$CONTENT" ]; then
+    echo "$CONTENT" | nkf -j |  /bin/mail -s "From calendar" "$to" -- -f shoutarou.aoyama@betatechnology.jp
+    echo $CONTENT
+else
+    echo "Nothing to send."
+fi
+
+
+

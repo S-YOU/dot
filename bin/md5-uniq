@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+#
+# MD5 を使ってファイルの同一性を判定し、uniqする。
+#
+# Usage: $0 [FILE]...
+
+require 'digest/md5'
+
+def filemd5(filename)
+	return Digest::MD5.hexdigest(File.open(filename, "rb").read)
+end
+
+$hash = {}
+
+ARGV.each do |filename|
+	md5 = filemd5(filename)
+	if $hash.has_key?(md5)
+		puts "#" + filename
+		next
+	else
+		$hash[md5] = true
+		puts filename
+	end
+end

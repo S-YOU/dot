@@ -1,0 +1,27 @@
+#!/bin/sh
+
+TYPE=${1:-int}
+TMP="/tmp/sizeof"
+
+cat > /tmp/sizeof.c <<EOT
+#include <sys/types.h>
+#include <stdio.h>
+#include <unistd.h>
+
+int main(int argc, char* argv[])
+{
+	printf("sizeof($TYPE) = %d\n", (int)sizeof($TYPE));
+	return 0;
+}
+EOT
+gcc /tmp/sizeof.c -o "$TMP"
+
+RET=$?
+if [ $RET -eq 0 ]; then
+	/tmp/sizeof
+	rm "$TMP" /tmp/sizeof.c
+else
+	echo "Compiling failed: /tmp/sizeof.c"
+	cat /tmp/sizeof.c
+	exit 1
+fi

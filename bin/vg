@@ -1,0 +1,101 @@
+#!/bin/bash
+#set -x
+
+# 使用法:
+# $ vimgrep keyword
+# ・カレントディレクトリ（またはgit管理ファイル）を対象
+# ・大文字小文字を区別しない
+# ・vimからgreprgにより起動された場合はvimを起動しない
+
+FROM="shell"
+TMPFILE="/tmp/vimgrep.tmp.$$"
+DEBUG="false"
+
+echomsg() {
+    if [ "$FROM" = "shell" -o "$DEBUG" = "true" ]; then
+        echo "$1" 1>&2
+    fi
+}
+
+while [ "$1" != "" ]; do
+    case "$1" in
+        "--ag")
+            CMD="ag"
+            shift
+            ;;
+        "--git")
+            CMD="git"
+            shift
+            ;;
+        "--grep")
+            CMD="grep"
+            shift
+            ;;
+        "--from-vim")
+            FROM="vim"
+            shift
+            ;;
+        "--debug")
+            DEBUG="true"
+            shift
+            ;;
+        "-i")
+            AG_OPTIONS="$AG_OPTIONS --ignore-case"
+            GIT_OPTIONS="$GIT_OPTIONS -i"
+            GREP_OPTIONS="$GREP_OPTIONS -i"
+            shift
+            ;;
+        "--*")
+            echo "未知のオプション: $1" 1>&2
+            exit 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [ "$DEBUG" = true ]; then
+  set -x
+fi
+
+if [ "$CMD" = "" ]; then
+    ancestor=$(projroot .git)
+    ret="$?"
+    if [ $ret = 0 -a `basename $ancestor` != ".rbenv" ]; then
+        CMD="git"
+    elif `which ag > /dev/null`; then
+        CMD="ag"
+    else
+        CMD="grep"
+    fi
+fi
+
+if [ "$FROM" = "shell" ]; then
+    # ファイルディスクリプタ1を3に退避
+    exec 3>&1
+    exec 1> "$TMPFILE"
+fi
+
+if [ "$CMD" = "ag" ]; then
+    echomsg "vimgrep: using ag"
+    ag --vimgrep --case-sensitive $AG_OPTIONS "$@"
+elif [ "$CMD" = "git" ]; then
+    echomsg "vimgrep: using git grep"
+    git grep -nH $GIT_OPTIONS "$@"
+else
+    echomsg "vimgrep: using grep"
+    grep --exclude-dir=.svn --exclude-dir=.git --exclude-dir=bundle --exclude-dir=node_modules -nH $GREP_OPTIONS "$@" -R .
+fi
+
+if [ "$FROM" = "shell" ]; then
+    # 退避しておいた1を復元
+    exec 1>&3
+    if [ -s "$TMPFILE" ]; then
+        vim -q "$TMPFILE" -c "silent! cw"
+    else
+        echo "No match"
+    fi
+fi
+
+rm -f "$TMPFILE"

@@ -1,0 +1,61 @@
+#!/bin/sh
+
+cat > skeleton.json <<EOF
+{
+    "DryRun": false,
+    "ImageId": "ami-923d12f5", 
+    "KeyName": "val00362_keypair",
+    "SecurityGroupIds": [
+        "sg-0ef6d56b"
+    ],
+    "InstanceType": "t2.micro",
+    "BlockDeviceMappings": [
+        {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+                "VolumeSize": 8,
+                "DeleteOnTermination": true,
+                "VolumeType": "gp2"
+            }
+        }
+    ],
+    "Monitoring": {
+        "Enabled": false
+    },
+    "SubnetId": "subnet-d8b4d0af", 
+    "Placement": {
+        "Tenancy": "default", 
+        "GroupName": "", 
+        "AvailabilityZone": "ap-northeast-1a"
+    },
+    "DisableApiTermination": false,
+    "IamInstanceProfile": {
+        "Arn": "arn:aws:iam::944122690951:instance-profile/aoyama-role1"
+    },
+    "TagSpecifications": [
+        {
+            "ResourceType": "instance", 
+            "Tags": [
+                {
+                    "Key": "Name", 
+                    "Value": "aoyama-study-created"
+                }
+            ]
+        }
+    ]
+}
+EOF
+
+cp ~/svn/bin/user_data.sh .
+
+cat <<EOF
+skeleton.jsonを生成しました。
+user_data.shを生成しました。
+
+実際にインスタンスを作成するには、下記を実行：
+aws ec2 run-instances --cli-input-json file://./skeleton.json --user-data file://./user_data.sh | less
+aws ec2 describe-instances --instance-ids {instance_id}
+
+ログインには
+ssh ec2-user@{public_ip} -i ~/.ssh/val00362_keypair.pem
+EOF

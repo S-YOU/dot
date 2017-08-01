@@ -1,0 +1,250 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+#
+# usage: 月 年 または 年 月 どちらも省略可
+# Cygwin version by 青山正太郎 
+# Wed Dec 29 19:08:46     2004
+# 日曜と土曜の色を別にできるようにした。
+
+require "nkf"
+
+class TCalendar
+  def initialize(year = 0, month = 0)
+    @now = Time.now
+    @year = if year == 0 then @now.year else year end
+    @month = if month == 0 then @now.month else month end
+    @holiday = []
+    @holiday_name = []
+    @mday_arr = []
+    1.upto(31) do |d|
+      @mday_arr[d] = Time.local(@year, @month, d, 0, 0, 0)
+      if d > 28
+        if @mday_arr[d].month != @month
+          @mday_arr[d] = nil
+        end
+      end
+      @holiday[d] = false
+    end
+    month_name = @mday_arr[1].strftime('%b')
+
+    while DATA.gets
+      $_.rstrip!
+      next if ~/^\#/
+      $_.sub!(/\#.*$/, '')
+
+      m, d, y, c = $_.split(/\s+/, 4)
+
+      if y != '0'
+        if y[0,1] == '-'
+          next if @year > y[1,4].to_i
+        elsif y[-1,1] == '-'
+          next if @year < y[0,4].to_i
+        elsif y[4,1] == '-'
+          next if @year < y[0,4].to_i || @year > y[5,4].to_i
+        end
+      end
+
+      if month_name == m
+        case d
+        when 'SHUNBUN'
+          d = syunbun(@year).to_s
+        when 'SYUBUN'
+          d = syubun(@year).to_s
+        when 'HM2'
+          d = nMonday(2).to_s
+        when 'HM3'
+          d = nMonday(3).to_s
+        end
+        @holiday[d.to_i] = true
+        @holiday_name[d.to_i] = c
+      end
+    end
+  end
+  attr_reader :holiday_name
+
+  def nMonday(n)
+    count = 0
+    @mday_arr.each_index do |d|
+      next if d < 1
+      count += 1 if @mday_arr[d].wday == 1
+      return d if count == n
+    end
+  end
+
+  def today?(mday)
+    @now.year == @year and @now.month == @month and @now.mday == mday
+  end
+
+  def wday(mday)
+    return nil unless @mday_arr[mday]
+    @mday_arr[mday].wday
+  end
+
+  def status(mday)
+    return nil unless @mday_arr[mday]
+    return 'holiday' if @holiday[mday]
+
+    case @mday_arr[mday].wday
+    when 1
+      if mday > 2 and @holiday[mday - 1]
+        return 'holiday'
+      else
+        return 'workday'
+      end
+    when 2, 3, 4, 5
+      'workday'
+    when  6
+      'weekend'
+    when 0
+      'sunday'
+    end
+  end
+
+  def header
+    msg = @mday_arr[1].strftime('%B %Y').center(20)
+    msg + "\n" + 'Su Mo Tu We Th Fr Sa' + "\n"
+  end
+end
+
+#| From: hajima@crimson.gen.u-tokyo.ac.jp (Ryoichi Hajima)
+#| Newsgroups: fj.questions.misc
+#| Subject: Re: vernal/autumnal equinox
+#| Message-ID: <HAJIMA.94Jul13161542@tanelorn.gen.u-tokyo.ac.jp>
+#| Date: 13 Jul 94 07:15:42 GMT
+#|
+#| 春分日　(31y+2213)/128-y/4+y/100    (1851年-1999年通用)
+#| 　　　　(31y+2089)/128-y/4+y/100    (2000年-2150年通用)
+#|
+#| 秋分日　(31y+2525)/128-y/4+y/100    (1851年-1999年通用)
+#| 　　　　(31y+2395)/128-y/4+y/100    (2000年-2150年通用)
+
+def syunbun(year)
+  if year > 2150
+    STDERR.print "over year's: #{year}\n"  #'
+    exit 1
+  end
+  v = if year < 2000 then 2213 else 2089 end
+  (31 * year + v)/128 - year/4 + year/100
+end
+
+def syubun(year)
+  if year > 2150
+    STDERR.print "over year's: #{year}\n" #'
+    exit 1
+  end
+  v = if year < 2000 then 2525 else 2395 end
+  (31 * year + v)/128 - year/4 + year/100
+end
+
+$nkf_option = ""
+if ENV["LANG"] =~ /utf-?8/i
+  $nkf_option = "-w"
+elsif ENV["LANG"] =~ /sjis/i
+  $nkf_option = "-s"
+elsif ENV["LANG"] =~ /euc/i
+  $nkf_option = "-e"
+end
+
+def encode(str)
+  if $nkf_option == ""
+    return str
+  else
+    return NKF.nkf($nkf_option, str)
+  end
+end
+
+year = 0
+month = 0
+
+ARGV.each do |arg|
+  foo = arg.to_i
+  if foo >= 1 and foo <= 12
+    month = foo
+  elsif foo >= 1970 and foo <= 2037
+    year = foo 
+  end
+end
+
+cal = TCalendar.new(year, month)
+print cal.header
+holiday_name = []
+last_wday = 0
+
+1.upto(31) do |d|
+  wday = cal.wday(d)
+  break unless wday
+  last_wday = wday
+
+  status = cal.status(d)
+
+  if (d == 1)
+    print '   ' * wday
+  elsif wday == 0
+    puts encode(holiday_name.compact.join(', '))
+    holiday_name = []
+  end
+
+  case status
+  when 'weekend'
+    if cal.today?(d)
+      printf('%s%2d%s', "\x1b[1;34m", d, "\x1b[m")
+    else
+      printf('%s%2d%s', "\x1b[0;34m", d, "\x1b[m")
+    end
+  when 'sunday'
+    if cal.today?(d)
+      printf('%s%2d%s', "\x1b[1;31m", d, "\x1b[m")
+    else
+      printf('%s%2d%s', "\x1b[0;31m", d, "\x1b[m")
+    end
+  when 'holiday'
+    holiday_name.push(d.to_s + ':' + (cal.holiday_name[d] || '振り替え休日'))
+    if cal.today?(d)
+      printf('%s%2d%s', "\x1b[1;31m", d, "\x1b[m")
+    else
+      printf('%s%2d%s', "\x1b[0;31m", d, "\x1b[m")
+    end
+  when 'workday'
+    if cal.today?(d)
+      printf('%s%2d%s', "\x1b[1;30m", d, "\x1b[m")
+    else
+      printf('%2d', d)
+    end
+  end
+
+  print ' '
+end
+
+if holiday_name.size > 0
+  print '   ' * (6 - last_wday)
+  puts encode(holiday_name.compact.join(', '))
+else
+  puts
+end
+
+__END__
+# このデータ形式は次のようになっています。
+# 月名<space>日付<space>有効年<space>コメント
+# 行の先頭の「#」以降はコメント
+# 木村さん感謝!
+# HM2 Happy Monday(2nd monday)
+# HM3 Happy Monday(3rd monday)
+Jan 1       0         元旦
+Jan 15      -1999     成人の日
+Jan HM2     2000-     成人の日
+Feb 11      0         建国記念の日
+Mar SHUNBUN 0         春分の日
+Apr 29      0         緑の日
+May 3       0         憲法記念日
+May 4       1986-     国民の休日
+May 5       0         こどもの日
+Jul 20      1996-2002 海の日
+Jul HM3     2003-     海の日
+Sep 15      -2002     敬老の日
+Sep HM3     2003-     敬老の日
+Sep SYUBUN  0         秋分の日
+Oct 10      -1999     体育の日
+Oct HM2     2000-     体育の日
+Nov 3       0         文化の日
+Nov 23      0         勤労感謝の日
+Dec 23      1989-     天皇誕生日

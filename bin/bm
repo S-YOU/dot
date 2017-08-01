@@ -1,0 +1,16 @@
+#!/bin/sh
+
+BMDIR=~/bm
+if [ ! -d "$BMDIR" ]; then
+    mkdir -p "$BMDIR"
+fi
+
+TARGET=`realpath .`
+
+if [ "$1" =  "" ]; then
+    ln -sv "$TARGET" "$BMDIR"
+elif [ "$1" = "-l" ]; then
+    ls -l "$BMDIR"
+else
+    ln -sv "$TARGET" "$BMDIR"/"$1"
+fi

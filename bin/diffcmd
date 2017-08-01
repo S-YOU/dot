@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# $1で指定されたコマンドを実行し、前回実行との差分を表示するスクリプト
+#
+# 例：
+#   diffcmd "netstat -ant"
+#
+# watchと似ているが、実行タイミングが定期的でなく、手動トリガー
+
+oldfile="/tmp/cmd.old"
+newfile="/tmp/cmd.new"
+script_dir=$(cd $(dirname ${BASH_SOURCE:-$0}); pwd)
+
+while true; do
+    if [ -e $newfile ]; then
+    mv $newfile $oldfile
+    fi
+
+    cmd="$1 > $newfile 2>&1"
+    eval "$cmd"
+
+    if [ -e $oldfile ]; then
+        diff -U 10 $oldfile $newfile | ruby "$script_dir/colorize_diff.rb"
+    else
+        cat $newfile
+    fi
+    echo "もう一度実行しますか？(Y/n)"
+    read a
+    if [ "$a" = N -o "$a" = n ]; then
+        exit
+    fi
+done

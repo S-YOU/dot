@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ -e ~/svn/bin/.svn/ ]; then
+  cd ~/svn/bin/
+  pwd
+  svn up
+  echo
+fi
+
+if [ -e ~/svn/etc/.svn/ ]; then
+  cd ~/svn/etc
+  pwd
+  svn up
+  echo
+fi
+
+if [ -e ~/svn/.svn/ ]; then
+  cd ~/svn
+  pwd
+  svn up
+  echo
+fi

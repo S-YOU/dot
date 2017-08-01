@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+separator = "\t"
+
+linenum = 0
+while line = gets
+  linenum += 1
+  line.chomp!
+  col_count = line.count(separator) + 1
+  puts "| #{line.gsub(separator, ' | ')} |"
+  if linenum == 1
+    puts "| --- " * col_count + " |"
+  end
+end

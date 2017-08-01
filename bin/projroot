@@ -1,0 +1,40 @@
+#!/bin/bash
+
+usage() {
+    cat <<EOF
+file_exists_in_ancestors - ファイルが祖先ディレクトリに存在するか判定する
+
+・ファイルとディレクトリを区別しない
+・引数には複数のファイル名を指定可能
+
+使用例:
+    file_exists_in_ancestors .git .svn CVS
+EOF
+}
+
+file_exists_in_ancestors() {
+    local file
+    local origdir=`pwd`
+    while true; do
+        local pwd=`pwd`
+        for file in "$@"; do
+            if [ -e "$file" ]; then
+                pwd
+                cd "$origdir"
+                return 0
+            fi
+        done
+        cd ..
+        if [ `pwd` = "$pwd" ]; then
+            cd "$origdir"
+            echo "not exist"
+            return 1
+        fi
+    done
+}
+
+if [ $# = 0 ]; then
+  file_exists_in_ancestors .git .svn CVS Gemfile .root
+else
+  file_exists_in_ancestors "$@"
+fi

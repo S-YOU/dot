@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "time"
+require "net/https"
+
+def hash_to_query(hash)
+  return URI.encode_www_form(hash)
+end
+
+# str_url: URL（文字列）
+# data:    クエリパラメータ（ハッシュ）
+def http_get(str_url, data=nil)
+  uri = URI.parse(str_url)
+  http = Net::HTTP.new(uri.host, uri.port)
+
+  if uri.scheme == "https"
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  end 
+
+  path = uri.path
+  if data
+    path += "?" + hash_to_query(data)
+  end 
+  res = http.get(path)
+  return res
+end
+
+def get_page(username, page=1)
+  url = "https://api.github.com/users/#{username}/repos"
+
+  if page == 1
+    params = nil
+  else
+    params = {page: page}
+  end
+
+  res = http_get(url, params)
+
+  parsed = JSON.parse(res.body)
+
+  parsed.each do |repo|
+    pushed_at = Time.parse(repo["pushed_at"]).localtime
+    puts "#{pushed_at.strftime('%Y-%m-%d %H:%M:%S')}\t#{repo['clone_url']}"
+  end
+
+  return res
+end
+
+def get_all(username)
+  page = 1
+  while true
+    res = get_page(username, page)
+    if res.header["Link"] =~ %r#<(.*?)>; rel="next"#
+      link = $1
+      page += 1
+    else
+      break
+    end
+  end
+end
+
+username = "aoyama-val"
+get_all(username)

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+guard --no-interactions -G ~/svn/guard/Guardfile.markdown
