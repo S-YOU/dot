@@ -481,7 +481,7 @@ cnoremap <expr> <C-x>f expand("%:t")
 cnoremap <expr> <C-x>p expand("%:p")
 
 function! _GetProjectRoot()
-  let a = system("projroot")
+  let a = system("pjroot")
   let a = substitute(a, "\n", "", "")
   if a == "not exist"
     let a = g:topdir
@@ -529,15 +529,15 @@ endfun
 
 nmap g* :grep<space>-w <C-r><C-w>
 
-cabbrev <expr> grep _GetGrepCommand("projroot")
+cabbrev <expr> grep _GetGrepCommand("pjroot")
 cabbrev <expr> grepapp _GetGrepCommand("app")
 function! _GetGrepCommand(dirtype)
   if a:dirtype == "top"
     let dir = g:topdir
-  elseif a:dirtype == "projroot"
-    let dir = g:projroot
+  elseif a:dirtype == "pjroot"
+    let dir = g:pjroot
   elseif a:dirtype == "app"
-    let dir = g:projroot . "/app"
+    let dir = g:pjroot . "/app"
   else
     let dir = g:topdir
   end
@@ -916,10 +916,10 @@ augroup END
 
 function! _VimEnter()
   let g:topdir=getcwd()
-  let g:projroot = expand(_GetProjectRoot())
+  let g:pjroot = expand(_GetProjectRoot())
 
-  if filereadable(g:projroot . "/Gemfile") && isdirectory(g:projroot . "/public")
-    let &path = &path . "," . g:projroot . "/public"
+  if filereadable(g:pjroot . "/Gemfile") && isdirectory(g:pjroot . "/public")
+    let &path = &path . "," . g:pjroot . "/public"
   endif
 endfunction
 

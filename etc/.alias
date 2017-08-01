@@ -132,9 +132,9 @@ ps() {
 
 tt() {
     if [ -t 1 ]; then
-        cd $(projroot)
+        cd $(pjroot)
     else
-        projroot
+        pjroot
     fi
 }
 

@@ -60,7 +60,7 @@ if [ "$DEBUG" = true ]; then
 fi
 
 if [ "$CMD" = "" ]; then
-    ancestor=$(projroot .git)
+    ancestor=$(pjroot .git)
     ret="$?"
     if [ $ret = 0 -a `basename $ancestor` != ".rbenv" ]; then
         CMD="git"
