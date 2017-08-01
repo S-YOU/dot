@@ -6,6 +6,8 @@
 require "json"
 require "net/https"
 
+WEBHOOK_URL = "https://hooks.slack.com/services/*********/*********/**********************"
+
 # str_url: URL（文字列）
 # data:    ポストするデータ（ハッシュ）
 def http_post_general(str_url, data="", headers={})
@@ -26,8 +28,7 @@ def http_post_general(str_url, data="", headers={})
   return res
 end
 
-# aosho235
-url = "https://hooks.slack.com/services/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"
+url = WEBHOOK_URL
 
 message = $stdin.read
 
