@@ -888,7 +888,6 @@ augroup MyAutocmd
   au FileType javascript  call JavaScript_Setting()
   au FileType lisp        call Lisp_Setting()
   au FileType lua         let b:commentSymbol="--"
-  au FileType make        setlocal list noexpandtab
   au FileType markdown    call Markdown_Setting() 
   au FileType nerdtree    call Nerdtree_Setting()
   au FileType perl        call Perl_Setting()
@@ -2572,6 +2571,7 @@ function! SetMatchConfig(regexp, cmd)
 endfunction
 
 call SetMatchConfig('.*\.rb', "setlocal ts=2 sts=2 sw=2 et")
+call SetMatchConfig('Makefile', "setlocal noet")
 
 function! _SetDict()
   exe "setlocal dictionary+=~/.vim/dict/" . &ft . "dict.txt"
