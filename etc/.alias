@@ -183,6 +183,7 @@ pagerize() {
 
 # pagerize svn
 pagerize readelf
+pagerize tree
 
 svn() {
     if [ -t 1 -a "$1" = "ci" -o "$1" = "pe" ]; then
