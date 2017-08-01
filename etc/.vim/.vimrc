@@ -2486,7 +2486,8 @@ let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'ruby', 'rb=ruby
 let g:ctrlp_follow_symlinks = 2
 let g:ctrlp_switch_buffer = 0
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](' . join(map(exclude_dirs, "substitute(v:val, '\\.', '\\.', 'g')"), '|') . ')$'
+  \ 'dir':  '\v[\/](' . join(map(exclude_dirs, "substitute(v:val, '\\.', '\\.', 'g')"), '|') . ')$',
+  \ 'file': '\v\.(o)$',
   \ }
 
 function! MyFoldText()

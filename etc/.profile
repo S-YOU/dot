@@ -20,7 +20,7 @@ pathmunge () {
     esac
 }
 
-pathmunge "$HOME/svn/bin"
+pathmunge "$HOME/home/bin"
 pathmunge "$HOME/bin"
 pathmunge . after
 
