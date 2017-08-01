@@ -26,7 +26,7 @@ filetype indent on
 set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
-set runtimepath^=~/.vim/bundle/ctrlp.vim
+set runtimepath^=~/.vim/bundle/ctrlp
 set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
