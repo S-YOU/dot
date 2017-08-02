@@ -647,9 +647,12 @@ command! -nargs=* Gxx set makeprg=g++\ $GXXFLAGS\ <args>\ % | make
 command! -nargs=* Gcc set makeprg=gcc\ $GCCFLAGS\ <args>\ % | make
 command! Ev e ~/.vimrc
 command! Evl e ~/.vimrc.local
-command! -nargs=? A call ToggleSourceAndHeader("e", '<args>')
-command! -nargs=? AA call ToggleSourceAndHeader("sp", '<args>')
-command! -nargs=? VA call ToggleSourceAndHeader("vs", '<args>')
+command! -nargs=? A  echo "Command A is deprecated. Use <C-x><C-h> instead."
+command! -nargs=? AA echo "Command AA is deprecated. Use <C-x>h instead."
+command! -nargs=? VA echo "Command VS is deprecated. Use <C-x>H instead."
+nnoremap <C-x><C-h> :<C-u>call ToggleSourceAndHeader("e")<CR>
+nnoremap <C-x>h     :<C-u>call ToggleSourceAndHeader("sp")<CR>
+nnoremap <C-x>H     :<C-u>call ToggleSourceAndHeader("vs")<CR>
 command! Li echo '//-を使ってください'
 command! LLi echo '//=を使ってください'
 
