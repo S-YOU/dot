@@ -21,7 +21,9 @@ link .alias
 link .ctags
 link .gdbinit
 link .gdbinit.d
+link .ghci
 link .gitignore
+link .inputrc
 link .irbrc
 link .sqliterc
 link .pryrc
