@@ -1,5 +1,7 @@
 #echo "~/.profile loaded"
 
+export DOT=${DOT:-$HOME/dot}
+
 # CentOSからコピペ
 # $PATHにディレクトリを1個追加するシェル関数
 # 使い方：
@@ -20,7 +22,7 @@ pathmunge () {
     esac
 }
 
-pathmunge "$HOME/home/bin"
+pathmunge "$DOT/bin"
 pathmunge "$HOME/bin"
 pathmunge . after
 

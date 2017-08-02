@@ -31,8 +31,8 @@ case "$OSTYPE" in
 esac
 alias ll='ls -lrth'
 alias ldir='ls -lrth'
-alias r='~/home/bin/a'
-alias rm='~/home/bin/rma.sh'
+alias r='$DOT/bin/a'
+alias rm='$DOT/bin/rma.sh'
 alias rp='realpath'
 #alias rm='~/git/rm_alternative/rma.sh'
 alias tf='tail -f -n 500'

@@ -1,6 +1,8 @@
 #!/bin/sh
 
-ETC=~/svn/etc
+DOT_BASENAME="dot"
+DOT="${DOT:-$HOME/$DOT_BASENAME}"
+ETC="$DOT/etc"
 
 mkdir -p ~/bin ~/tmp ~/.vimundo
 
@@ -9,24 +11,22 @@ link() {
         mkdir $HOME/dot.orig 2> /dev/null
         mv "$HOME/$1" $HOME/dot.orig
     fi
-    ln -s $ETC/$1 ~
+    ln -sf $ETC/$1 ~
 
 }
 
-echo 'source ~/svn/etc/.profile' >> ~/.profile
-echo 'source ~/.profile' >> ~/.bash_profile
-echo 'source ~/svn/etc/.bashrc' >> ~/.bashrc
-echo 'source ~/svn/etc/.alias' >> ~/.alias
-echo 'source ~/svn/etc/.zshrc' >> ~/.zshrc
-link .vim
-ln -s $ETC/.vim/.vimrc ~/.vimrc
-echo 'source $HOME/svn/etc/.screenrc' >> ~/.screenrc
+#echo "source $DOT/etc/.profile" >> ~/.profile
+#echo "source ~/.profile" >> ~/.bash_profile
+#echo "source $DOT/etc/.bashrc" >> ~/.bashrc
+#echo "source $DOT/etc/.alias" >> ~/.alias
+#echo "source $DOT/etc/.zshrc" >> ~/.zshrc
+#echo 'source $HOME/svn/etc/.screenrc' >> ~/.screenrc
+
+link .alias
 link .ctags
-cat >> ~/.gitconfig <<EOF
-[include]
-	    path = ~/svn/etc/.gitconfig
-EOF
+ln -sf "$ETC/gdb-dashboard" ~/.gdbinit
+link .gdbinit.d
 link .gitignore
 link .sqliterc
-ln -s ~/svn/etc/gdb-dashboard ~/.gdbinit
-link .gdbinit.d
+link .vim
+ln -sf $ETC/.vim/.vimrc ~/.vimrc
