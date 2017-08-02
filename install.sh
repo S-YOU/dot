@@ -17,6 +17,8 @@ link() {
     ln -sfv $ETC/$1 ~
 }
 
+cd "$ETC"
+
 link .alias
 link .ctags
 link .gdbinit
