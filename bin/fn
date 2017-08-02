@@ -11,6 +11,8 @@ def system_e(*args)
   system(*args) || (p args; raise "Error: command failed")
 end
 
+@ignore_case = true
+
 cmd = nil
 
 args = ARGV
@@ -42,8 +44,15 @@ else
   name = args[1]
 end
 
+# 検索語が大文字を含んでいる場合はケースセンシティブ
+if name.downcase != name
+  @ignore_case = false
+end
+
+name_option = @ignore_case ? "-iname" : "-name"
+
 if cmd
-  system_e("#{cmd} $(find #{dir} -name '#{name}')")
+  system_e("#{cmd} $(find #{dir} #{name_option} '#{name}')")
 else
-  system_e("find #{dir} -name '#{name}'")
+  system_e("find #{dir} #{name_option} '#{name}'")
 end
