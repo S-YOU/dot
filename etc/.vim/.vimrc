@@ -520,7 +520,11 @@ fun! CompleteFiles(findstart, base)
     for p in paths
       let plen = strlen(p)
       for m in glob(p . base . "*", 1, 1)
-        call add(res, strpart(m, plen + slashlen))
+        let tmp = strpart(m, plen + slashlen)
+        if a:base[0] == "~"
+          let tmp = substitute(tmp, $HOME, "~", "")
+        endif
+        call add(res, tmp)
       endfor
     endfor
     return res
