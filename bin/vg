@@ -31,6 +31,10 @@ while [ "$1" != "" ]; do
             CMD="grep"
             shift
             ;;
+        "--pt")
+            CMD="pt"
+            shift
+            ;;
         "--from-vim")
             FROM="vim"
             shift
@@ -43,6 +47,7 @@ while [ "$1" != "" ]; do
             AG_OPTIONS="$AG_OPTIONS --ignore-case"
             GIT_OPTIONS="$GIT_OPTIONS -i"
             GREP_OPTIONS="$GREP_OPTIONS -i"
+            PT_OPTIONS="$GREP -i"
             shift
             ;;
         "--*")
@@ -64,6 +69,8 @@ if [ "$CMD" = "" ]; then
     ret="$?"
     if [ $ret = 0 -a `basename $ancestor` != ".rbenv" ]; then
         CMD="git"
+    elif `which pt > /dev/null`; then
+        CMD="pt"
     elif `which ag > /dev/null`; then
         CMD="ag"
     else
@@ -83,6 +90,9 @@ if [ "$CMD" = "ag" ]; then
 elif [ "$CMD" = "git" ]; then
     echomsg "vimgrep: using git grep"
     git grep -nH $GIT_OPTIONS "$@"
+elif [ "$CMD" = "pt" ]; then
+    echomsg "vimgrep: using pt"
+    pt --nogroup --nocolor $PT_OPTIONS "$@"
 else
     echomsg "vimgrep: using grep"
     grep --exclude-dir=.svn --exclude-dir=.git --exclude-dir=bundle --exclude-dir=node_modules -nH $GREP_OPTIONS "$@" -R .
