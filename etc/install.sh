@@ -6,13 +6,14 @@ ETC="$DOT/etc"
 
 mkdir -p ~/bin ~/tmp ~/.vimundo
 
+BACKUP_DIR="$HOME/dot/$(date +%Y%m%d%H%M%S)"
+
 link() {
     if [ -f "$HOME/$1" ]; then
-        mkdir $HOME/dot.orig 2> /dev/null
-        mv "$HOME/$1" $HOME/dot.orig
+        mkdir -p $BACKUP_DIR
+        mv "$HOME/$1" $BACKUP_DIR
     fi
     ln -sf $ETC/$1 ~
-
 }
 
 #echo "source $DOT/etc/.profile" >> ~/.profile
@@ -24,7 +25,7 @@ link() {
 
 link .alias
 link .ctags
-ln -sf "$ETC/gdb-dashboard" ~/.gdbinit
+link .gdbinit
 link .gdbinit.d
 link .gitignore
 link .sqliterc
