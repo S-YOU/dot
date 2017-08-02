@@ -222,6 +222,7 @@ type() {
     local ret
     ret=$(builtin type "$@")
     if [[ "$ret" == *"is a shell function from"* ]]; then
+        whence -v "$@"
         whence -f "$@"
     else
         echo "$ret"
