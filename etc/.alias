@@ -31,6 +31,8 @@ case "$OSTYPE" in
 esac
 alias ll='ls -lrth'
 alias ldir='ls -lrth'
+alias lsdot='ls -ld ~/.*'
+alias lsdotl='CLICOLOR_FORCE=1 lsdot | grep -e "->"'
 alias r='$DOT/bin/r'
 alias rm='$DOT/bin/rma.sh'
 alias rp='realpath'

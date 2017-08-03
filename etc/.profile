@@ -1,3 +1,7 @@
+# マシン固有の設定は
+# ~/.profile.local
+# に書くこと
+
 #echo "~/.profile loaded"
 
 export DOT=${DOT:-$HOME/dot}
@@ -42,3 +46,7 @@ stty -ixon
 echo
 command df -h | command awk '/^\/dev/ {gsub(/.[890][0-9]%/, "\x1b[1;31m&\x1b[0m"); print;}'
 echo
+
+if [ -e ~/.profile.local ]; then
+    . ~/.profile.local
+fi

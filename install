@@ -20,6 +20,7 @@ TIME=$(date +%Y%m%d_%H%M%S)
 link() {
     if [ -f "$HOME/$1" -a \! -L "$HOME/$1" ]; then
         $EVAL mkdir -p $BACKUP_DIR
+        echo "Backup: $1"
         $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
     fi
     $EVAL ln -sfv $ETC/$1 ~
@@ -36,10 +37,12 @@ link .gitignore
 link .gitconfig
 link .inputrc
 link .irbrc
+link .profile
 link .screenrc
 link .sqliterc
 link .pryrc
 link .vim
+link .zprofile
 $EVAL ln -sfv $ETC/.vim/.vimrc ~/.vimrc
 
 if [ "$DRY" != "" ]; then

@@ -163,7 +163,7 @@ bindkey '^X^L' peco-select-file-recursive
 #zstyle ':vcs_info:*' actionformats '[%b|%a]'
 #
 #RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
-. "$DOT/etc/mollifier-git-zsh-prompt"
+. ~/dot/etc/mollifier-git-zsh-prompt
 
 
 #-----------------------------------------------------------------------------

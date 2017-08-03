@@ -1,3 +1,7 @@
+# マシン固有の設定は
+# ~/.screenrc.local
+# に書くこと
+
 escape ^T^T
 
 # vimでEscの反応が遅くなるのを防ぐため
