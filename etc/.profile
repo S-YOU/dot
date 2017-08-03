@@ -26,7 +26,7 @@ pathmunge () {
     esac
 }
 
-pathmunge "$DOT/bin"
+pathmunge "$HOME/dot/bin"
 pathmunge "$HOME/bin"
 pathmunge . after
 
