@@ -36,6 +36,8 @@ export EDITOR="vim --cmd 'set noswapfile'"
 export LANG=ja_JP.UTF-8
 export LC_COLLATE=C
 export LESS='-iFMXR -j10'
+export LESS_TERMCAP_so=$'\E[48;5;151m'  # 256color: http://misc.flogisoft.com/bash/tip_colors_and_formatting#background1
+export LESS_TERMCAP_se=$'\E[0m'
 export PAGER=less
 export PGUSER=postgres
 

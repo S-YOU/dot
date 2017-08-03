@@ -1692,6 +1692,8 @@ endfunction
 function! _BufInfo()
   let bufnr = bufnr("%")
   let fullpath = expand("%:p")
+  let ls = system('ls -l ' . shellescape(expand('%:p')))
+  echo ls
   echo fullpath
   echo getfperm(fullpath)."  ".strftime("%Y-%m-%d %H:%M:%S",getftime(fullpath))."   ".NumberFormat(Bufsize())." bytes (" . FileSizeFormat(Bufsize()) . ")"
   echo "\nタイムスタンプを戻すには："
