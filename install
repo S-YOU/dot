@@ -4,17 +4,25 @@ DOT_BASENAME="dot"
 DOT="${DOT:-$HOME/$DOT_BASENAME}"
 ETC="$DOT/etc"
 
-mkdir -p ~/bin ~/tmp ~/.vimundo
+if [ "$DRY" != "" -o "$DRYRUN" != "" -o "$DRY_RUN" != "" ]; then
+    DRY=1
+    echo "Dry run================================================"
+    EVAL=echo
+else
+    EVAL=eval
+fi
+
+$EVAL mkdir -p ~/bin ~/tmp ~/.vimundo
 
 BACKUP_DIR="$HOME/dot_backup"
 TIME=$(date +%Y%m%d_%H%M%S)
 
 link() {
     if [ -f "$HOME/$1" -a \! -L "$HOME/$1" ]; then
-        mkdir -p $BACKUP_DIR
-        mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
+        $EVAL mkdir -p $BACKUP_DIR
+        $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
     fi
-    ln -sfv $ETC/$1 ~
+    $EVAL ln -sfv $ETC/$1 ~
 }
 
 cd "$ETC"
@@ -25,9 +33,15 @@ link .gdbinit
 link .gdbinit.d
 link .ghci
 link .gitignore
+link .gitconfig
 link .inputrc
 link .irbrc
+link .screenrc
 link .sqliterc
 link .pryrc
 link .vim
-ln -sfv $ETC/.vim/.vimrc ~/.vimrc
+$EVAL ln -sfv $ETC/.vim/.vimrc ~/.vimrc
+
+if [ "$DRY" != "" ]; then
+    echo "Dry run================================================"
+fi

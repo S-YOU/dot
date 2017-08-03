@@ -1,3 +1,7 @@
+# マシン固有の設定は
+# ~/.gitconfig.local
+# に書くこと
+
 [user]
 	name = Aoyama, Shotaro
 	email = aosho235@gmail.com
@@ -81,3 +85,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[include]
+	path = .gitconfig.local

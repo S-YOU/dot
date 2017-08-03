@@ -102,4 +102,4 @@ markkeys ^K=3k
 # backtick 0 5 5 vmstat
 # backtick 1 60 60 date +'%H:%M'
 
-#source $HOME/.screenrc.local
+source $HOME/.screenrc.local
