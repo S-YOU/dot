@@ -78,11 +78,11 @@ bindkey "^[[6~" next
 #bindkey -k -a F2 next
 
 # hardcopyは文字化けするのでこの方法で
-# bind h eval "readreg t" "msgminwait 0" "copy" "stuff \"H L$ \"" "writebuf $HOME/tmp/screen-hardcopy.txt" "paste t ."
+# bind h eval "readreg t" "msgminwait 0" "copy" "stuff \"H L$ \"" "writebuf $HOME/hardcopy.txt" "paste t ."
 
 bind H
 
-bind h eval "hardcopy -h $HOME/tmp/screen-hardcopy"
+bind h eval "hardcopy -h $HOME/hardcopy.txt"
 
 setenv BUFFERFILE "$HOME/.yank" 
 bufferfile "$BUFFERFILE"
