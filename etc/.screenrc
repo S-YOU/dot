@@ -66,8 +66,6 @@ bind ^w remove						# ブラウザと同じC-w
 bind q remove						# ブラウザと同じC-w
 bind o only
 bind ^o only
-# カレントディレクトリで新しいウィンドウを開く（カレントウィンドウでシェルのプロンプトが出ている状態でないといけない）
-#bind c stuff "screen -X chdir \$PWD;screen^M"
 
 # Pageup, Pagedownでウィンドウ切り替え
 bindkey "^[[5~" prev
@@ -92,7 +90,7 @@ bind ^v eval readbuf "paste ."
 bind S eval "split"    focus next next
 bind | eval "split -v" focus next next
 
-markkeys ^K=3k
+#markkeys ^K=3k
 
 
 # いくつかウィンドウを開いておく

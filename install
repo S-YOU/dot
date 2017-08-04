@@ -43,6 +43,7 @@ link .sqliterc
 link .pryrc
 link .vim
 link .zprofile
+link .zshrc
 $EVAL ln -sfv $ETC/.vim/.vimrc ~/.vimrc
 
 if [ "$DRY" != "" ]; then

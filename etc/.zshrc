@@ -1,3 +1,7 @@
+# マシン固有の設定は
+# ~/.zshrc.local
+# に書くこと
+
 # 初期化ファイルの読み込み順
 # 1. /etc/zshenv
 # 2. ~/.zshenv
@@ -232,3 +236,9 @@ type() {
 # URLをペーストしたとき、自動的に?や&をエスケープする
 #autoload -U url-quote-magic
 #zle -N self-insert url-quote-magic
+
+
+
+if [ -e ~/.zprofile.local ]; then
+    . ~/.zprofile.local
+fi
