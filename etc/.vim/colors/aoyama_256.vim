@@ -39,9 +39,11 @@ hi Error                cterm=None              ctermfg=white           ctermbg=
 hi ErrorMsg             cterm=None              ctermfg=16              ctermbg=217
 hi Folded               cterm=None              ctermfg=232             ctermbg=189
 hi Function             cterm=None              ctermfg=232             ctermbg=None
+hi FunctionName cterm=bold ctermfg=93 ctermbg=none
+
 hi HintHL               cterm=None              ctermfg=None            ctermbg=None
 hi Identifier           cterm=None              ctermfg=None            ctermbg=None
-hi IncSearch            cterm=None              ctermfg=207             ctermbg=80
+hi IncSearch            cterm=None              ctermfg=7               ctermbg=50
 hi LineNe               cterm=None              ctermfg=lightgreen      ctermbg=lightcyan
 hi LineNr               cterm=None              ctermfg=1               ctermbg=None
 hi Macro                cterm=None              ctermfg=129             ctermbg=None

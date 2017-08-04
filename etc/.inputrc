@@ -6,10 +6,19 @@
 
 #DEL:delete-char
 
-set completion-ignore-case on
 set blink-matching-paren on
 
-
+# http://camisoul.blogspot.jp/2015/11/set-cd-zsh-zstyle-bashreadline.html
+set colored-stats on
+set completion-ignore-case on
+set completion-map-case on
+set completion-query-items 100
+set mark-symlinked-directories on
+set menu-complete-display-prefix off
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set skip-completed-text on
+set visible-stats on
 
 $if Gdb
 # F5 : continue

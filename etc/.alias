@@ -41,6 +41,9 @@ alias tf='tail -f -n 500'
 alias vi='vim'
 alias wget='wget --no-check-certificate --content-disposition'
 alias xf='xmllint --format - | less'
+xpath() {
+    xmllint --noent --format --xpath "$1" -
+}
 
 man() {
     env LESS_TERMCAP_mb=$'\E[01;31m' \

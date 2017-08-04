@@ -1,7 +1,6 @@
 "===================================================================
 "   Vim Setting 
 "===================================================================
-" $Id: .vimrc 1208 2017-07-30 18:38:11Z aoyama $
 
 " 積極的に使うべき機能
 " + で同じインデントの次の行へ移動
@@ -237,6 +236,8 @@ nnoremap <silent> b :<C-u>call BackwardWord(1)<CR>
 nnoremap <silent> } :<C-u>call ForwardParagraph()<CR>
 onoremap <silent> } :<C-u>call ForwardParagraph()<CR>
 xnoremap <silent> } <Esc>:<C-u>call ForwardParagraph()<CR>mzgv`z
+nnoremap <silent> [[ :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>[[:let &scrolloff = scrolloff_old<CR>
+nnoremap <silent> ]] :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>]]:let &scrolloff = scrolloff_old<CR>
 vnoremap <Esc> <Esc>`<
 xnoremap <silent> y y`>
 noremap <silent> ) /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
@@ -1024,6 +1025,7 @@ function! C_Setting()
   nnoremap gh yiw:AS<CR>/<C-R>"<CR>
   " 関数プロトタイプヒント
   call InstallFunctionHint()
+  syn match FunctionName /\w\+(\@=/
 endfunction 
 
 function! _MyCComplete(findstart, base)
@@ -1690,6 +1692,8 @@ endfunction
 function! _BufInfo()
   let bufnr = bufnr("%")
   let fullpath = expand("%:p")
+  let ls = system('ls -l ' . shellescape(expand('%:p')))
+  echo ls
   echo fullpath
   echo getfperm(fullpath)."  ".strftime("%Y-%m-%d %H:%M:%S",getftime(fullpath))."   ".NumberFormat(Bufsize())." bytes (" . FileSizeFormat(Bufsize()) . ")"
   echo "\nタイムスタンプを戻すには："
@@ -1791,6 +1795,7 @@ function! GetProtoLine()
 endfunction
 
 
+" Cの場合、[[で十分そう
 function! WhatFunction()
   if exists("b:WhatFunction_LastLine") && b:WhatFunction_LastLine == line(".")
     return b:WhatFunction
