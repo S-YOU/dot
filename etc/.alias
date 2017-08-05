@@ -199,3 +199,45 @@ svn() {
         FORCE_COLOR=true command svn "$@" | less -F
     fi
 }
+gcc-predefined-macros() {
+     gcc -v -E -dM - < /dev/null
+}
+
+gcc-including-files() {
+	`gcc -print-prog-name=cc1` -E -H -quiet "$@" > /dev/null
+}
+
+gcc-system-include-path() {
+	cpp -v < /dev/null 2>&1 >/dev/null|sed -ne '/#include <.*starts here:/,/End of search list/p' | body 1 1
+}
+
+gcc-make-depend() {
+	gcc -MM "$@"
+}
+
+gcc-make-depend-system() {
+	gcc -M "$@"
+}
+
+gcc-preprocess() {
+    local compile_command=`show-compile-command $1`
+    if [ -z "$compile_command" ]; then
+        echo "Don't know how to compile: $1" 1>&2
+        return 1
+    else
+        local preprocess_command=`echo "$compile_command"|sed -e 's@cc@cc -E -C@;s@-c@@g;s@-S@@g;s@ -o *[^ ][^ ]*@@g'`
+        echo "$preprocess_command" 1>&2
+        eval "$preprocess_command"
+    fi
+}
+
+gcc-show-macros() {
+    local compile_command=`show-compile-command $1`
+    if [ -z "$compile_command" ]; then
+        echo "Don't know how to compile: $1" 1>&2
+        return 1
+    else
+        local preprocess_command=`echo "$compile_command"|sed -e 's@cc@cc -EC -dM@;s@-c@@g;s@-S@@g;s@ -o *[^ ][^ ]*@@g'`
+        eval "$preprocess_command"
+    fi
+}
