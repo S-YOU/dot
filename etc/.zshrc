@@ -218,6 +218,6 @@ type() {
 
 
 
-if [ -e ~/.zprofile.local ]; then
-    . ~/.zprofile.local
+if [ -e ~/.zshrc.local ]; then
+    . ~/.zshrc.local
 fi
