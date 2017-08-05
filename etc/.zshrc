@@ -54,6 +54,8 @@ setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイル�
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 
+autoload -Uz colors
+colors
 
 autoload -U compinit && compinit
 #compctl -M 'm:{a-z}={A-Z}'	# 大文字小文字を区別しない
@@ -80,13 +82,11 @@ CDPATH=$HOME:$HOME/bm
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
-PROMPT='%{${fg[yellow]}%}%}%n@%m%{${reset_color}%} $(get_vcs_info_msg)
+PROMPT='
+[%{${fg[yellow]}%}%}%n@%m%{${reset_color}%}] $(get_vcs_info_msg)
 [%~:%j]# '
 
-# vimから:shしたときはプロンプトに(vim)と表示する
-if [[ -n "$VIMRUNTIME" ]]; then
-	PROMPT="%{${fg[white]}${bg[blue]}%}(vim)%{${reset_color}%}$PROMPT"
-fi
+source ~/dot/etc/mollifier-git-zsh-prompt
 
 # bashと共通のalias
 source ~/.alias
@@ -148,28 +148,6 @@ zle -N peco-select-file
 zle -N peco-select-file-recursive
 bindkey '^L'   peco-select-file
 bindkey '^X^L' peco-select-file-recursive
-
-#--------------------------------------------------------------------
-#	プロンプトにgitの情報を表示する
-#	http://tkengo.github.io/blog/2013/05/12/zsh-vcs-info/
-#--------------------------------------------------------------------
-## プロンプト表示
-#autoload -Uz vcs_info
-#setopt prompt_subst
-## check-for-changes: true が指定されていると formats %c と %u というフォーマットが使えるようになります。
-#zstyle ':vcs_info:git:*' check-for-changes true
-#zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
-##zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-#zstyle ':vcs_info:git:*' unstagedstr "+"
-## %c ステージされていてコミットされていない(git add だけされている)ファイルがあった時に stagedstr で指定した文字列に展開されます。ない場合は空です。
-## %u ステージされていない(git add されていない)変更ファイルがあった時に unstagedstr で指定した文字列に展開されます。ない場合は空です。
-## %b カレントブランチ名に展開されます。
-#zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
-#zstyle ':vcs_info:*' actionformats '[%b|%a]'
-#
-#RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
-. ~/dot/etc/mollifier-git-zsh-prompt
-
 
 #-----------------------------------------------------------------------------
 #	precmd & preexec
