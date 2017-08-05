@@ -1,3 +1,14 @@
 #!/bin/sh
 
-echo $PATH | tr : '\n'
+# 使用例
+# 
+# $ printpath
+# $ printpath $CDPATH
+
+if [ "$1" = "" ]; then
+    ENV='$PATH'
+else
+    ENV="$1"
+fi
+
+eval "echo $ENV | tr : '\n'"
