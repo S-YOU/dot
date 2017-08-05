@@ -29,6 +29,7 @@ link() {
 cd "$ETC"
 
 link .alias
+link .bashrc
 link .ctags
 link .gdbinit
 link .gdbinit.d
