@@ -80,7 +80,8 @@ CDPATH=$HOME:$HOME/bm
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
-PROMPT='[%~:%j]# '
+PROMPT='%{${fg[yellow]}%}%}%n@%m%{${reset_color}%} $(get_vcs_info_msg)
+[%~:%j]# '
 
 # vimから:shしたときはプロンプトに(vim)と表示する
 if [[ -n "$VIMRUNTIME" ]]; then
