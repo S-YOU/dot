@@ -82,7 +82,8 @@ CDPATH=$HOME:$HOME/bm
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
-PROMPT='[%~:%j$(get_prompt_hostname)]# '
+PROMPT='%{$fg[red]%}$(get_prompt_hostname)%{${reset_color}%}
+[%~:%j]# '
 RPROMPT='$(get_vcs_info_msg)'
 
 get_prompt_hostname() {
