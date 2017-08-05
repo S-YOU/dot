@@ -1,58 +1,140 @@
 #!/usr/bin/env ruby
 
-usage = <<'EOF'
-使用例:
-    fn \*.c
-    fn \*.c -vi
-    fn \*.c -ls
+require "tempfile"
+require "yaml"
+
+class Fn
+  def system_e(*args)
+    p args if @debug
+    system(*args) || (p args; raise "Error: command failed")
+  end
+
+  def main
+    @debug = false
+    @conf_path = ENV['HOME'].to_s + "/.fn.yml"
+
+    @usage = <<EOF
+# 使用例
+
+```
+fn \*.c
+fn \*.c -vi
+fn \*.c -ls
+fn /usr/include a\*.h
+fn -conf sample \*.h
+```
+
+# 設定ファイル
+
+#{@conf_path}
+
+サンプル：
+
+```
+sample:
+    dirs:
+        - /usr/include/linux/can
+        - /usr/include/linux/wimax
+gdb:
+    dirs:
+        - /usr/include/gdb
+```
 EOF
 
-def system_e(*args)
-  system(*args) || (p args; raise "Error: command failed")
-end
+    @dirs     = []
+    @pattern  = []
+    @cmd      = nil
+    @case     = :smart  # :smart or :sensitive or :insensitive
 
-@ignore_case = true
+    load_conf
 
-cmd = nil
+    parse_args
 
-args = ARGV
+    # 検索語が大文字を含んでいる場合はケースセンシティブ
+    case @case
+    when :smart
+      ignore_case = (@pattern.downcase == @pattern)
+    when :sensitive
+      ignore_case = false
+    when :insensitive
+      ignore_case = true
+    end
 
-commands = {
-  "vi" => "vim",
-  "ls" => "ls -l",
-}
+    @dirs.each do |dir|
+      search(dir, @pattern, ignore_case, @cmd)
+    end
+  end
+  
+  def load_conf
+    if File.exist?(@conf_path)
+      @conf = YAML.load_file(@conf_path)
+    else
+      @conf = {}
+    end
+  end
 
-commands.each do |k, v|
-  flag = "-" + k
-  if args.include?(flag)
-    args = args.select {|x| x != flag}
-    cmd = v
+  def parse_args
+    args = ARGV
+    commands = {
+      "-vi" => "vim",
+      "-ls" => "ls -l",
+    }
+
+    option_excluded = []
+    i = 0
+    while i < args.length
+      arg = args[i]
+      if commands[arg]
+        @cmd = commands[arg]
+        i += 1
+      elsif arg == "-conf"
+        @conf_key = args[i + 1]
+        i += 1
+      elsif arg == "-debug"
+        @debug = true
+      else
+        option_excluded << arg
+      end
+      i += 1
+    end
+    args = option_excluded
+
+    p args if @debug
+
+    @dirs = []
+
+    if args.length == 0
+      print @usage
+      exit
+    elsif args.length == 1
+      @pattern = args[0]
+      if @conf_key
+        p @conf[@conf_key] if @debug
+        @dirs = @conf[@conf_key]["dirs"]
+      else
+        @dirs << "."
+      end
+    else
+      @dirs << args[0]
+      @pattern = args[1]
+    end
+  end
+
+  def search(dir, pattern, ignore_case, cmd=nil)
+    find_cmd = "find '#{dir}' -type f " + (ignore_case ? "-iname" : "-name") + " '#{pattern}'"
+    if cmd
+      Tempfile.create("fn") do |tmp|
+        system_e("#{find_cmd} -print0 > #{tmp.path}")
+        if File.size(tmp.path) > 0
+          # スペースなどを含むファイル名に対応するため、標準入力を/dev/ttyにしつつxargs -0
+          system_e("xargs -0 sh -c '#{cmd} \"$@\" < /dev/tty' vim < #{tmp.path}")
+        end
+      end
+    else
+      system_e("#{find_cmd} | less -F")
+    end
   end
 end
 
-if args.length == 0
-  print usage
-elsif args.length == 1
-  name = args[0]
-  if ENV["FN_ROOT"].to_s == ""
-    dir = "."
-  else
-    dir = ENV["FN_ROOT"]
-  end
-else
-  dir = args[0]
-  name = args[1]
-end
 
-# 検索語が大文字を含んでいる場合はケースセンシティブ
-if name.downcase != name
-  @ignore_case = false
-end
-
-name_option = @ignore_case ? "-iname" : "-name"
-
-if cmd
-  system_e("#{cmd} $(find #{dir} #{name_option} '#{name}')")
-else
-  system_e("find #{dir} #{name_option} '#{name}'")
-end
+Fn.new.main
