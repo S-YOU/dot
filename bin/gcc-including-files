@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# 引数で与えられたソースファイルが#includeしているファイル一覧を表示する
+
+`gcc -print-prog-name=cc1` -E -H -quiet "$@" > /dev/null

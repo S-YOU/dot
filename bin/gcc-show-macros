@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# マクロ定義一覧を表示する
+
+# 使用例:
+#   gcc-show-macros hoge.c -I./sub
+
+gcc -E -C -dM "$@" | sort | less

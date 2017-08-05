@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# gccのシステムインクルードパス、ライブラリパスなどを表示する
+
+export LANG=C
+
+cpp -v < /dev/null > /dev/null

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# gccで定義済みのマクロ一覧を表示する
+
+exec gcc -v -E -dM - < /dev/null

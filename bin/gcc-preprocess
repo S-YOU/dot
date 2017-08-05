@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# 使用例:
+#   gcc-preprocess hoge.c -I./sub
+
+exec gcc -E -C "$@"
