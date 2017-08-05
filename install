@@ -18,7 +18,7 @@ BACKUP_DIR="$HOME/dot_backup"
 TIME=$(date +%Y%m%d_%H%M%S)
 
 link() {
-    if [ -f "$HOME/$1" -a \! -L "$HOME/$1" ]; then
+    if [ -e "$HOME/$1" -a \! -L "$HOME/$1" ]; then
         $EVAL mkdir -p $BACKUP_DIR
         echo "Backup: $1"
         $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
@@ -37,6 +37,7 @@ link .gitignore
 link .gitconfig
 link .inputrc
 link .irbrc
+link .my.cnf
 link .profile
 link .screenrc
 link .sqliterc
@@ -47,5 +48,5 @@ link .zshrc
 $EVAL ln -sfv $ETC/.vim/.vimrc ~/.vimrc
 
 if [ "$DRY" != "" ]; then
-    echo "Dry run================================================"
+    echo "Dry run ================================================"
 fi

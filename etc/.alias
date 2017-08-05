@@ -188,7 +188,6 @@ pagerize() {
     eval "$src"
 }
 
-# pagerize svn
 pagerize find
 pagerize readelf
 pagerize tree

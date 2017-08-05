@@ -2,6 +2,8 @@
 # ~/.zshrc.local
 # に書くこと
 
+[ "$ECHO_RC_LOADED" != "" ] && echo "~/.zshrc loaded"
+
 # 初期化ファイルの読み込み順
 # 1. /etc/zshenv
 # 2. ~/.zshenv
@@ -94,7 +96,7 @@ get_prompt_hostname() {
 	fi
 }
 
-source ~/dot/etc/mollifier-git-zsh-prompt
+source $DOT/etc/mollifier-git-zsh-prompt
 
 # bashと共通のalias
 source ~/.alias

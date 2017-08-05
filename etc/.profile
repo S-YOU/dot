@@ -2,7 +2,7 @@
 # ~/.profile.local
 # に書くこと
 
-#echo "~/.profile loaded"
+[ "$ECHO_RC_LOADED" != "" ] && echo "~/.profile loaded"
 
 export DOT=${DOT:-$HOME/dot}
 
