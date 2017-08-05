@@ -82,9 +82,16 @@ CDPATH=$HOME:$HOME/bm
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
-PROMPT='
-[%{${fg[yellow]}%}%}%n@%m%{${reset_color}%}] $(get_vcs_info_msg)
-[%~:%j]# '
+PROMPT='[%~:%j$(get_prompt_hostname)]# '
+RPROMPT='$(get_vcs_info_msg)'
+
+get_prompt_hostname() {
+	if [ "$PROMPT_HOSTNAME" = "" ]; then
+		echo '@%m'
+	else
+		echo "@$PROMPT_HOSTNAME"
+	fi
+}
 
 source ~/dot/etc/mollifier-git-zsh-prompt
 
