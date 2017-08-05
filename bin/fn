@@ -4,13 +4,15 @@ require "tempfile"
 require "yaml"
 
 class Fn
+  def message(msg)
+    $stderr.puts "### #{msg}" if @verbose
+  end
+
   def system_e(*args)
-    p args if @debug
     system(*args) || (p args; raise "Error: command failed")
   end
 
   def main
-    @debug = false
     @conf_path = ENV['HOME'].to_s + "/.fn.yml"
 
     @usage = <<EOF
@@ -90,16 +92,14 @@ EOF
       elsif arg == "-conf"
         @conf_key = args[i + 1]
         i += 1
-      elsif arg == "-debug"
-        @debug = true
+      elsif arg == "-v"
+        @verbose = true
       else
         option_excluded << arg
       end
       i += 1
     end
     args = option_excluded
-
-    p args if @debug
 
     @dirs = []
 
@@ -109,7 +109,6 @@ EOF
     elsif args.length == 1
       @pattern = args[0]
       if @conf_key
-        p @conf[@conf_key] if @debug
         @dirs = @conf[@conf_key]["dirs"]
       else
         @dirs << "."
@@ -118,10 +117,16 @@ EOF
       @dirs << args[0]
       @pattern = args[1]
     end
+
+    message "Search directories:"
+    @dirs.each do |dir|
+      message "  #{dir}"
+    end
   end
 
   def search(dir, pattern, ignore_case, cmd=nil)
     find_cmd = "find '#{dir}' -type f " + (ignore_case ? "-iname" : "-name") + " '#{pattern}'"
+    message("find_cmd = #{find_cmd}")
     if cmd
       Tempfile.create("fn") do |tmp|
         system_e("#{find_cmd} -print0 > #{tmp.path}")

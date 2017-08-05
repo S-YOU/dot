@@ -189,6 +189,7 @@ pagerize() {
 }
 
 # pagerize svn
+pagerize find
 pagerize readelf
 pagerize tree
 
