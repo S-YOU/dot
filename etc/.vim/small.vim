@@ -68,11 +68,13 @@ else
 endif
 set hidden
 set incsearch
+set hlsearch
 set ignorecase
 set smartcase
 set autoindent smartindent
 set smarttab
-set tabstop=4 softtabstop=4 shiftwidth=4
+set expandtab tabstop=4 softtabstop=4 shiftwidth=4
+set backspace=2
 set splitbelow splitright
 
 
