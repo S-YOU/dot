@@ -5,13 +5,7 @@
 
 set -e
 
-if [ "$DRY" != "" -o "$DRYRUN" != "" -o "$DRY_RUN" != "" ]; then
-    DRY=1
-    echo "Dry run================================================"
-    EVAL=echo
-else
-    EVAL=eval
-fi
+. "$DOT/bin/_dryrun.sh"
 
 pattern="$1"
 shift

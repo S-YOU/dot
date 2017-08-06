@@ -4,13 +4,7 @@ DOT_BASENAME="dot"
 DOT="${DOT:-$HOME/$DOT_BASENAME}"
 ETC="$DOT/etc"
 
-if [ "$DRY" != "" -o "$DRYRUN" != "" -o "$DRY_RUN" != "" ]; then
-    DRY=1
-    echo "Dry run================================================"
-    EVAL=echo
-else
-    EVAL=eval
-fi
+. "$DOT/bin/_dryrun.sh"
 
 $EVAL mkdir -p ~/bin ~/tmp ~/.vimundo
 
