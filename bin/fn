@@ -24,6 +24,12 @@ fn \*.c -vi
 fn \*.c -ls
 fn /usr/include a\*.h
 fn -conf sample \*.h
+
+# verbose
+fn -v \*.c
+
+# 無視ディレクトリを無効
+fn -a \*.c
 ```
 
 # 設定ファイル
@@ -47,6 +53,7 @@ EOF
     @pattern  = []
     @cmd      = nil
     @case     = :smart  # :smart or :sensitive or :insensitive
+    @ignore_dirs = [".git", ".svn", "node_modules"]
 
     load_conf
 
@@ -63,7 +70,7 @@ EOF
     end
 
     @dirs.each do |dir|
-      search(dir, @pattern, ignore_case, @cmd)
+      search(dir, @pattern, ignore_case, @cmd, @ignore_dirs)
     end
   end
   
@@ -94,6 +101,11 @@ EOF
         i += 1
       elsif arg == "-v"
         @verbose = true
+      elsif arg == "-a"
+        @ignore_dirs = []
+      elsif arg == "-h"
+        print @usage
+        exit
       else
         option_excluded << arg
       end
@@ -122,14 +134,25 @@ EOF
     @dirs.each do |dir|
       message "  #{dir}"
     end
+    message "Ignore patterns:"
+    @ignore_dirs.each do |pat|
+      message "  #{pat}"
+    end
   end
 
-  def search(dir, pattern, ignore_case, cmd=nil)
-    find_cmd = "find '#{dir}' -type f " + (ignore_case ? "-iname" : "-name") + " '#{pattern}'"
+  def search(dir, pattern, ignore_case, cmd, ignore_dirs)
+    if ignore_dirs && !ignore_dirs.empty?
+      ignore_options = '\( ' + ignore_dirs.map {|x| "-name '#{x}'"}.join(" -or ") + ' \) -prune -or '
+    else
+      ignore_options = ""
+    end
+    print_option = cmd ? "-print0" : "-print"
+    name_option  = ignore_case ? "-iname" : "-name"
+    find_cmd = "find '#{dir}' #{ignore_options} \\( -type f #{name_option} '#{pattern}' \\) #{print_option}"
     message("find_cmd = #{find_cmd}")
     if cmd
       Tempfile.create("fn") do |tmp|
-        system_e("#{find_cmd} -print0 > #{tmp.path}")
+        system_e("#{find_cmd} > #{tmp.path}")
         if File.size(tmp.path) > 0
           # スペースなどを含むファイル名に対応するため、標準入力を/dev/ttyにしつつxargs -0
           system_e("xargs -0 sh -c '#{cmd} \"$@\" < /dev/tty' vim < #{tmp.path}")
