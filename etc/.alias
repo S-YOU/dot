@@ -37,38 +37,19 @@ alias r='$DOT/bin/r'
 alias rm='$DOT/bin/rma.sh'
 alias rp='realpath'
 alias st='git st'
-#alias rm='~/git/rm_alternative/rma.sh'
 alias tf='tail -f -n 500'
 alias vi='vim'
 alias wget='wget --no-check-certificate --content-disposition'
 alias xf='xmllint --format - | less'
-xpath() {
-    xmllint --noent --format --xpath "$1" -
-}
 
-man() {
-    env LESS_TERMCAP_mb=$'\E[01;31m' \
-    LESS_TERMCAP_md=$'\E[01;38;5;197m' \
-    LESS_TERMCAP_me=$'\E[0m' \
-    LESS_TERMCAP_ue=$'\E[0m' \
-    LESS_TERMCAP_us=$'\E[04;38;5;129m' \
-    man "$@"
-}
-
-l() {
-    if [ ! -t 0 ]; then
-        less "$@"
-    elif [ -d "$1" ]; then
-        ls -lrt "$@"
-    elif [ -f "$1" ]; then
-        less "$@"
+awsenv() {
+    local rbpath="$DOT/bin/awsenv.rb"
+    if [ "$1" = "" ]; then
+        ruby "$rbpath"
     else
-        ls -lrt
+        eval $(ruby "$rbpath" "$@")
+        ruby "$rbpath"
     fi
-}
-
-md() {
-    mkdir -p "$1" && cd "$1"
 }
 
 ghc() {
@@ -87,15 +68,6 @@ ghci() {
         stack --verbosity silent ghci -- "$@"
     else
         command ghci "$@"
-    fi
-}
-
-runghc() {
-    which stack > /dev/null
-    if [ $? = 0 ]; then
-        stack --verbosity silent runghc -- "$@"
-    else
-        command runghc -- "$@"
     fi
 }
 
@@ -122,41 +94,17 @@ jq() {
     command jq $OPT "$@" | less
 }
 
-ps() {
-    if [ $# = 0 ]; then
-        case "$OSTYPE" in
-            *linux*)
-                command ps axfo user,pid,pgid,tty,ni,rss,vsz,stat,wchan=WIDE-WCHAN-COLUMN,start,args | less +G
-                ;;
-            *)
-                command ps axo user,pid,pgid,tty,ni,rss,vsz,stat,start,args | less +G
-                ;;
-        esac
-    else
-        command ps "$@" | less +G
-    fi
+man() {
+    env LESS_TERMCAP_mb=$'\E[01;31m' \
+    LESS_TERMCAP_md=$'\E[01;38;5;197m' \
+    LESS_TERMCAP_me=$'\E[0m' \
+    LESS_TERMCAP_ue=$'\E[0m' \
+    LESS_TERMCAP_us=$'\E[04;38;5;129m' \
+    man "$@"
 }
 
-tt() {
-    if [ -t 1 ]; then
-        cd $(pjroot)
-    else
-        pjroot
-    fi
-}
-
-curljq() {
-    curl "$@" | jq .
-}
-
-awsenv() {
-    local rbpath="$DOT/bin/awsenv.rb"
-    if [ "$1" = "" ]; then
-        ruby "$rbpath"
-    else
-        eval $(ruby "$rbpath" "$@")
-        ruby "$rbpath"
-    fi
+md() {
+    mkdir -p "$1" && cd "$1"
 }
 
 mv() {
@@ -171,6 +119,18 @@ mv() {
         fi
     fi
     command mv -iv "$@"
+}
+
+l() {
+    if [ ! -t 0 ]; then
+        less "$@"
+    elif [ -d "$1" ]; then
+        ls -lrt "$@"
+    elif [ -f "$1" ]; then
+        less "$@"
+    else
+        ls -lrt
+    fi
 }
 
 # 任意のコマンドをlessでページング対応させる関数
@@ -193,11 +153,60 @@ pagerize find
 pagerize readelf
 pagerize tree
 
+pathmunge() {
+    case ":${PATH}:" in
+        *:"$1":*)
+            ;;
+        *)
+            if [ "$2" = "after" ] ; then
+                PATH=$PATH:$1
+            else
+                PATH=$1:$PATH
+            fi
+    esac
+}
+
+ps() {
+    if [ $# = 0 ]; then
+        case "$OSTYPE" in
+            *linux*)
+                command ps axfo user,pid,pgid,tty,ni,rss,vsz,stat,wchan=WIDE-WCHAN-COLUMN,start,args | less +G
+                ;;
+            *)
+                command ps axo user,pid,pgid,tty,ni,rss,vsz,stat,start,args | less +G
+                ;;
+        esac
+    else
+        command ps "$@" | less +G
+    fi
+}
+
+runghc() {
+    which stack > /dev/null
+    if [ $? = 0 ]; then
+        stack --verbosity silent runghc -- "$@"
+    else
+        command runghc -- "$@"
+    fi
+}
+
 svn() {
     if [ -t 1 -a "$1" = "ci" -o "$1" = "pe" ]; then
         command svn "$@"
     else
         FORCE_COLOR=true command svn "$@" | less -F
     fi
+}
+
+tt() {
+    if [ -t 1 ]; then
+        cd $(pjroot)
+    else
+        pjroot
+    fi
+}
+
+xpath() {
+    xmllint --noent --format --xpath "$1" -
 }
 

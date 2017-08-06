@@ -25,19 +25,6 @@ bindkey "^I" menu-expand-or-complete
 # 何文字か入力してからC-pを押すと、その文字列で始まるコマンドを検索
 #bindkey "^P" up-line-or-search
 
-pathmunge() {
-    case ":${PATH}:" in
-        *:"$1":*)
-            ;;
-        *)
-            if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-            else
-                PATH=$1:$PATH
-            fi
-    esac
-}
-
 setopt auto_cd				# ディレクトリ名だけで cd
 setopt auto_pushd			# cd で pushd
 setopt complete_aliases     # alias v=vim としたとき、vに対してvについての補完をする（vimではなく）
