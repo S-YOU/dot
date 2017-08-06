@@ -1,3 +1,4 @@
+--extra=+f
 --langmap=scheme:
 --langdef=scm
 --langmap=scm:.ss.scm
