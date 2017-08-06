@@ -98,8 +98,6 @@ esac
 # カレントに候補がないときだけCDPATHを候補にする
 zstyle ':completion*:path-directories' ignored-patterns '*'
 
-compdef _files gm
-compdef _files a
 compdef _files r
 compdef '_files -g "*.hs"' runghc
 
