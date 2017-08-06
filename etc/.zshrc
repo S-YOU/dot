@@ -25,20 +25,6 @@ bindkey "^I" menu-expand-or-complete
 
 autoload -Uz colors && colors
 
-e_normal=`echo -e "\033[0m"`
-e_red=`   echo -e "\033[0;31m"`
-e_RED=`   echo -e "\033[1;31m"`
-e_green=` echo -e "\033[0;32m"`
-e_GREEN=` echo -e "\033[1;32m"`
-e_yellow=`echo -e "\033[0;33m"`
-e_YELLOW=`echo -e "\033[1;33m"`
-e_blue=`  echo -e "\033[0;34m"`
-e_BLUE=`  echo -e "\033[1;34m"`
-e_purple=`echo -e "\033[0;35m"`
-e_PURPLE=`echo -e "\033[1;35m"`
-e_cyan=`  echo -e "\033[0;36m"`
-e_CYAN=`  echo -e "\033[1;36m"`
-
 # URLをペーストしたとき、自動的に?や&をエスケープする
 #autoload -U url-quote-magic
 #zle -N self-insert url-quote-magic
