@@ -22,9 +22,31 @@ bindkey -e
 bindkey "^I" menu-expand-or-complete
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
-# 何文字か入力してからC-pを押すと、その文字列で始まるコマンドを検索
-#bindkey "^P" up-line-or-search
 
+autoload -Uz colors && colors
+
+e_normal=`echo -e "\033[0m"`
+e_red=`   echo -e "\033[0;31m"`
+e_RED=`   echo -e "\033[1;31m"`
+e_green=` echo -e "\033[0;32m"`
+e_GREEN=` echo -e "\033[1;32m"`
+e_yellow=`echo -e "\033[0;33m"`
+e_YELLOW=`echo -e "\033[1;33m"`
+e_blue=`  echo -e "\033[0;34m"`
+e_BLUE=`  echo -e "\033[1;34m"`
+e_purple=`echo -e "\033[0;35m"`
+e_PURPLE=`echo -e "\033[1;35m"`
+e_cyan=`  echo -e "\033[0;36m"`
+e_CYAN=`  echo -e "\033[1;36m"`
+
+# URLをペーストしたとき、自動的に?や&をエスケープする
+#autoload -U url-quote-magic
+#zle -N self-insert url-quote-magic
+
+
+#-----------------------------------------------------------------------------
+#	オプション
+#-----------------------------------------------------------------------------
 setopt auto_cd				# ディレクトリ名だけで cd
 setopt auto_pushd			# cd で pushd
 setopt complete_aliases     # alias v=vim としたとき、vに対してvについての補完をする（vimではなく）
@@ -43,10 +65,24 @@ setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイル�
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 
-autoload -Uz colors
-colors
+CDPATH=$HOME:$HOME/bm
+HISTFILE=$HOME/.zhistory
+HISTSIZE=100000
+SAVEHIST=100000 
 
-autoload -U compinit && compinit
+
+#-----------------------------------------------------------------------------
+#	補完
+#-----------------------------------------------------------------------------
+autoload -Uz compinit && compinit -u
+
+# 補完候補をメニューで選択
+zstyle ':completion:*' menu select 
+zmodload zsh/complist
+bindkey -M menuselect '^M' .accept-line
+bindkey -M menuselect '^N' forward-char
+bindkey -M menuselect '^P' backward-char
+
 #compctl -M 'm:{a-z}={A-Z}'	# 大文字小文字を区別しない
 # 大文字小文字を区別しない。
 # ハイフンとアンダースコアで相互にマッチするようにする
@@ -67,10 +103,28 @@ compdef _files a
 compdef _files r
 compdef '_files -g "*.hs"' runghc
 
-CDPATH=$HOME:$HOME/bm
-HISTFILE=$HOME/.zhistory
-HISTSIZE=100000
-SAVEHIST=100000 
+# pecoでカレントディレクト以下のファイルを補完
+peco-set-cursor() {
+    CURSOR=$#BUFFER             # カーソルを文末に移動
+    zle -R -c                   # refresh
+}
+peco-select-file() {
+    BUFFER="$LBUFFER$(command ls -A | fzf --prompt "$LBUFFER> ")"
+    peco-set-cursor
+}
+peco-select-file-recursive() {
+    BUFFER="$LBUFFER$(command find . -type f | fzf --prompt "$LBUFFER> ")"
+    peco-set-cursor
+}
+zle -N peco-select-file
+zle -N peco-select-file-recursive
+bindkey '^L'   peco-select-file
+bindkey '^X^L' peco-select-file-recursive
+
+
+#-----------------------------------------------------------------------------
+#	プロンプト
+#-----------------------------------------------------------------------------
 PROMPT='$(exit_status_text)%{$fg[red]%}$(get_prompt_hostname)%{${reset_color}%}
 [%~:%j]# '
 RPROMPT='$(get_vcs_info_msg)'
@@ -89,66 +143,6 @@ exit_status_text() {
 
 source $DOT/etc/mollifier-git-zsh-prompt
 
-# bashと共通のalias
-source ~/.alias
-# zsh固有のalias
-
-cd() {
-	if [ -f "$1" ]; then
-		builtin cd -P $(dirname "$1")
-	else
-		builtin cd -P "$@"
-	fi
-}
-
-e_normal=`echo -e "\033[0m"`
-e_red=`   echo -e "\033[0;31m"`
-e_RED=`   echo -e "\033[1;31m"`
-e_green=` echo -e "\033[0;32m"`
-e_GREEN=` echo -e "\033[1;32m"`
-e_yellow=`echo -e "\033[0;33m"`
-e_YELLOW=`echo -e "\033[1;33m"`
-e_blue=`  echo -e "\033[0;34m"`
-e_BLUE=`  echo -e "\033[1;34m"`
-e_purple=`echo -e "\033[0;35m"`
-e_PURPLE=`echo -e "\033[1;35m"`
-e_cyan=`  echo -e "\033[0;36m"`
-e_CYAN=`  echo -e "\033[1;36m"`
-
-
-# C-l: locateで補完
-#bindkey '^L' loc
-#zle -C loc menu-expand-or-complete _loc
-#_loc() {
-#	local wd=$words[-1]
-#	if [ "$wd" = "" ]; then
-#		return 0
-#	fi
-#	#files=($(locate $wd | grep ".*${wd}[^/]*$"))
-#	local ifs_old="$IFS"
-#	IFS=$'\n'
-#	files=("${(@f)$(locate -b $wd)}")
-#	compadd -M 'l:||.=**' -- $files
-#	IFS="$ifs_old"
-#}
-
-# pecoの設定
-function peco-set-cursor() {
-    CURSOR=$#BUFFER             # カーソルを文末に移動
-    zle -R -c                   # refresh
-}
-function peco-select-file() {
-    BUFFER="$LBUFFER$(command ls -A | fzf --prompt "$LBUFFER> ")"
-    peco-set-cursor
-}
-function peco-select-file-recursive() {
-    BUFFER="$LBUFFER$(command find . -type f | fzf --prompt "$LBUFFER> ")"
-    peco-set-cursor
-}
-zle -N peco-select-file
-zle -N peco-select-file-recursive
-bindkey '^L'   peco-select-file
-bindkey '^X^L' peco-select-file-recursive
 
 #-----------------------------------------------------------------------------
 #	precmd & preexec
@@ -193,14 +187,28 @@ preexec() {
 	fi
 }
 
+
+#-----------------------------------------------------------------------------
+#	エイリアス
+#-----------------------------------------------------------------------------
+
+# bashと共通のalias
+source ~/.alias
+
+# zsh固有のalias
+
+cd() {
+	if [ -f "$1" ]; then
+		builtin cd -P $(dirname "$1")
+	else
+		builtin cd -P "$@"
+	fi
+}
+
 # screenのタイトルを手動で設定したとき、固定する
 fixtitle() {
 	fixtitle=true
 }
-
-unalias run-help > /dev/null 2>&1
-autoload run-help
-alias help=run-help
 
 type() {
     local ret
@@ -213,10 +221,10 @@ type() {
     fi
 }
 
-# URLをペーストしたとき、自動的に?や&をエスケープする
-#autoload -U url-quote-magic
-#zle -N self-insert url-quote-magic
-
+# bashライクなhelp
+unalias run-help > /dev/null 2>&1
+autoload run-help
+alias help=run-help
 
 
 if [ -e ~/.zshrc.local ]; then
