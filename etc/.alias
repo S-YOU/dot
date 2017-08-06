@@ -150,11 +150,12 @@ curljq() {
 }
 
 awsenv() {
+    local rbpath="$DOT/bin/awsenv.rb"
     if [ "$1" = "" ]; then
-        ruby ~/home/bin/awsenv.rb
+        ruby "$rbpath"
     else
-        eval $(ruby ~/home/bin/awsenv.rb "$@")
-        ruby ~/home/bin/awsenv.rb
+        eval $(ruby "$rbpath" "$@")
+        ruby "$rbpath"
     fi
 }
 
