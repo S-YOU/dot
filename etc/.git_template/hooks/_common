@@ -1,0 +1,14 @@
+# vim: set ft=sh:
+
+set -u
+
+for i in "$GIT_DIR"/hooks/$HOOK_TYPE.d/*; do
+    if [ -x "$i" ]; then
+        echo "Executing hook: $i"
+        "$i" "$@"
+        if [ $? != 0 ]; then
+            echo "Hook returned non-zero. Stop."
+            exit 1
+        fi
+    fi
+done
