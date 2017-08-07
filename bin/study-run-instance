@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 cat > skeleton.json <<EOF
 {
     "DryRun": false,
@@ -46,7 +48,7 @@ cat > skeleton.json <<EOF
 }
 EOF
 
-cp ~/svn/bin/user_data.sh .
+cp -v ~/dot/bin/user_data.sh .
 
 cat <<EOF
 skeleton.jsonを生成しました。
