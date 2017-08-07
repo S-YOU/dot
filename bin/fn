@@ -148,7 +148,7 @@ EOF
     end
     print_option = cmd ? "-print0" : "-print"
     name_option  = ignore_case ? "-iname" : "-name"
-    find_cmd = "find '#{dir}' #{ignore_options} \\( -type f #{name_option} '#{pattern}' \\) #{print_option}"
+    find_cmd = "find '#{dir}' #{ignore_options} \\( \\! -type d #{name_option} '#{pattern}' \\) #{print_option}"
     message("find_cmd = #{find_cmd}")
     if cmd
       Tempfile.create("fn") do |tmp|
