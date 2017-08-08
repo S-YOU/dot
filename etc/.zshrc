@@ -20,6 +20,7 @@
 # Emacs(bash)と同じキーバインド
 bindkey -e
 bindkey "^I" menu-expand-or-complete
+bindkey "^O" accept-and-hold
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
 
