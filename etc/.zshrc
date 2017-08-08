@@ -107,6 +107,17 @@ zle -N peco-select-file-recursive
 bindkey '^L'   peco-select-file
 bindkey '^X^L' peco-select-file-recursive
 
+# fgとbgを完全に無視したCtrl-P
+_up-line-or-history-ignoring() {
+    zle up-line-or-history
+    case "$BUFFER" in
+        fg|bg)
+            zle up-line-or-history
+            ;;
+    esac
+}
+zle -N _up-line-or-history-ignoring
+bindkey '^P' _up-line-or-history-ignoring
 
 #-----------------------------------------------------------------------------
 #	プロンプト
