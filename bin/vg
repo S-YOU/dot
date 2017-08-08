@@ -92,7 +92,7 @@ elif [ "$CMD" = "git" ]; then
     git grep -nH $GIT_OPTIONS "$@"
 elif [ "$CMD" = "pt" ]; then
     echomsg "vimgrep: using pt"
-    pt --nogroup --nocolor $PT_OPTIONS "$@"
+    pt --global-gitignore --nogroup --nocolor $PT_OPTIONS "$@"
 else
     echomsg "vimgrep: using grep"
     grep --exclude-dir=.svn --exclude-dir=.git --exclude-dir=bundle --exclude-dir=node_modules -nH $GREP_OPTIONS "$@" -R .
