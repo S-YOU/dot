@@ -1,5 +1,0 @@
-#!/bin/sh
-
-# 普通のdiffを使ってsvn diffする
-
-svn --diff-cmd=diff diff "$@"

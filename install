@@ -3,21 +3,24 @@
 DOT_BASENAME="dot"
 DOT="${DOT:-$HOME/$DOT_BASENAME}"
 ETC="$DOT/etc"
-
-. "$DOT/bin/_dryrun.sh"
-
-$EVAL mkdir -p ~/bin ~/tmp ~/.vimundo
-
 BACKUP_DIR="$HOME/dot_backup"
 TIME=$(date +%Y%m%d_%H%M%S)
 
+. "$DOT/bin/_dryrun.sh"
+
+# ホームに必要なディレクトリを作っておく
+$EVAL mkdir -p ~/bin ~/tmp ~/.vimundo
+
 link() {
+    # すでに同名のファイルが存在し、シンボリックリンクでないなら
     if [ -e "$HOME/$1" -a \! -L "$HOME/$1" ]; then
+        # mvでバックアップしておく
         $EVAL mkdir -p $BACKUP_DIR
         echo "Backup: $1"
         $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
     fi
-    $EVAL ln -sfv $ETC/$1 ~
+    # シンボリックリンク作成
+    $EVAL ln -sfv ${2:-$ETC/$1} ~/$1
 }
 
 cd "$ETC"
@@ -40,7 +43,7 @@ link .pryrc
 link .vim
 link .zprofile
 link .zshrc
-$EVAL ln -sfv $ETC/.vim/.vimrc ~/.vimrc
+link .vimrc "$ETC/.vim/.vimrc"
 
 if [ "$DRY" != "" ]; then
     echo "Dry run ================================================"
