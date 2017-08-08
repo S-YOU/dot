@@ -37,6 +37,8 @@
 set -b
 # ファイル新規作成時パーミッション
 umask 022 
+# **/*.cで再帰的に*.cを探せる
+shopt -s globstar
 
 # readline の設定。
 if [[ $- == *i* ]]; then
@@ -45,17 +47,12 @@ if [[ $- == *i* ]]; then
 	bind 'Control-d:delete-char-or-list'
 	bind 'Control-u:kill-whole-line'
 	bind 'Control-g:insert-completions'
-	# カーソル前の単語を複製する。cp や diff でほとんど同じファイル名を2個入力するときに便利。
-	bind 'Control-k: "\C-w\C-y \C-y"'
-	bind 'Control-l: complete'
 	bind 'TAB: menu-complete'
 	#bind 'Control-^: "\M--\C-@"'
 	# dump 系は M-1 を前に付けると readline コマンド形式で表示する。
 	bind '"\C-x\C-f": dump-functions'
 	bind '"\C-x\C-v": dump-variables'
 	bind '"\C-x\C-m": dump-macros'
-	# 現在行を `` でくくる。
-	bind '"\C-x`":"\C-a `\C-e`\C-a"'
 fi
 
 # コマンドライン履歴保存数
