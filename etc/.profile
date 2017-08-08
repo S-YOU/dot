@@ -6,25 +6,7 @@
 
 export DOT=${DOT:-$HOME/dot}
 
-# CentOSからコピペ
-# $PATHにディレクトリを1個追加するシェル関数
-# 使い方：
-# ↓先頭に追加する
-# pathmunge "/usr/local/bin"
-# ↓末尾に追加する
-# pathmunge "/usr/local/bin" after
-pathmunge () {
-    case ":${PATH}:" in
-        *:"$1":*)
-            ;;
-        *)
-            if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-            else
-                PATH=$1:$PATH
-            fi
-    esac
-}
+. $DOT/bin/pathmunge
 
 pathmunge "$DOT/bin"
 pathmunge "$HOME/bin"

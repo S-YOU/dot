@@ -153,18 +153,7 @@ pagerize find
 pagerize readelf
 pagerize tree
 
-pathmunge() {
-    case ":${PATH}:" in
-        *:"$1":*)
-            ;;
-        *)
-            if [ "$2" = "after" ] ; then
-                PATH=$PATH:$1
-            else
-                PATH=$1:$PATH
-            fi
-    esac
-}
+. $DOT/bin/pathmunge
 
 ps() {
     if [ $# = 0 ]; then
