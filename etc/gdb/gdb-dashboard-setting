@@ -1,3 +1,5 @@
+# gdb-dashboardの設定ファイル
+
 dashboard -layout source
 dashboard -style divider_fill_char_primary "-"
 dashboard -style divider_fill_char_secondary "."

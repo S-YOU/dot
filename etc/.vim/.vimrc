@@ -1268,7 +1268,7 @@ endfunction
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
   inoreab <buffer> ei each_with_index
-  inoreab <buffer> bp require<Space>'pry';<Space>binding.pry<Space>###BREAKPOINT###
+  inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
   call DefineAbbreb('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold

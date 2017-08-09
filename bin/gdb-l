@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+#
+# gdbのlコマンドの改良
+
+first_line = gets
+if m = first_line.match(/at (.+):(\d+)/)
+  filename = m[1]
+  current_line = m[2].to_i
+end
+second_line = gets
+
+while line = gets
+  lnum = line.split()[0].to_i
+  if lnum == current_line
+    puts "\x1b[7m#{line.chomp}\x1b[0m"
+  else
+    print line
+  end
+end
+
+puts "-" * 40
+print first_line
+
+#puts "[#{first_line}]"
+#puts "filename = #{filename} line = #{current_line}"

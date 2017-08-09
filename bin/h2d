@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+
+print <<EOF
+対話的に2進数、8進数、10進数、16進数を変換表示するスクリプト
+
+入力例: 0x1f 123 0755 0b1101
+EOF
+
+def show_prompt
+  if $stdin.isatty
+    puts
+    print "h2d> "
+  end
+  $stdout.flush
+end
+
+# 0～255の10進-16進対応表を表示します
+def hex
+  (0...32).each do |i|
+    (0...8).each do |j|
+      n = 32 * j + i
+      printf("%02x(%3d)   ", n, n)
+    end
+    puts
+  end
+end
+
+if !$stdin.isatty
+  puts "stdin is not a tty"
+  exit 1
+end
+
+show_prompt()
+
+def convert(decimal)
+  out_formats = {
+    16 => "%02x",
+    10 => "%d",
+    8 => "%o",
+    2 => "%08b",
+  }
+
+  digital = sprintf("%08b", decimal).reverse.chars.each_slice(8).to_a.map(&:join).map {|x| (x + "00000000")[0...8]}.join(" ").reverse
+  puts "#{sprintf('%2d', 16)}: #{sprintf('%02x', decimal)}"
+  puts "#{sprintf('%2d', 10)}: #{sprintf('%d', decimal)}"
+  puts "#{sprintf('%2d', 8)}: #{sprintf('%o', decimal)}"
+  puts "#{sprintf('%2d', 2)}: #{digital}"
+end
+
+while line = $stdin.gets
+  line.chomp!
+
+  buf = []
+
+  words = line.split
+  words.each do |word|
+    case word 
+    when /^0x/
+      convert(word.to_i(16))
+    when /^0b/
+      convert(word.to_i(2))
+    when /^0/
+      convert(word.to_i(8))
+    else
+      convert(word.to_i(10))
+    end
+  end
+
+
+  show_prompt()
+end
