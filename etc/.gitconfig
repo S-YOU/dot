@@ -22,7 +22,7 @@
 	# カレントブランチをoriginにプッシュする
 	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`
 	unstage = reset HEAD
-	modify-history = rebase -i HEAD~6
+	modify-history = rebase -i origin/master
 	zip = !git archive --format=zip --prefix=$(basename $(git exec pwd))/ HEAD > $(basename $(git exec pwd))-$(git symbolic-ref --short HEAD).zip
 	# mergeやreset --hardのとき、変更を破棄する
 	assume-unchanged = update-index --assume-unchanged 
