@@ -5,3 +5,4 @@ dashboard -style style_selected_1 "7;37"
 dashboard -style prompt '(gdb)'
 dashboard -style syntax_highlighting "emacs"
 dashboard source -style context 12
+dashboard source -style tabstop 4

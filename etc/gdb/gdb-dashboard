@@ -12,6 +12,7 @@ import struct
 import termios
 import traceback
 import math
+import subprocess
 
 # Common attributes ------------------------------------------------------------
 
@@ -796,9 +797,13 @@ class Source(Dashboard.Module):
             try:
                 highlighter = Highlighter(self.file_name)
                 self.highlighted = highlighter.active
-                with open(self.file_name) as source_file:
-                    source = highlighter.process(source_file.read())
+                if subprocess.call("which expand", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0:
+                    source = highlighter.process(os.popen("expand -t %d < %s" % (self.tabstop, self.file_name)).read())
                     self.source_lines = source.split('\n')
+                else:
+                    with open(self.file_name) as source_file:
+                        source = highlighter.process(source_file.read())
+                        self.source_lines = source.split('\n')
             except Exception as e:
                 msg = 'Cannot display "{}" ({})'.format(self.file_name, e)
                 return [ansi(msg, R.style_error)]
@@ -839,6 +844,12 @@ class Source(Dashboard.Module):
                 'default': 5,
                 'type': int,
                 'check': check_ge_zero
+            },
+            'tabstop': {
+                'doc': 'Number of spaces that a <Tab> in the source file counts for. Applied ony if expand command is available.',
+                'default': 4,
+                'type': int,
+                'check': check_gt_zero
             },
             'style_break': {
                 'default': '1;32;42'
