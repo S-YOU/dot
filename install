@@ -19,6 +19,9 @@ link() {
         echo "Backup: $1"
         $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
     fi
+    if [ -L ~/$1 ]; then
+        rm ~/$1
+    fi
     # シンボリックリンク作成
     $EVAL ln -sfv ${2:-$ETC/$1} ~/$1
 }
