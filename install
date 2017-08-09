@@ -38,6 +38,7 @@ link .gitignore
 link .gitconfig
 link .inputrc
 link .irbrc
+link .irb_pry_common
 link .my.cnf
 link .profile
 link .screenrc
