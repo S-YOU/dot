@@ -1,18 +1,13 @@
 #!/usr/bin/env ruby
 
+require "readline"
+
 print <<EOF
 対話的に2進数、8進数、10進数、16進数を変換表示するスクリプト
 
 入力例: 0x1f 123 0755 0b1101
-EOF
 
-def show_prompt
-  if $stdin.isatty
-    puts
-    print "h2d> "
-  end
-  $stdout.flush
-end
+EOF
 
 # 0～255の10進-16進対応表を表示します
 def hex
@@ -30,8 +25,6 @@ if !$stdin.isatty
   exit 1
 end
 
-show_prompt()
-
 def convert(decimal)
   out_formats = {
     16 => "%02x",
@@ -47,7 +40,7 @@ def convert(decimal)
   puts "#{sprintf('%2d', 2)}: #{digital}"
 end
 
-while line = $stdin.gets
+while line = Readline.readline("h2d> ", true)
   line.chomp!
 
   buf = []
@@ -65,7 +58,4 @@ while line = $stdin.gets
       convert(word.to_i(10))
     end
   end
-
-
-  show_prompt()
 end
