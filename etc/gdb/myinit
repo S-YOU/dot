@@ -35,7 +35,9 @@ def ed
 end
 
 define locals
+    echo [args] ---------------------------\n
     info args
+    echo [locals] -------------------------\n
     info local
 end
 
@@ -69,18 +71,18 @@ define l
     frame
     list *$pc
     set logging off
-    shell gdb-l < /tmp/gdb-l.tmp && rm /tmp/gdb-l.tmp
+    shell expand -t ${GDB_TABSIZE:-4} /tmp/gdb-l.tmp | gdb-l && rm /tmp/gdb-l.tmp
 end
 
 # 停止する度に実行されるフック
 define hook-stop
+    #l
 end
 
 # 終了時に確認しない
 define hook-quit
     set confirm off
 end
-
 
 ## GDBの使い方
 # https://www.evernote.com/shard/s211/nl/22440320/a615f211-aeef-4b80-b075-70ff2592d6c8
