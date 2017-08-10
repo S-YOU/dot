@@ -16,13 +16,15 @@
 	ci = commit
 	co = checkout
 	exec = !sh -c 'exec "$@"' $(which sh)
-	sti = status --short --branch --ignored
+	sta = status --short --branch --ignored
 	ls = ls-files
 	cancel-previous-commit = reset HEAD~1
 	# カレントブランチをoriginにプッシュする
 	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`
 	unstage = reset HEAD
 	modify-history = rebase -i origin/master
+	# masterからの分岐点以降のコミットを表示する
+	new-commits-from-master = log --oneline --graph master..HEAD
 	zip = !git archive --format=zip --prefix=$(basename $(git exec pwd))/ HEAD > $(basename $(git exec pwd))-$(git symbolic-ref --short HEAD).zip
 	# mergeやreset --hardのとき、変更を破棄する
 	assume-unchanged = update-index --assume-unchanged 
@@ -35,17 +37,15 @@
 	skipped = !git ls-files -v | grep --color '^[Shs]'
 	# git rmせずに普通にrmしちゃったファイルたちを一括でgit rmする
 	rm-files = !git rm `git ls-files --deleted`
-	commit-count = rev-list --count HEAD
+	commit-count = shortlog -sn
 	# タグをつけるには
 	# git tag v1.0
 	# git tag-by-date
 	# git push origin --tags
 	shallow-clone = clone --depth 1
-	sc = clone --depth 1
 	# マージされているブランチをリモートから削除する
 	remove-unused-branches = !git branch -r --merged | grep -v master | sed 's/origin\\///' | xargs -n 1 git push --delete origin
 	vimdiff = difftool --tool=vimdiff --prompt
-	dt      = difftool --tool=vimdiff --prompt
 	# 追跡されていないファイルを削除するには
 	# git clean -n    # dry run  .gitignoreされているファイルは含めない
 	# git clean -f    # execute  
