@@ -24,7 +24,7 @@ defbce on
 
 defencoding utf8
 #encoding utf8 utf8
-defscrollback 2000
+defscrollback 4000
 ignorecase on
 startup_message off
 vbell off
