@@ -38,7 +38,7 @@ set -b
 # ファイル新規作成時パーミッション
 umask 022 
 # **/*.cで再帰的に*.cを探せる
-shopt -s globstar
+[ "$BASH_VERSINFO" -ge 4 ] && shopt -s globstar
 
 # readline の設定。
 if [[ $- == *i* ]]; then
