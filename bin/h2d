@@ -5,20 +5,9 @@ require "readline"
 print <<EOF
 対話的に2進数、8進数、10進数、16進数を変換表示するスクリプト
 
-入力例: 0x1f 123 0755 0b1101
+入力には任意のRubyの式が使えます。
 
 EOF
-
-# 0～255の10進-16進対応表を表示します
-def hex
-  (0...32).each do |i|
-    (0...8).each do |j|
-      n = 32 * j + i
-      printf("%02x(%3d)   ", n, n)
-    end
-    puts
-  end
-end
 
 if !$stdin.isatty
   puts "stdin is not a tty"
@@ -42,20 +31,5 @@ end
 
 while line = Readline.readline("h2d> ", true)
   line.chomp!
-
-  buf = []
-
-  words = line.split
-  words.each do |word|
-    case word 
-    when /^0x/
-      convert(word.to_i(16))
-    when /^0b/
-      convert(word.to_i(2))
-    when /^0/
-      convert(word.to_i(8))
-    else
-      convert(word.to_i(10))
-    end
-  end
+  convert(eval(line))
 end
