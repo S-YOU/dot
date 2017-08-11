@@ -13,12 +13,17 @@ set tui border-kind ascii
 set history save on
 set history size 10000
 set history filename ~/.gdb_history
+
+# 構造体を見やすく表示
 set print pretty on
 # C++のstaticメンバをpコマンドで表示しない
 set print static-members off
-
+# 配列を表示するとき、そのインデックスも表示する
+set print array-indexes on
 # 配列の要素を全て表示する
 set print elements 0
+# C++でオブジェクトを宣言された型でなく、実際の型で表示する
+set print object on
 
 alias a = advance
 alias w = disp
