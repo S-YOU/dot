@@ -52,7 +52,7 @@ setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイル�
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 
-CDPATH=$HOME:$HOME/bm
+CDPATH=$HOME/bm:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 

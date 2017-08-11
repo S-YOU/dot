@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+zip="$1"
+dir="${1/.*/}"
+tmp="uzip.tmp"
+
+echo "zip=$zip"
+echo "dir=$dir"
+
+if [ -d "$dir" ]; then
+    "Directory already exists: $dir"
+    exit 1
+fi
+
+mkdir "$tmp"
+unzip "$zip" -d "$tmp"
+file_count=$(ls -A "$tmp" | wc -l)
+
+if [ "$file_count" = 1 ]; then
+    mv -iv "$tmp"/* .
+    rmdir -v "$tmp"
+    echo "$dir に展開しました。行儀のいいzipでした。"
+else
+    mv -iv "$tmp" "$dir"
+    echo "$dir に展開しました。行儀の悪いzipでした。"
+fi

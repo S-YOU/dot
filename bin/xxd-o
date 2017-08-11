@@ -23,9 +23,11 @@ if ($zeroes) {
     s/^([[:xdigit:]]+:).{$padding}/$1 . (' ' x $padding)/ge;
     my $newoff = sprintf("%0${base}x",hex($1)+$offset) =~ s/^(.{8})(.{8})$/$1_$2/r;
     s/^([[:xdigit:]]+):/$newoff:/g;
+    printf("%${base}s   0 1  2 3  4 5  6 7  8 9  A B  C D  E F\n", "");
     print
+} else {
+    printf("%${base}s   0 1  2 3  4 5  6 7  8 9  A B  C D  E F\n", "");
 }
-printf("%${base}s   0 1  2 3  4 5  6 7  8 9  A B  C D  E F\n", "");
 while (<XXD_OUT>) {
     s/^([[:xdigit:]]+)(?=:)/sprintf("%0${base}x", hex($1)+$offset-$offset%16) =~ s[^(.{8})(.{8})$][$1_$2]r/ge;
     print

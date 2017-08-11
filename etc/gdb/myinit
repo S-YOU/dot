@@ -58,7 +58,12 @@ alias -a disb = disable-breakpoint
 # 例：xxd &argc 10
 # https://stackoverflow.com/a/34485939/5209556
 define xxd
-    dump binary memory /tmp/dump.bin $arg0 ((char*)$arg0)+$arg1
+    if $argc == 0
+        set $count = 64
+    else
+        set $count = $1
+    end
+    dump binary memory /tmp/dump.bin $arg0 ((char*)$arg0)+$count
     eval "shell xxd-o %p /tmp/dump.bin", $arg0
 end
 
