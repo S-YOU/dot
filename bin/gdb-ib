@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+while line = gets
+  a = line.split
+  if a[3] == "y"
+    print "\x1b[0;32m" + line + "\x1b[0m"
+  elsif a[3] == "n"
+    print "\x1b[0;31m" + line + "\x1b[0m"
+  else
+    print line
+  end
+end

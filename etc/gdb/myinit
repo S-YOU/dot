@@ -29,7 +29,16 @@ alias a = advance
 alias w = disp
 alias uw = undisp
 alias wp = watch
-alias ib = info b
+
+define ib
+    set logging file /tmp/gdb-ib.tmp
+    set logging redirect 
+    set logging overwrite on
+    set logging on
+    info b
+    set logging off
+    shell gdb-ib < /tmp/gdb-ib.tmp && rm /tmp/gdb-ib.tmp
+end
 
 define ed
     edit *$pc
@@ -93,11 +102,11 @@ define hook-stop
 end
 
 define hookpost-enable
-    info b
+    ib
 end
 
 define hookpost-disable
-    info b
+    ib
 end
 
 # 終了時に確認しない
