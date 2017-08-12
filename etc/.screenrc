@@ -7,17 +7,21 @@ escape ^T^T
 # vimでEscの反応が遅くなるのを防ぐため
 maptimeout 0
 
-# terminfoでなくtermcapのケーパビリティ名で指定する
-# Co#256                                    # 256色対応
-# AB=\E[48;5;%dm                            # 背景色設定
-# AF=\E[38;5;%dm                            # 文字色設定
-# k1=\E[11~                                 # F1が効くようにする
-# k2=\E[12~                                 # F2が効くようにする
-# k3=\E[13~                                 # F3が効くようにする
-# k4=\E[14~                                 # F4が効くようにする
-# hs@                                       # ハードステータス
-# is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'     # is: xtermの初期化文字列（端末エミュレータのウィンドウサイズが変わらないようにしておく）
-termcapinfo xterm* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm:k1=\E[11~:k2=\E[12~:k3=\E[13~:k4=\E[14~:hs@:is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+# 256色対応
+termcapinfo xterm* 'Co#256'
+# 背景色設定
+termcapinfo xterm* 'AB=\E[48;5;%dm'
+# 文字色設定
+termcapinfo xterm* 'AF=\E[38;5;%dm'
+# F1～F4が効くようにする
+termcapinfo xterm* 'k1=\E[11~'
+termcapinfo xterm* 'k2=\E[12~'
+termcapinfo xterm* 'k3=\E[13~'
+termcapinfo xterm* 'k4=\E[14~'
+# ハードステータス
+termcapinfo xterm* 'hs@'
+# xtermの初期化文字列（端末エミュレータのウィンドウサイズが変わらないようにしておく）
+termcapinfo xterm* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 
 # erase/insert/scroll/clear 操作でクリアされるすべての文字は、現在の背景色で表示されることになる
 defbce on

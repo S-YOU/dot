@@ -68,12 +68,20 @@ document p
 # pの改良。型も表示する。
 end
 
+define pp
+    whatis $arg0
+    print * $arg0
+end
+document pp
+# ポインタが指す先のデータをprintする
+end
+
 # https://stackoverflow.com/a/34485939/5209556
 define xxd
-    if $argc == 0
+    if $argc == 1
         set $count = 64
     else
-        set $count = $1
+        set $count = $arg1
     end
     dump binary memory /tmp/dump.bin $arg0 ((char*)$arg0)+$count
     eval "shell xxd-o %p /tmp/dump.bin", $arg0
