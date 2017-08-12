@@ -846,7 +846,7 @@ class Source(Dashboard.Module):
                 'check': check_ge_zero
             },
             'tabstop': {
-                'doc': 'Number of spaces that a <Tab> in the source file counts for. Applied ony if expand command is available.',
+                'doc': 'Number of spaces that a <Tab> in the source file counts for. Applied only if expand command is available.',
                 'default': 4,
                 'type': int,
                 'check': check_gt_zero

@@ -34,9 +34,11 @@ alias ia = info args
 alias il = info locals
 alias bd = clear
 
-# 現在行を指定してエディタを起動する
-def ed
+define ed
     edit *$pc
+end
+document ed
+# 現在行を指定してエディタを起動する。
 end
 
 define locals
@@ -45,22 +47,37 @@ define locals
     echo [locals] -------------------------\n
     info local
 end
+document locals
+# 関数の引数とローカル変数を表示する。
+end
 
 define enable-breakpoint
     enable breakpoints $arg0
     info b
+end
+document enable-breakpoint
+# ブレークポイントを有効化し、ブレークポイント一覧を表示する。
 end
 
 define disable-breakpoint
     disable breakpoints $arg0
     info b
 end
+document disable-breakpoint
+# ブレークポイントを無効化し、ブレークポイント一覧を表示する。
+end
 
 alias -a enab = enable-breakpoint
 alias -a disb = disable-breakpoint
 
-# xxdに似た形式でメモリを16進ダンプする
-# 例：xxd &argc 10
+define p
+    whatis $arg0
+    print $arg0
+end
+document p
+# pの改良。型も表示する。
+end
+
 # https://stackoverflow.com/a/34485939/5209556
 define xxd
     if $argc == 0
@@ -70,6 +87,10 @@ define xxd
     end
     dump binary memory /tmp/dump.bin $arg0 ((char*)$arg0)+$count
     eval "shell xxd-o %p /tmp/dump.bin", $arg0
+end
+document xxd
+# xxdに似た形式でメモリを16進ダンプする。
+# 例：xxd &argc 10
 end
 
 # listコマンドの改良
@@ -83,9 +104,13 @@ define l
     set logging off
     shell expand -t ${GDB_TABSIZE:-4} /tmp/gdb-l.tmp | gdb-l && rm /tmp/gdb-l.tmp
 end
+document l
+# listコマンドの改良。カレント行を反転表示する。
+end
 
 # 停止する度に実行されるフック
 define hook-stop
+    ### gdb dashboardを使っていないとき有効化する
     #l
 end
 
