@@ -852,7 +852,7 @@ class Source(Dashboard.Module):
                 'check': check_gt_zero
             },
             'style_break': {
-                'default': '1;32;42'
+                'default': '0;30;43'
             }
         }
 

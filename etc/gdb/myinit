@@ -30,9 +30,6 @@ alias w = disp
 alias uw = undisp
 alias wp = watch
 alias ib = info b
-alias ia = info args
-alias il = info locals
-alias bd = clear
 
 define ed
     edit *$pc
@@ -50,25 +47,6 @@ end
 document locals
 # 関数の引数とローカル変数を表示する。
 end
-
-define enable-breakpoint
-    enable breakpoints $arg0
-    info b
-end
-document enable-breakpoint
-# ブレークポイントを有効化し、ブレークポイント一覧を表示する。
-end
-
-define disable-breakpoint
-    disable breakpoints $arg0
-    info b
-end
-document disable-breakpoint
-# ブレークポイントを無効化し、ブレークポイント一覧を表示する。
-end
-
-alias -a enab = enable-breakpoint
-alias -a disb = disable-breakpoint
 
 define p
     whatis $arg0
@@ -114,10 +92,31 @@ define hook-stop
     #l
 end
 
+define hookpost-enable
+    info b
+end
+
+define hookpost-disable
+    info b
+end
+
 # 終了時に確認しない
 define hook-quit
     set confirm off
 end
+
+# 終了前にブレークポイントを保存する
+define hook-quit
+    # 「warning: Nothing to save.」を抑制するため
+    set logging file /dev/null
+    set logging redirect on
+    set logging on
+    shell rm -f .breakpoints
+    save breakpoints .breakpoints
+end
+
+# 保存しておいたブレークポイントを読み込む
+source .breakpoints
 
 ## GDBの使い方
 # https://www.evernote.com/shard/s211/nl/22440320/a615f211-aeef-4b80-b075-70ff2592d6c8
