@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# gdbで
+# info b
+# の結果に色をつける
+
 while line = gets
   a = line.split
   if a[3] == "y"

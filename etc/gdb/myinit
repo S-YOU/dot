@@ -39,6 +39,9 @@ define ib
     set logging off
     shell gdb-ib < /tmp/gdb-ib.tmp && rm /tmp/gdb-ib.tmp
 end
+document ib
+# info bの結果に色をつける
+end
 
 define ed
     edit *$pc
