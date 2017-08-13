@@ -2445,6 +2445,7 @@ let g:NERDTreeMapPreview =  'f'
 let g:NERDTreeMapToggleFilters =  'a'
 let g:NERDTreeAutoDeleteBuffer=1
 let g:NERDTreeShowHidden=1
+let g:NERDTreeIgnore=['\.o$']
 let g:MyNERDTreeRemoveFileCmd = executable("rma.sh") ? "rma.sh" : "rm"
 
 function! Nerdtree_Setting()
