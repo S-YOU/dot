@@ -39,6 +39,7 @@ alias rp='realpath'
 alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
+alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
 alias xf='xmllint --format - | less'
 

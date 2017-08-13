@@ -8,11 +8,11 @@ if [ $# -gt 0 ]; then
 	case "$1" in
 		*.c)
 			OUTFILE=a.out
-			gcc -g -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
+			gcc -g3 -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
 			;;
 		*.cpp|*.cc)
 			OUTFILE=a.out
-			g++ -g -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
+			g++ -g3 -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
 			;;
 		*.hs)
 			if which stack > /dev/null; then
