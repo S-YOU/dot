@@ -20,7 +20,7 @@ io.close_write
 xxd_result = io.read
 io.close
 
-printf("%#{base}s   0 1  2 3  4 5  6 7  8 9  A B  C D  E F\n", " ");
+printf("%#{base}s  0 1  2 3  4 5  6 7  8 9  A B  C D  E F   0123456789ABCDEF\n", " ");
 
 linenum = 0 
 xxd_result.each_line do |line|
