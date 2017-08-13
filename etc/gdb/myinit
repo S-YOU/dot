@@ -2,6 +2,7 @@
 
 # カレントディレクトリの.gdbinitを読み込む
 set auto-load local-gdbinit
+set auto-load safe-path /
 # まだシンボルが読み込まれていない状態でブレークポイントを張ることを許す
 set breakpoint pending on
 # listコマンドで表示する行数
