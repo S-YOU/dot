@@ -5,8 +5,9 @@
 # の結果に色をつける
 
 while line = gets
-  a = line.split
-  if a[3] == "y"
+  # スペースが入っているとカラムの位置がずれてしまうので置換する
+  a = line.gsub("hw watchpoint", "hw_watchpoint").split
+  if a[3] == "y" || a[4] == "y"
     print "\x1b[0;32m" + line + "\x1b[0m"
   elsif a[3] == "n"
     print "\x1b[0;31m" + line + "\x1b[0m"

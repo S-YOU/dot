@@ -28,7 +28,6 @@ set print object on
 alias a = advance
 alias w = disp
 alias uw = undisp
-alias wp = watch
 
 define ib
     set logging file /tmp/gdb-ib.tmp
