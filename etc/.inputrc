@@ -4,11 +4,8 @@
 #set output-meta on
 #set convert-meta off
 
-#DEL:delete-char
-
-set blink-matching-paren on
-
 # http://camisoul.blogspot.jp/2015/11/set-cd-zsh-zstyle-bashreadline.html
+set blink-matching-paren on
 set colored-stats on
 set completion-ignore-case on
 set completion-map-case on
@@ -20,26 +17,25 @@ set show-all-if-unmodified on
 set skip-completed-text on
 set visible-stats on
 
-$if Gdb
-# F5 : continue
-"\e[15~": "c \C-m"
-# F10 : next
-"\e[21~": "n \C-m"
-# F11 : step
-"\e[23~": "s \C-m"
+
+$if gdb
+    # Down: next
+    "\e[B": "n \C-m"
+    # Right: step
+    "\e[C": "s \C-m"
+    # Left; fin
+    "\e[D": "fin \C-m"
 $endif
 
 
-
-$if Python
+$if python
 $else
-tab: complete
-C-d: delete-char-or-list
+    tab: complete
+    C-d: delete-char-or-list
 
-"\C-x\C-d":dump-macros
-"\C-x\C-f":dump-functions
+    "\C-x\C-d":dump-macros
+    "\C-x\C-f":dump-functions
 $endif
-
 
 
 $if mysql
