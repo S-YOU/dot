@@ -27,6 +27,7 @@ set print elements 0
 set print object on
 
 alias a = advance
+alias im = info macro
 alias w = disp
 alias uw = undisp
 
@@ -60,16 +61,7 @@ document locals
 # 関数の引数とローカル変数を表示する。
 end
 
-define p
-    whatis $arg0
-    print $arg0
-end
-document p
-# pの改良。型も表示する。
-end
-
 define pp
-    whatis $arg0
     print * $arg0
 end
 document pp
