@@ -152,13 +152,13 @@ EOF
     find_cmd = "find '#{dir}' #{ignore_options} \\( \\! -type d #{name_option} '#{pattern}' \\) #{print_option}"
     message("find_cmd = #{find_cmd}")
     if cmd
-      Tempfile.create("fn") do |tmp|
-        system_e("#{find_cmd} > #{tmp.path}")
-        if File.size(tmp.path) > 0
-          # スペースなどを含むファイル名に対応するため、標準入力を/dev/ttyにしつつxargs -0
-          system_e("xargs -0 sh -c '#{cmd} \"$@\" < /dev/tty' vim < #{tmp.path}")
-        end
+      tmp = Tempfile.new("fn")
+      system_e("#{find_cmd} > #{tmp.path}")
+      if File.size(tmp.path) > 0
+        # スペースなどを含むファイル名に対応するため、標準入力を/dev/ttyにしつつxargs -0
+        system_e("xargs -0 sh -c '#{cmd} \"$@\" < /dev/tty' vim < #{tmp.path}")
       end
+      tmp.close
     else
       system_e("#{find_cmd} | less -F")
     end
