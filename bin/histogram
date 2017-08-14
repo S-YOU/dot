@@ -1,0 +1,65 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+usage = <<EOF
+テキストでヒストグラムを表示するスクリプト
+例：wc -l *.c | histogram
+EOF
+
+require "optparse"
+
+$opt = {}
+$opt[:include_last_line]  = false
+$opt[:sort]               = nil
+$opt[:max]                = 50
+
+opt = OptionParser.new(usage=usage)
+opt.on("--include-last-line", "入力の最後の行を含める（デフォルトはオフ）") {|v| $opt[:include_last_line] = true}
+opt.on("--asc", "昇順でソートする")         {|v| $opt[:sort] = :asc}
+opt.on("--desc", "降順でソートする")        {|v| $opt[:sort] = :desc}
+opt.on("--max=LENGTH", "最大行の「*」の数") {|v| $opt[:max]  = v.to_i}
+opt.parse!(ARGV)
+
+lines = readlines()
+
+unless $opt[:include_last_line]
+  lines = lines[0...-1]
+end
+
+total = 0
+n_max = 0
+splited = []
+
+linenum = 0
+lines.each do |line|
+  linenum += 1
+
+  a = line.split()
+  n    = a[0].to_i
+  name = a[1].to_s
+    
+  splited.push([n, name])
+
+  if n_max < n
+    n_max = n
+  end
+
+  total += n
+end
+
+case $opt[:sort]
+when :asc
+  splited.sort! {|x, y| x[0] <=> y[0]}
+when :desc
+  splited.sort! {|x, y| y[0] <=> x[0]}
+else
+  # do nothing
+end
+
+for s in splited
+  n    = s[0]
+  name = s[1]
+
+  printf("%#{$opt[:max]}s %6d  %s\n", "*" * ($opt[:max] * (n / n_max.to_f)).ceil, n, name)
+end
+printf("%#{$opt[:max]}s %6d  %s\n", " " * $opt[:max], total, "合計")
