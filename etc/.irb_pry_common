@@ -1,4 +1,5 @@
 # vim: set ft=ruby:
+# encoding: utf-8
 
 # from "yen" gem
 class Integer

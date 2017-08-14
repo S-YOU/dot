@@ -51,6 +51,7 @@ setopt sh_word_split		# クォートされていない変数の値の中の空�
 setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイルに入れない
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
+setopt complete_in_word     # 語の途中でもカーソル位置で補完
 
 CDPATH=$HOME/bm:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
@@ -148,7 +149,6 @@ source $DOT/etc/mollifier-git-zsh-prompt
 
 # プロンプト表示直前に呼び出される
 precmd() {
-	vcs_info
 	# コマンドの実行にかかった時間を記憶しておく
 	ELAPSED_SECONDS=$(( $SECONDS - ${START_SECONDS:-0} ))
 	if is_screen; then

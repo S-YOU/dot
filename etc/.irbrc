@@ -1,4 +1,5 @@
 # vim: set ft=ruby:
+# encoding: utf-8
 
 #puts "~/.irbrc loaded"
 
@@ -16,7 +17,7 @@ begin
     if File::exists?( histfile )
       lines = IO::readlines( histfile ).collect {|line| line.chomp}
       puts "Read %d saved history commands from %s." %
-        [ lines.nitems, histfile ] if $DEBUG || $VERBOSE
+        [ lines.length, histfile ] if $DEBUG || $VERBOSE
       Readline::HISTORY.push( *lines )
     else
       puts "History file '%s' was empty or non-existant." %
@@ -25,7 +26,7 @@ begin
 
     Kernel::at_exit {
       lines = Readline::HISTORY.to_a.reverse.uniq.reverse
-      lines = lines[ -MAXHISTSIZE, MAXHISTSIZE ] if lines.nitems > MAXHISTSIZE
+      lines = lines[ -MAXHISTSIZE, MAXHISTSIZE ] if lines.length > MAXHISTSIZE
       $stderr.puts "Saving %d history lines to %s." %
 
         [ lines.length, histfile ] if $VERBOSE || $DEBUG
@@ -40,4 +41,4 @@ end
 require 'irb/completion'
 ARGV.concat [ "--readline", "--prompt-mode", "simple" ]
 
-load(ENV['HOME'] + '/.irb_pry_common')
+#load(ENV['HOME'] + '/.irb_pry_common')
