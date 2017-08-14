@@ -1,8 +1,8 @@
-tags
 *.swp
-.DS_Store
-,/
 ,*
-node_modules
+,/
+.*history
+.DS_Store
 .bundle
-.byebug_history
+node_modules
+tags
