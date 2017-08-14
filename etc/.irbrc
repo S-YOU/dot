@@ -1,14 +1,12 @@
 # vim: set ft=ruby:
 # encoding: utf-8
 
-#puts "~/.irbrc loaded"
-
 # 直前の計算結果を保持する変数 _ を有効にする
 IRB.conf[:EVAL_HISTORY] = 1000 
 IRB.conf[:SAVE_HISTORY] = 100 
 
 # ヒストリーを有効にする
-HISTFILE = "~/.irb.hist"
+HISTFILE = "~/.irb_history"
 MAXHISTSIZE = 100
    
 begin
@@ -41,4 +39,6 @@ end
 require 'irb/completion'
 ARGV.concat [ "--readline", "--prompt-mode", "simple" ]
 
-#load(ENV['HOME'] + '/.irb_pry_common')
+if RUBY_VERSION >= "2.0.0"
+  load(ENV['HOME'] + '/.irb_pry_common')
+end
