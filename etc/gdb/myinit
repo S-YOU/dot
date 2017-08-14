@@ -98,6 +98,26 @@ document l
 # listコマンドの改良。カレント行を反転表示する。
 end
 
+define sb
+    # 「warning: Nothing to save.」を抑制するため
+    set logging file /dev/null
+    set logging redirect on
+    set logging on
+    shell rm -f .breakpoints
+    save breakpoints .breakpoints
+    set logging off
+end
+document sb
+# ブレークポイントをファイルに保存する
+end
+
+define lb
+    source .breakpoints
+end
+document lb
+# 保存しておいたブレークポイントを読み込む
+end
+
 # 停止する度に実行されるフック
 define hook-stop
     ### gdb dashboardを使っていないとき有効化する
@@ -119,16 +139,12 @@ end
 
 # 終了前にブレークポイントを保存する
 define hook-quit
-    # 「warning: Nothing to save.」を抑制するため
-    set logging file /dev/null
-    set logging redirect on
-    set logging on
-    shell rm -f .breakpoints
-    save breakpoints .breakpoints
+    sb
 end
 
 # 保存しておいたブレークポイントを読み込む
-source .breakpoints
+lb
+
 
 ## GDBの使い方
 # https://www.evernote.com/shard/s211/nl/22440320/a615f211-aeef-4b80-b075-70ff2592d6c8
