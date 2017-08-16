@@ -102,7 +102,8 @@ peco-select-file() {
     peco-set-cursor
 }
 peco-select-file-recursive() {
-    BUFFER="$LBUFFER`command find . $FIND_IGNORE_DIRS -prune -or \\( -type f -print \\) | fzf --prompt "$LBUFFER> "`"
+	# FIXME: $IGNORED_DIRSを参照するようにする
+    BUFFER="$LBUFFER`command find . \\( -name .git -or -name .svn -or -name bundle -or -name node_modules \\) -prune -or \\( -type f -print \\) | fzf --prompt "$LBUFFER> "`"
     peco-set-cursor
 }
 zle -N peco-select-file
