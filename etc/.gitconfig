@@ -18,6 +18,7 @@
 	exec = !sh -c 'exec "$@"' $(which sh)
 	sta = status --short --branch --ignored
 	ls = ls-files
+	logv = log --name-status
 	cancel-previous-commit = reset HEAD~1
 	# カレントブランチをoriginにプッシュする
 	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`

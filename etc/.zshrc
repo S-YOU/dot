@@ -94,20 +94,21 @@ compdef '_files -g "*.hs"' runghc
 # pecoでカレントディレクト以下のファイルを補完
 peco-set-cursor() {
     CURSOR=$#BUFFER             # カーソルを文末に移動
-    zle -R -c                   # refresh
+    #zle -R -c                   # refresh
+	zle reset-prompt
 }
 peco-select-file() {
     BUFFER="$LBUFFER$(command ls -A | fzf --prompt "$LBUFFER> ")"
     peco-set-cursor
 }
 peco-select-file-recursive() {
-    BUFFER="$LBUFFER$(command find . -type f | fzf --prompt "$LBUFFER> ")"
+    BUFFER="$LBUFFER`command find . $FIND_IGNORE_DIRS -prune -or \\( -type f -print \\) | fzf --prompt "$LBUFFER> "`"
     peco-set-cursor
 }
 zle -N peco-select-file
 zle -N peco-select-file-recursive
-bindkey '^L'   peco-select-file
-bindkey '^X^L' peco-select-file-recursive
+bindkey '^O1'   peco-select-file
+bindkey '^O^O'  peco-select-file-recursive
 
 # fgとbgを完全に無視したCtrl-P
 _up-line-or-history-ignoring() {

@@ -54,7 +54,7 @@ EOF
     @pattern  = []
     @cmd      = nil
     @case     = :smart  # :smart or :sensitive or :insensitive
-    @ignore_dirs = [".git", ".svn", "node_modules"]
+    @ignore_dirs = ENV["IGNORED_DIRS"].to_s.split(":")
 
     load_conf
 

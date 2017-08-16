@@ -46,7 +46,7 @@ endif
 
 let mapleader='\'
 " grepやCtrlPなどで無視するディレクトリ
-let exclude_dirs = ['.svn', '.git', 'node_modules', 'vendor', '.bundle']
+let exclude_dirs = split($IGNORED_DIRS, ":")
 
 " Cygwin
 if filereadable("/cygwin.bat")
