@@ -143,7 +143,9 @@ EOF
 
   def search(dir, pattern, ignore_case, cmd, ignore_dirs)
     if ignore_dirs && !ignore_dirs.empty?
-      ignore_options = '\( ' + ignore_dirs.map {|x| "-name '#{x}'"}.join(" -or ") + ' \) -prune -or '
+      # -pruneはディレクトリ自身をprintしてしまうので、-orより!を使う方がベターと思う
+      #ignore_options = '\( ' + ignore_dirs.map {|x| "-name '#{x}'"}.join(" -or ") + ' \) -prune -or '
+      ignore_options = '\! \( \( ' + ignore_dirs.map {|x| "-name '#{x}'"}.join(" -or ") + ' \) -prune \)'
     else
       ignore_options = ""
     end
