@@ -1,40 +1,44 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-offset = ARGV[0].to_i(16)
-dumpbin_path = ARGV[1]
+arg_offset    = ARGV[0].to_i(16)
+dumpbin_path  = ARGV[1]
 
-base = offset >= 2**32 ? 16 : 8 
-zero_count = offset % 16
-bytestr = "\0" * zero_count + File.binread(dumpbin_path)
-new_offset = offset - (offset % 16) 
-
-#puts "offset = #{sprintf('%x', offset)} #{offset}"
-#puts "zero_count = #{zero_count}"
-#p ARGV
-#puts "length = #{bytestr.length}"
-
-io = IO.popen("xxd", "r+")
-io.print bytestr
-io.close_write
-xxd_result = io.read
-io.close
+# アドレスを32ビットで表示するか64ビットで表示するか
+base = arg_offset >= 2**32 ? 16 : 8 
+# 先頭に付与する0x00の数
+zero_count = arg_offset % 16
+# 先頭に0x00を付与したバイト列
+bytes = "\0" * zero_count + File.binread(dumpbin_path)
+# オフセットを16の倍数で丸めたもの（2行目以降で使用）
+offset16 = arg_offset - (arg_offset % 16) 
 
 printf("%#{base}s  0 1  2 3  4 5  6 7  8 9  A B  C D  E F   0123456789ABCDEF\n", " ");
 
-linenum = 0 
-xxd_result.each_line do |line|
-  address, content = line.split(":", 2)
-  if zero_count > 0 && linenum == 0   # ゼロを付加した最初の行のみ
-    zero_count.times do               # 付加した部分を消す
-      content.sub!("00", "  ")
-      content.sub!(/\./, " ")
-    end 
-    address = sprintf("%0#{base}x", offset)
+bytes.each_char.each_slice(16).with_index do |line, li|
+  if li == 0
+    off = arg_offset
   else
-    address = sprintf("%0#{base}x", address.to_i(16) + new_offset)
-  end 
-  address = address.gsub(/^(\w{8})(\w{8})/, '\1_\2')
-  puts "#{address}:#{content}"
-  linenum += 1
+    off = offset16 + 16 * li
+  end
+  address   = sprintf("%0#{base}x: ", off)
+  hex_part  = line.map.with_index {|chr, i|
+    if li == 0 && i < zero_count
+      i.even? ? "  " : "   "
+    else
+      sprintf("%02x" + (i.even? ? "" : " "), chr.ord)
+    end
+  }.join
+  char_part = line.map.with_index {|chr, i|
+    if li == 0 && i < zero_count
+      " "
+    else
+      (0x20 <= chr.ord && chr.ord <= 0x7e) ? chr : "."
+    end
+  }.join
+  if line.length != 16
+    a = 16 - line.length
+    hex_part  += "     " * (a / 2) + "   " * (a % 2)
+  end
+  puts address + hex_part + " " + char_part
 end
