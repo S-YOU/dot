@@ -6,7 +6,7 @@
 " + で同じインデントの次の行へ移動
 " V+ で同じインデントの範囲を選択。同様にd+で削除。
 " :Fold （何にマップしようか）
-" C-dでNERDTree
+" d, で大文字まで削除。c, で大文字まで修正（キャメルケースを編集するのに便利）
 "
 " まだマッピングに使っていないキー
 " <C-_>
@@ -767,7 +767,6 @@ endfunction
 
 command! FB call _FunctionDescription()
 command! WhatColor call _WhatColor(line('.'), col('.'))
-command! CD cd %:p:h 
 command! Fixdir let g:fixdir=getcwd()
 command! Top exe "cd " . g:topdir
 command! Settop call Settop(getcwd())
@@ -832,35 +831,6 @@ function! Eatchar(pat)
   return (c =~ a:pat) ? '' : c
 endfunction!
 
-function! AutoLoadSession()
-  let g:sessionfile = getcwd() . "/Session.vim"
-  if (argc() == 0 && filereadable(g:sessionfile))
-    call _Echo("WarningMsg", "Session file exists. Load this? (y/n): ")
-    while 1
-      let c = getchar()
-      if c == char2nr("y")
-        so Session.vim
-        return
-      elseif c == char2nr("n")
-        return
-      endif
-    endwhile
-  endif
-endfunction 
-
-function! AutoSaveSession()
-  if exists(g:sessionfile)
-    exe "mks! " . g:sessionfile
-  endif
-endfunction
-
-" オートコマンド
-augroup AutoLoadSettion
-  au!
-  au VimEnter * call AutoLoadSession()
-  au VimLeave * call AutoSaveSession() 
-augroup END
-
 if argv(0) =~ "mlreplace.rb"
   let g:fixdir=getcwd()
 endif
@@ -871,7 +841,6 @@ augroup MyAutocmd
   au BufNewFile,BufReadPost  *.c,*.h,*.cpp,*.d,*.java   let b:commentSymbol="//"
   au BufNewFile,BufReadPost *.bas set ft=vb
   au BufNewFile,BufReadPost *tags set list ts=16
-  au BufRead,BufNewFile * if getline(1) =~ ') at \f\+:\d\+>' | set ft=cflow | endif
   au BufRead,BufNewFile svn-commit* sil 1,3d | new | setl bufhidden=hide buftype=nofile noswapfile | if exists("g:topdir") | exe "cd" g:topdir | endif | silent 0r!svn --diff-cmd diff diff
   au BufReadPost * call _MemorizeModifiedTime()
   au BufReadPost * call _SetExpandtab()
@@ -888,7 +857,6 @@ augroup MyAutocmd
   au BufWritePost * if !(exists('b:enable_syntax_check') && b:enable_syntax_check == 0) |  call GUSyntaxCheck(&ft) | endif
   au BufWritePost * if &ft == "" | filetype detect | endif 
   au FileType c           call C_Setting() 
-  au FileType cflow       call Cflow_Setting()
   au FileType cpp         call Cpp_Setting() 
   au FileType cs          call Csharp_Setting()
   au FileType css         call HTML_Setting()
@@ -1011,9 +979,6 @@ function! C_Setting()
   setlocal nosmartindent
   setlocal fo-=o
   setlocal omnifunc=_MyCComplete
-  " 前後の関数へ移動 Wed Jan  5 2005
-  "noremap <buffer> <silent> <C-p> [[?^\s*$<CR>jz<CR>:call HilightFunctionName()<CR>:noh<CR>
-  "noremap <buffer> <silent> <C-n> /^\s*$<CR>]]?^\s*$<CR>jz<CR>:call HilightFunctionName()<CR>:noh<CR>
   " インデントレベルを合わせて貼り付け
   nnoremap <buffer> p p=`]`]
   "nnoremap <buffer> n n:redraw<CR>:echo WhatFunction()<CR>
@@ -1077,10 +1042,6 @@ function! Csharp_Setting()
   call DefineAbbreb('cl', 'System.Console.WriteLine(#CURSOR#);', 'i', '<buffer>')
 endfunction
 
-function! Cflow_Setting()
-  syn match CflowFunction /\w\+\ze(/
-  hi def link CflowFunction  Keyword
-endfunction
 
 function! Haskell_Setting()
   syn match HaskellFunction /^\w\+.*::.*$/
@@ -1627,68 +1588,6 @@ onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
 xnoremap <silent> +  <esc>:call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
 xnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
 
-function! GetBelowFunctionName(start, max)
-  let cur=a:start
-  while cur < a:start + a:max
-    let cur = cur + 1
-    let line = getline(cur)
-    if line !~ '^\k'
-      continue
-    endif
-    let m = matchstr(line, '\k\+(')
-    if m != ""
-      return strpart(m, 0, strlen(m)-1) 
-    endif
-  endwhile 
-  return ""
-endfunction
-
-function! HilightFunctionName()
-  let fn = GetBelowFunctionName(line("."), 20)
-  if fn != ""
-    exe "match Function /" . fn . "/"
-  endif
-endfunction
-
-
-" 消した部分以外を動かさないで cw
-"nnoremap <silent> \c :set opfunc=WhitenAndReplace<CR>g@
-"vnoremap <silent> \c :<C-U>call WhitenAndReplace(visualmode(), 1)<CR>
-
-function! WhitenAndReplace(type, ...)
-  let old_ve = &virtualedit
-  set virtualedit=all
-  if a:0  " Invoked from Visual mode, use '< and '> marks.
-    silent exe "normal! `<" . visualmode() . "`>r\<space>"
-  elseif a:type == 'line'
-    silent exe "normal! '[V']r\<space>"
-  elseif a:type == 'block'
-    silent exe "normal! `[\<C-V>`]r\<space>"
-  else
-    silent exe "normal! `[v`]r\<space>"
-  endif
-  let &virtualedit = old_ve
-  startreplace
-endfunction
-
-" 最後にプットしたテキストの前後にスペースを挿入
-nnoremap \<space> :call PutWithSpaces()<CR>
-function! PutWithSpaces()
-  let e = getpos("']")
-  let addedCharLen = 0
-  normal! `[
-  let c = getline(".")[col(".")-2]
-  if c != ' '
-    exe "normal! i\<space>"
-    let addedCharLen += 1
-  endif
-  let e[2] += addedCharLen
-  call setpos(".", e)
-  let c = getline(".")[col(".")]
-  if c != ' '
-    exe "normal! a\<space>"
-  endif 
-endfunction
 
 function! _BufInfo()
   let bufnr = bufnr("%")
@@ -2546,6 +2445,9 @@ function! _EchoModifiedTime(fullpath)
 endfunction
 
 function! _SetExpandtab()
+  if exists("b:IsLargeFile")
+    return
+  endif
   " 行頭にタブが見つかったらnoexpandtabにする。見つからなかったらexpandtabにする
   if search('^\t', 'cn', 1000)
     setlocal noexpandtab
@@ -2597,10 +2499,6 @@ command! Dict exe "e ~/.vim/dict/" . &ft . "dict.txt"
 "=============================================================================
 "   ▼実験室  Experimental
 "=============================================================================
-"align.vim
-vmap <silent> - \t=gv:retab!<CR>
-vmap <silent> <tab> \adecgv:retab!<CR>
-
 
 function! _GetKeywordBeforeCursor()
   let str = strpart(getline('.'),0,col('.')-1)
@@ -2665,13 +2563,6 @@ function! _ShowFunctionHint(word, insert)
   call _Echo("Search", x)
 endfunction
 endif
-
-
-
-" screenで下にreplインタープリタを起動しているとき、選択範囲を下で実行する
-vnoremap <silent> <space>j "ry:call writefile(split(@r, "\n") + [""], "/tmp/screenbuf", "b")<CR>:call system('screen -X eval focus "readreg r /tmp/screenbuf" "paste r" focus')<CR>
-
-command! GG cfile /tmp/gg.tmp | cw
 
 " 巨大なファイルを読みこむとき
 " ・シンタックスオフ
