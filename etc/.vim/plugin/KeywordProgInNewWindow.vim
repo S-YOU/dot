@@ -11,7 +11,7 @@ function! _KeywordProgInNewWindow(word)
   Scratch
   normal! G
   exe "r!" . command . " '" . word . "' | col -b"
-  exe "normal! `[0jz\<CR>"
+  exe "normal! `[0z\<CR>"
   if &keywordprg =~ '^man'
     set ft=man
   endif

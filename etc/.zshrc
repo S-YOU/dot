@@ -174,7 +174,7 @@ preexec() {
 			local args
 			a="$1"
 			args=("${(@s/ /)a}")
-			cmd=${args[1]}
+			local cmd=${args[1]}
 			exclude_commands=(ls ll cd rm .. pwd fixtitle)
 			if [ "$cmd" = fg ]; then
 				cmd="$last_cmd"

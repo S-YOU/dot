@@ -10,8 +10,14 @@ alias ,,='pushd +2 > /dev/null'
 alias ,,,='pushd +3 > /dev/null'
 alias ,,,,='pushd +4 > /dev/null'
 alias bg=' bg'
-alias cp='cp -i'
 alias com='command'
+alias cp='cp -i'
+case "$OSTYPE" in
+    *darwin*)
+        alias cop='pbcopy'
+        alias pas='pbpaste'
+        ;;
+esac
 alias fg=' fg'
 alias gdb='gdb --quiet -ex start'
 alias gti='git'
@@ -30,12 +36,10 @@ case "$OSTYPE" in
         ;;
 esac
 alias ll='ls -lrth'
-alias ldir='ls -lrth'
 alias lsdot='ls -ld ~/.*'
 alias lsdotl='CLICOLOR_FORCE=1 lsdot | grep -e "->"'
 alias r='$DOT/bin/r'
 alias rm='$DOT/bin/rma.sh'
-alias rp='realpath'
 alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
@@ -136,9 +140,9 @@ l() {
 
 # 任意のコマンドをlessでページング対応させる関数
 pagerize() {
-    cmd="$1"
+    local cmd="$1"
     shift
-    src="
+    local src="
     $cmd() {
         if [ -t 1 ]; then
             command $cmd \"\$@\" | less -F
@@ -153,6 +157,7 @@ pagerize() {
 pagerize find
 pagerize readelf
 pagerize tree
+pagerize xxd
 
 . $DOT/bin/pathmunge
 
