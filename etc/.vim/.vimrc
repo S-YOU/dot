@@ -2602,15 +2602,15 @@ vmap <silent> - \t=gv:retab!<CR>
 vmap <silent> <tab> \adecgv:retab!<CR>
 
 
-function! _GetPreviousWord()
+function! _GetKeywordBeforeCursor()
   let str = strpart(getline('.'),0,col('.')-1)
-  let str = substitute(str, '\W\+$', '', '')
+  let str = substitute(str, '\W*$', '', '')
   let word = matchstr(str, '\k\+$')
   return word
 endfunction
 
 function! _FunctionHint()
-  let word = _GetPreviousWord()
+  let word = _GetKeywordBeforeCursor()
   if word == "if" || word == "for" || word == "while" || word == "switch" || word == ""
     return ''
   endif
