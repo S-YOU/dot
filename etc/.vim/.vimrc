@@ -2457,6 +2457,10 @@ function! Nerdtree_Setting()
   nmap <buffer> <expr> <C-p> _Nerdtree_Preview("up")
   nmap <buffer> <C-j> 3j
   nmap <buffer> <C-k> 3k
+  nnoremap <buffer> <C-f> <C-w><C-p><C-f><C-w><C-p>
+  nnoremap <buffer> <C-b> <C-w><C-p><C-b><C-w><C-p>
+  nnoremap <buffer> <C-e> <C-w><C-p>3<C-e><C-w><C-p>
+  nnoremap <buffer> <C-y> <C-w><C-p>3<C-y><C-w><C-p>
 endfunction
 
 function! _Nerdtree_Preview(dir)
