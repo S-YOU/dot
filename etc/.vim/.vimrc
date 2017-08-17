@@ -260,9 +260,7 @@ function! _SearchNext(dir)
     try
       exe "normal! " . v:count1 . "n"
     catch /E486/
-      echohl ErrorMsg
-      echomsg "E486: Pattern not found: " . @/
-      echohl None
+      call _Echo("ErrorMsg", "E486: Pattern not found: " . @/)
       return
     endtry
     if line(".") < line
@@ -272,9 +270,7 @@ function! _SearchNext(dir)
     try
       exe "normal! " . v:count1 . "N"
     catch /E486/
-      echohl ErrorMsg
-      echomsg "E486: Pattern not found: " . @/
-      echohl None
+      call _Echo("ErrorMsg", "E486: Pattern not found: " . @/)
       return
     endtry
     if line(".") > line
@@ -283,9 +279,7 @@ function! _SearchNext(dir)
   endif
   set scrolloff=0
   if wrapped
-    echohl WarningMsg
-    echomsg "Search wrapped"
-    echohl None
+    call _Echo("WarningMsg", "Search wrapped")
   else
     echo @/
   endif
@@ -558,9 +552,19 @@ function! _GetGrepCommand(dirtype)
   endif
 endfunction
 
-command! -nargs=+ Mkdir !pwd && mkdir -v <args>
+function! _Echo(highlight, msg)
+  exe "echohl " . a:highlight
+  echo a:msg
+  echohl None
+endfunction
 
-command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | echohl WarningMsg | echomsg "検索結果: 0件" | echohl None | endif
+function! _Echon(highlight, msg)
+  exe "echohl " . a:highlight
+  echon a:msg
+  echohl None
+endfunction
+
+command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 command! -nargs=+ Bufgrep call _Bufgrep(<f-args>)
 function! _Bufgrep(query)
   let bn = bufnr("%")
@@ -831,9 +835,7 @@ endfunction!
 function! AutoLoadSession()
   let g:sessionfile = getcwd() . "/Session.vim"
   if (argc() == 0 && filereadable(g:sessionfile))
-    echohl WarningMsg
-    echo "Session file exists. Load this? (y/n): "
-    echohl None
+    call _Echo("WarningMsg", "Session file exists. Load this? (y/n): ")
     while 1
       let c = getchar()
       if c == char2nr("y")
@@ -905,7 +907,7 @@ augroup MyAutocmd
   au FileType php         call PHP_Setting()
   au FileType python      call Python_Setting()
   au FileType qf call AdjustWindowHeight(1)
-  au FileType qf echohl MoreMsg | echomsg "F2 F3で移動できます" | echohl None
+  au FileType qf call _Echo("MoreMsg", "F2 F3で移動できます")
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
   au FileType qf setlocal nobuflisted
   au FileType qf syn match qfError "warning" contained
@@ -963,9 +965,7 @@ function! SetExecutable()
       redraw
       call system("chmod +x ".shellescape(expand("%:p")))
       if v:shell_error == 0
-        echohl Question
-        echomsg "Set permission to execute."
-        echohl None
+        call _Echo("Question", "Set permission to execute.")
       else
         echoerr "Failed to set permission to execute."
       endif
@@ -1576,9 +1576,7 @@ function! _ToggleQuote()
   elseif char == "\""
     let replaced = "'"
   else
-    echohl WarningMsg
-    echomsg "クォートが見つかりませんでした"
-    echohl None
+    call _Echo("WarningMsg", "クォートが見つかりませんでした")
     return
   endif
   exe "normal! r" . replaced
@@ -2329,9 +2327,7 @@ function! _LoadLocalVim()
     endif
     if filereadable(".vimrc.local") && getcwd() != expand("$HOME")
       source .vimrc.local
-      "echohl Question
-      "echomsg "LoadLocalVim: Loaded " . cur_dir . "/local.vim"
-      "echohl NOne
+      "call _Echo("Question", "LoadLocalVim: Loaded " . cur_dir . "/local.vim")
     endif
     let prev_dir = cur_dir
     silent lcd ..
@@ -2406,7 +2402,7 @@ function! ToggleSourceAndHeader(opencmd, ...)
         endfor
       endif
       if af == ""
-        echohl WarningMsg | echomsg "切り替えるべきファイルが見つかりません" | echohl None
+        call _Echo("WarningMsg", "切り替えるべきファイルが見つかりません")
         return
       endif
     endif
@@ -2615,7 +2611,7 @@ endfunction
 
 function! _FunctionHint()
   let word = _GetPreviousWord()
-  if word == "if" || word == "while" || word == ""
+  if word == "if" || word == "for" || word == "while" || word == "switch" || word == ""
     return ''
   endif
   call _ShowFunctionHint(word, 0)
@@ -2666,9 +2662,7 @@ function! _ShowFunctionHint(word, insert)
   let @h = x
   sil! b#
   call winrestview(view)
-  echohl Search
-  echomsg x
-  echohl None
+  call _Echo("Search", x)
 endfunction
 endif
 
