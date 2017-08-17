@@ -46,6 +46,7 @@ link .sqliterc
 link .pryrc
 link .vim
 link .zprofile
+link .zshenv
 link .zshrc
 link .vimrc "$ETC/.vim/.vimrc"
 
