@@ -10,6 +10,9 @@ function! _KeywordProgInNewWindow(word)
   endif
   Scratch
   normal! G
-  exe "r!" . command . " '" . word . "'"
+  exe "r!" . command . " '" . word . "' | col -b"
   normal! `[0zt
+  if &keywordprg =~ '^man'
+    set ft=man
+  endif
 endfunction

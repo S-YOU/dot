@@ -185,7 +185,7 @@ set smartcase
 set incsearch
 set hlsearch
 set wrapscan
-set keywordprg=man\ -S\ 2:3
+set keywordprg=man\ -S\ 2:3\ -a
 " vgにより「:grep console」でカレントディレクトリから大文字小文字を区別せず検索できる
 set grepprg=vg\ --from-vim
 set grepformat=%f:%l:%c:%m,%f:%l:%m
@@ -429,10 +429,6 @@ nnoremap <C-l><C-u> :set cuc!<CR>
 "nnoremap <C-l> :noh<CR><C-l>
 
 " その他 ----------------------------------------------------------- 
-if !exists(":Man")
-  runtime ftplugin/man.vim
-  nnoremap K :<C-u>Man <C-r><C-w><CR>
-endif
 
 " コマンドライン
 cnoremap <C-a> <Home>
