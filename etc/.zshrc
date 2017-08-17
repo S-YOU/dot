@@ -21,6 +21,8 @@
 bindkey -e
 bindkey "^I" menu-expand-or-complete
 bindkey "^O" accept-and-hold
+bindkey '^]'   vi-find-next-char
+bindkey '^[^]' vi-find-prev-char
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
 
