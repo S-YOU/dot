@@ -429,7 +429,10 @@ nnoremap <C-l><C-u> :set cuc!<CR>
 "nnoremap <C-l> :noh<CR><C-l>
 
 " その他 ----------------------------------------------------------- 
-"nnoremap K :Man <C-r><C-w><CR>
+if !exists(":Man")
+  runtime ftplugin/man.vim
+  nnoremap K :<C-u>Man <C-r><C-w><CR>
+endif
 
 " コマンドライン
 cnoremap <C-a> <Home>
