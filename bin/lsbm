@@ -1,4 +1,0 @@
-#!/bin/sh
-
-BMDIR=~/bm
-ls -l "$BMDIR"
