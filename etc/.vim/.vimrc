@@ -252,6 +252,7 @@ inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
+nnoremap <silent> g* :<C-u>let @/ = expand("<cword>")<CR>
 
 function! _SearchNext(dir)
   let line = line(".")
@@ -383,7 +384,7 @@ nnoremap <silent> <space>P :call _ShowFunctionHint(expand("<cword>"), 1)<CR>
 nnoremap <silent> <C-g>l :<C-u>Gitlog<CR>
 nnoremap <silent> <C-g><C-l> :<C-u>Gitlog<CR>
 
-"nnoremap <silent> <C-w><C-o> :<C-u>ZoomWin<CR>
+nnoremap <silent> <C-w><C-o> :<C-u>call CloseOtherWindows()<CR>
 " winfixheight or winfixwidth されたウィンドウを除いて閉じる
 function! CloseOtherWindows()
   let w = winnr()
@@ -844,7 +845,6 @@ augroup MyAutocmd
   au BufNewFile,BufReadPost *tags set list ts=16
   au BufRead,BufNewFile svn-commit* sil 1,3d | new | setl bufhidden=hide buftype=nofile noswapfile | if exists("g:topdir") | exe "cd" g:topdir | endif | silent 0r!svn --diff-cmd diff diff
   au BufReadPost * call _MemorizeModifiedTime()
-  au BufReadPost * call _SetExpandtab()
   au BufReadPost * if &modifiable && search('[^ -~\t]', 'wcn', 200) == 0 | set fenc= | endif
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal g`\"" | endif
   au BufReadPost * let b:SetExecutable_off = 1
@@ -2443,18 +2443,6 @@ function! _EchoModifiedTime(fullpath)
   for time in b:modified_time_list
     echo "!touch -t " . strftime("%Y%m%d%H%M.%S", time) . " " . a:fullpath
   endfor
-endfunction
-
-function! _SetExpandtab()
-  if exists("b:IsLargeFile")
-    return
-  endif
-  " 行頭にタブが見つかったらnoexpandtabにする。見つからなかったらexpandtabにする
-  if search('^\t', 'cn', 1000)
-    setlocal noexpandtab
-  else
-    setlocal expandtab list
-  endif
 endfunction
 
 " カレントファイルのパスを正規表現でマッチングしてオプションをセットするプラグイン
