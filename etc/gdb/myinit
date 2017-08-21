@@ -90,7 +90,11 @@ define l
     set logging overwrite on
     set logging on
     frame
-    list *$pc
+    if $argc == 1
+        list $arg0
+    else
+        list *$pc
+    end
     set logging off
     shell expand -t ${GDB_TABSIZE:-4} /tmp/gdb-l.tmp | gdb-l && rm /tmp/gdb-l.tmp
 end

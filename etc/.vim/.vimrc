@@ -195,6 +195,7 @@ set tags+=*.tags,tags;,file-tags;
 if exists('+wildignorecase')
   set wildignorecase
 endif
+set wildignore+=*.o
 "set wildignore+=*/.git/*,*/bundle/*,*/vendor/*
 set wildmenu
 set wildmode=list:full
