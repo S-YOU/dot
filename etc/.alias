@@ -205,3 +205,56 @@ xpath() {
     xmllint --noent --format --xpath "$1" -
 }
 
+BMDIR=~/bm
+
+bmhelp() {
+    cat <<EOF
+Usage:
+    bm add .            -- Bookmark current directory
+    bm add . hoge       -- Bookmark current directory as 'hoge'
+    bm ls               -- List bookmarks
+    bm rm hoge          -- Remove bookmark 'hoge'
+EOF
+    return $1
+}
+
+bm() {
+    if [ ! -d "$BMDIR" ]; then
+        mkdir -p "$BMDIR"
+    fi
+
+    case "$1" in
+        add)
+            if [ "$2" = "" ]; then
+                bmhelp 1
+                return
+            fi
+            TARGET=`realpath "$2"`
+            if [ "$3" =  "" ]; then
+                BASENAME=`basename "$TARGET"`
+                BMNAME="$BASENAME"
+            else
+                BMNAME="$3"
+            fi
+            ln -sv "$TARGET" "$BMDIR"/"$BMNAME"
+            ;;
+        ls)
+            ls -l "$BMDIR"
+            ;;
+        rm)
+            if [ "$2" != "" ]; then
+                rm -v "$BMDIR/$2"
+            fi
+            ;;
+        "")
+            bmhelp
+            ;;
+        *)
+            if [ -L "$BMDIR/$1" ]; then
+                builtin cd "$BMDIR/$1"
+            else
+                bmhelp 1
+            fi
+            ;;
+    esac
+}

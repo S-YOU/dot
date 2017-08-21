@@ -92,6 +92,12 @@ zstyle ':completion*:path-directories' ignored-patterns '*'
 
 compdef _files r
 compdef '_files -g "*.hs"' runghc
+compdef _bm bm
+
+_bm() {
+    _files -W ~/bm && return 0
+    return 1
+}
 
 # pecoでカレントディレクト以下のファイルを補完
 peco-set-cursor() {
