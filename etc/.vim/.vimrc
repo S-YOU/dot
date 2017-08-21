@@ -252,7 +252,7 @@ inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
-nnoremap <silent> g* :<C-u>let @/ = expand("<cword>")<CR>
+nnoremap <silent> <space>* :<C-u>let @/ = expand("\<cword\>")<CR>:set hls<CR>
 
 function! _SearchNext(dir)
   let line = line(".")
