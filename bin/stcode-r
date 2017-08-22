@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# 駅名から駅コードを調べるスクリプト
+# Example: stcode-r "高円寺" "東京"
+
+set -e
+
+key="$EWS_ACCESS_KEY"
+
+for station_name in "$@"; do
+    url="http://api.ekispert.jp/v1/json/station/light?key=$key&name=$station_name"
+    curl -s "$url" | jq -r '.ResultSet.Point[] | [.Station.code, .Station.Name] | @csv' | sed -e 's@"@@g'
+done
