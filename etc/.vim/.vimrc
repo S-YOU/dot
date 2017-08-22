@@ -252,7 +252,7 @@ inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
-nnoremap <silent> <space>* :<C-u>let @/ = expand("\<cword\>")<CR>:set hls<CR>
+nnoremap <silent> <C-x><C-o> <C-i>
 
 function! _SearchNext(dir)
   let line = line(".")
@@ -422,6 +422,7 @@ nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
 nnoremap <C-l><C-n> :windo set number!<CR>:set number?<CR>
 nnoremap <C-l><C-w> :set wrap!<CR>:set wrap?<CR>
 nnoremap <C-l><C-u> :set cuc!<CR>
+nnoremap <silent> <space>* :<C-u>let @/ = expand("\<cword\>")<CR>:set hls<CR>
 "nnoremap <C-l> :noh<CR><C-l>
 
 " その他 ----------------------------------------------------------- 
