@@ -208,7 +208,7 @@ xpath() {
 
 xf() {
     if [ -t 1 ]; then
-        xmllint --format - | pygmentize | less
+        xmllint --format - | vim -c "nnoremap q :q!<CR>" -c "set buftype=nofile" -
     else
         xmllint --format -
     fi
