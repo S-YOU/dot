@@ -47,7 +47,6 @@ alias tf='tail -f -n 500'
 alias vi='vim'
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
-alias xf='xmllint --format - | less'
 
 awsenv() {
     local rbpath="$DOT/bin/awsenv.rb"
@@ -205,6 +204,14 @@ tt() {
 
 xpath() {
     xmllint --noent --format --xpath "$1" -
+}
+
+xf() {
+    if [ -t 1 ]; then
+        xmllint --format - | pygmentize | less
+    else
+        xmllint --format -
+    fi
 }
 
 BMDIR=~/bm
