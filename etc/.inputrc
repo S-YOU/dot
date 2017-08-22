@@ -19,6 +19,8 @@ set visible-stats on
 
 
 $if gdb
+    # Up; continue
+    "\e[A": "continue \C-m"
     # Down: next
     "\e[B": "n \C-m"
     # Right: step
