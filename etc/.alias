@@ -9,6 +9,7 @@ alias ,='pushd +1 > /dev/null'
 alias ,,='pushd +2 > /dev/null'
 alias ,,,='pushd +3 > /dev/null'
 alias ,,,,='pushd +4 > /dev/null'
+alias ag='ag --follow'
 alias bg=' bg'
 alias com='command'
 alias cp='cp -i'
@@ -40,6 +41,7 @@ alias lsdot='ls -ld ~/.*'
 alias lsdotl='CLICOLOR_FORCE=1 lsdot | grep -e "->"'
 alias r='$DOT/bin/r'
 alias rm='$DOT/bin/rma.sh'
+alias pt='pt --follow'
 alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
@@ -251,7 +253,7 @@ bm() {
             ;;
         *)
             if [ -L "$BMDIR/$1" ]; then
-                builtin cd "$BMDIR/$1"
+                cd "$BMDIR/$1"
             else
                 bmhelp 1
             fi
