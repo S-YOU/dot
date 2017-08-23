@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+frames = []
+while line = gets
+  if line =~ /(\w+) \(.*?\) at (\S+):(\d+)$/
+    func = $1
+    filename = $2
+    linenum = $3
+    frames << [func, filename, linenum]
+  end
+end
+
+frames.reverse.each_with_index do |f, i|
+  func, filename, linenum = f
+  puts ("    " * i) + "#{func}  (#{filename}:#{linenum})"
+end

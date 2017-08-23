@@ -87,6 +87,19 @@ document xxd
 # 例：xxd &argc 10
 end
 
+define bt2
+    set logging file /tmp/gdb-bt2.tmp
+    set logging redirect 
+    set logging overwrite on
+    set logging on
+    bt
+    set logging off
+    shell gdb-bt2 /tmp/gdb-bt2.tmp
+end
+document bt2
+# backtraceを逆順に表示
+end
+
 # listコマンドの改良
 define l
     set logging file /tmp/gdb-l.tmp
