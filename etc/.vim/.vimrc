@@ -160,7 +160,7 @@ set nowrap
 set nolist listchars=tab:^\ 
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
-set statusline=%n:\ %F:%l,%v\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %p%%\ %02B
+set statusline=%n:\ %F:%l,%v\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{'('.WhatFunction().')'}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %p%%\ %02B
 set showcmd
 set report=0
 set cmdheight=1
@@ -2573,20 +2573,28 @@ nmap p pv`]v
 " screenで<C-t><C-v>で貼り付けられる
 " ~/svn/bin/yankコマンドで取得できる
 " もしyにマップするのがまずいようだったらYとか<C-y>に変える
-vnoremap <silent> y y:call _YankToFile('0')<CR>`]
-nnoremap <silent> yy yy:call _YankToFile('0')<CR>
+vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
+nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
 " 現在のレジスタを~/.yankに保存し、screenで<C-t><C-v>で貼り付けられるようにする
-nnoremap <silent> <C-x><C-y> :call _YankToFile('0')<CR>:echomsg "Copied to ~/.yank"<CR>
-nnoremap <silent> <C-x><C-b> :let @0 = "b " . expand("%").":".line(".")<CR>:call _YankToFile('0')<CR>:echomsg @0<CR>
+nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
+nnoremap <silent> <C-x><C-b> :let @0 = "b " . expand("%").":".line(".")<CR>:call _YankToFile('0', 1)
 command! PutFromFile r ~/.yank
-function! _YankToFile(reg)
-  "if getregtype(reg) == "V"
-    call writefile(split(getreg(a:reg), "\n"), expand("~/.yank"), "b")
-    " http://www.evernote.com/l/ANNgwtCY7uFA1r3MQy2PUS_F2rVP3zA9ojM/
-    "if $TERM =~ 'screen'
-      "call system("USER=ao screen -X readbuf")
-    "endif
+function! _YankToFile(reg, show_message)
+  let yankfile = "~/.yank"
+  let lines = split(getreg(a:reg), "\n")
+  call writefile(lines, expand(yankfile), "b")
+  " http://www.evernote.com/l/ANNgwtCY7uFA1r3MQy2PUS_F2rVP3zA9ojM/
+  "if $TERM =~ 'screen'
+    "call system("USER=ao screen -X readbuf")
   "endif
+  if a:show_message
+    if getregtype(a:reg) ==# "v"
+      let msg = "Copied " . lines[0] . " to " . yankfile
+    else
+      let msg = "Copied " . len(lines) . " lines to " . yankfile
+    endif
+    echomsg msg
+  endif
 endfunction
 "=============================================================================
 "   ▲実験室  Experimental

@@ -19,14 +19,16 @@ set visible-stats on
 
 
 $if gdb
+    # serverをつけると履歴に残らなくなる
+    # https://sourceware.org/gdb/onlinedocs/gdb/Server-Prefix.html#Server-Prefix
     # Up; continue
-    "\e[A": "continue \C-m"
+    "\e[A": "server continue \C-m"
     # Down: next
-    "\e[B": "n \C-m"
+    "\e[B": "server n \C-m"
     # Right: step
-    "\e[C": "s \C-m"
+    "\e[C": "server s \C-m"
     # Left; fin
-    "\e[D": "fin \C-m"
+    "\e[D": "server fin \C-m"
 $endif
 
 
