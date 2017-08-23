@@ -2577,7 +2577,7 @@ vnoremap <silent> y y:call _YankToFile('0')<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0')<CR>
 " 現在のレジスタを~/.yankに保存し、screenで<C-t><C-v>で貼り付けられるようにする
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0')<CR>:echomsg "Copied to ~/.yank"<CR>
-nnoremap <silent> <C-x><C-l> :let @0 = expand("%").":".line(".")<CR>:call _YankToFile('0')<CR>:echomsg @0<CR>
+nnoremap <silent> <C-x><C-b> :let @0 = "b " . expand("%").":".line(".")<CR>:call _YankToFile('0')<CR>:echomsg @0<CR>
 command! PutFromFile r ~/.yank
 function! _YankToFile(reg)
   "if getregtype(reg) == "V"

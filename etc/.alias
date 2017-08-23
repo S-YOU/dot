@@ -209,7 +209,7 @@ xpath() {
 
 xf() {
     if [ -t 1 ]; then
-        xmllint --format - | vil
+        xmllint --format - > /tmp/xf.$$ && vil < /tmp/xf.$$
     else
         xmllint --format -
     fi
