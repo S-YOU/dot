@@ -1604,7 +1604,7 @@ endfunction
 
 onoremap <silent> , :<C-u>call _UntilCapitalLetter()<CR>
 function! _UntilCapitalLetter()
-  call search('[A-Z]', '', line('.'))
+  call search('[A-Z_]', '', line('.'))
 endfunction
 
 

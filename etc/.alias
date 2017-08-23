@@ -45,6 +45,7 @@ alias pt='pt --follow'
 alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
+alias vil='vim -c "nnoremap q :q!<CR>" -c "set buftype=nofile" -c "set nonumber wrap" -'
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
 
@@ -208,7 +209,7 @@ xpath() {
 
 xf() {
     if [ -t 1 ]; then
-        xmllint --format - | vim -c "nnoremap q :q!<CR>" -c "set buftype=nofile" -
+        xmllint --format - | vil
     else
         xmllint --format -
     fi

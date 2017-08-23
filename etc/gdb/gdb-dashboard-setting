@@ -25,6 +25,8 @@ end
 document show-full-source
 # ソースコード全体を表示する
 end
+
+alias da = dashboard
 alias daf = show-full-source
 
 define asm
