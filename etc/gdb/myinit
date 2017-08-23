@@ -27,10 +27,13 @@ set print elements 0
 set print object on
 
 alias a = advance
-alias bd = clear *$pc
 alias im = info macro
 alias w = disp
 alias uw = undisp
+
+define bd
+    clear *$pc
+end
 
 define ib
     set logging file /tmp/gdb-ib.tmp
