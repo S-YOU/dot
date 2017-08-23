@@ -4,8 +4,8 @@ dashboard -layout source
 dashboard -style divider_fill_char_primary "-"
 dashboard -style divider_fill_char_secondary "."
 dashboard -style style_selected_1 "7;37"
-dashboard -style prompt_running '(gdb)'
-dashboard -style prompt_not_running '\[\e[1;33m\](gdb)\[\e[0m\]'
+dashboard -style prompt_running '\[\e[1;33m\](gdb)\[\e[0m\]'
+dashboard -style prompt_not_running '(gdb)'
 dashboard -style syntax_highlighting "emacs"
 dashboard source -style context 12
 dashboard source -style style_current "48;5;232;38;5;231"
@@ -17,17 +17,16 @@ import os
 gdb.execute("dashboard source -style tabstop %s" % os.getenv("GDB_TABSIZE", "4"))
 end
 
-define show-full-source
+define list-full-source
     dashboard source -style context 100000
     dashboard
     dashboard source -style context 12
 end
-document show-full-source
+document list-full-source
 # ソースコード全体を表示する
 end
 
-alias da = dashboard
-alias daf = show-full-source
+alias all = list-full-source
 
 define asm
     dashboard -layout registers source assembly
