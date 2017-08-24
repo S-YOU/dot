@@ -557,7 +557,7 @@ endfunction
 
 function! _Echo(highlight, msg)
   exe "echohl " . a:highlight
-  echo a:msg
+  echomsg a:msg
   echohl None
 endfunction
 
@@ -574,17 +574,18 @@ function! _Bufgrep(query)
   cclose
   call setqflist([])
   let bn = bufnr("%")
-  exe "sil! bufdo! vimgrepadd! " . a:query . " %"
+  exe "sil! bufdo! vimgrepadd /" . a:query . "/j %"
   let qflen = len(getqflist())
   if qflen == 0
-    exe "b" . bn
+    sil! exe "b" . bn
+    call _Echo("WarningMsg","検索結果: 0件")
   else
     cfirst
     cw
     let winheight = qflen > 10 ? 10 : qflen
     exe winheight . "wincmd _"
+    redraw!
   endif
-  redraw!
 endfunction
 " 全バッファに対して置換する
 " 使い方: Replace s@hoge@moge@
