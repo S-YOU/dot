@@ -422,7 +422,7 @@ nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
 nnoremap <C-l><C-n> :windo set number!<CR>:set number?<CR>
 nnoremap <C-l><C-w> :set wrap!<CR>:set wrap?<CR>
 nnoremap <C-l><C-u> :set cuc!<CR>
-nnoremap <silent> <space>* :<C-u>let @/ = expand("\<cword\>")<CR>:set hls<CR>
+nnoremap <silent> <space>* :<C-u>let @/ = '\<' . expand("\<cword\>") . '\>'<CR>:set hls<CR>
 "nnoremap <C-l> :noh<CR><C-l>
 
 " その他 ----------------------------------------------------------- 

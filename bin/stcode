@@ -3,9 +3,9 @@
 # 駅コードから駅名等を調べるスクリプト
 # Example: stcode 22671 22828
 
-set -e
+set -eu
 
-key="$EWS_ACCESS_KEY"
+key="$EWS_KEY"
 
 for station_code in "$@"; do
     url="http://api.ekispert.jp/v1/json/station/light?key=$key&code=$station_code"
