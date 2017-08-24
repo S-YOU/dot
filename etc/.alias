@@ -203,10 +203,6 @@ tt() {
     fi
 }
 
-xpath() {
-    xmllint --noent --format --xpath "$1" -
-}
-
 xf() {
     if [ -t 1 ]; then
         xmllint --format - > /tmp/xf.$$ && vil < /tmp/xf.$$

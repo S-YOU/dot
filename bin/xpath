@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+require "readline"
+require "cgi"
+require "shellwords"
+
+histfile = ENV["HOME"] + "/.xpath_history"
+
+xml = $stdin.read
+
+tmp = "/tmp/xpath.#{Process.pid}"
+
+File.write(tmp, xml)
+
+tty = open("/dev/tty", "r")
+STDIN.reopen(tty)
+
+at_exit {
+  File.write(histfile, Readline::HISTORY.to_a.join("\n"))
+  File.delete(tmp) if File.exist?(tmp)
+}
+
+if File.exist?(histfile)
+  Readline::HISTORY.push(*(File.readlines(histfile).map &:chomp))
+end
+
+while line = Readline.readline("\x1b[0;31mxpath>\x1b[0m ", true)
+  # 空行や直前の入力と同じ内容は入力履歴に残さない。
+  Readline::HISTORY.pop if /^\s*$/ =~ line
+  begin
+    if Readline::HISTORY[Readline::HISTORY.length-2] == line
+      Readline::HISTORY.pop
+    end
+  rescue IndexError
+  end
+
+  xpath = line.chomp
+  pipe = IO.popen("xmllint --noent --encode UTF-8 --xpath #{Shellwords.shellescape(xpath)} '#{tmp}' | xmllint --format -", "r")
+  extracted = pipe.read
+  print CGI.unescape_html(extracted)
+end
