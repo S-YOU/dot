@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+
+# tagsファイルをパースし、ファイルごとに定義されている識別子を表示するスクリプト
+#
+# 例:
+#   （tagsファイルが存在するディレクトリで）
+#   overview
+#
+# kindの意味は ctags --list-kinds で表示できる
+#
+# C
+#     d  macro definitions
+#     e  enumerators (values inside an enumeration)
+#     f  function definitions
+#     g  enumeration names
+#     h  included header files
+#     l  local variables [off]
+#     m  struct, and union members
+#     p  function prototypes [off]
+#     s  structure names
+#     t  typedefs
+#     u  union names
+#     v  variable definitions
+#     x  external and forward variable declarations [off]
+#     z  function parameters inside function definitions [off]
+#     L  goto labels [off]
+
+tag_path = "./tags"
+
+unless File.exist?(tag_path)
+  puts "#{tag_path} not exist"
+  exit 1
+end
+
+tmppath = "/tmp/overview.#{Process.pid}"
+tmp = File.open(tmppath, "w")
+
+@src2tags = Hash.new {|h, k| h[k] = []}
+@count_by_kind = Hash.new{|h, k| h[k] = 0}
+
+# パース
+open(tag_path, "r:ascii-8bit") do |f|
+  f.each do |line|
+    if line[0] == "!"
+      next
+    end
+    a = line.split("\t")
+    ident = a[0]
+    src   = a[1]
+    re    = a[2]
+    kind  = a[3]
+    @count_by_kind[kind] += 1
+    @src2tags[src] << a
+  end
+end
+
+# 出力
+tmp.puts "# #{Dir.pwd}"
+tmp.puts "# %8d files" % @src2tags.length
+tmp.puts "# %8d functions" % @count_by_kind['f']
+tmp.puts "# %8d structs" % @count_by_kind['s']
+tmp.puts "# %8d definitions" % @count_by_kind['d']
+tmp.puts
+
+@src2tags.keys.sort.each do |src|
+  tags = @src2tags[src]
+  tmp.puts "#{src}\t#{tags.length} identifiers"
+  tags.each do |tag|
+    tmp.puts "    #{tag[0]}\t#{tag[3]}"
+  end
+end
+
+tmp.close
+
+system("less #{tmppath}; rm -f #{tmppath}")
