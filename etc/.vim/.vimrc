@@ -570,14 +570,19 @@ endfunction
 command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 command! -nargs=+ Bufgrep call _Bufgrep(<f-args>)
 function! _Bufgrep(query)
+  call setqflist([])
   let bn = bufnr("%")
-  exe "sil! bufdo! grepadd! " . a:query . " %"
-  if len(getqflist()) == 0
+  exe "sil! bufdo! vimgrepadd! " . a:query . " %"
+  let qflen = len(getqflist())
+  if qflen == 0
     exe "b" . bn
   else
     cfirst
+    cclose
+    cw
+    let winheight = qflen > 10 ? 10 : qflen
+    exe winheight . "wincmd _"
   endif
-  cw
   redraw!
 endfunction
 " 全バッファに対して置換する
