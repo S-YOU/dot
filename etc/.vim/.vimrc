@@ -160,7 +160,7 @@ set nowrap
 set nolist listchars=tab:^\ 
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
-set statusline=%n:\ %F:%l,%v\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{'('.WhatFunction().')'}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %p%%\ %02B
+set statusline=%n:\ %F:%l,%v\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %p%%\ %02B
 set showcmd
 set report=0
 set cmdheight=1
@@ -1704,16 +1704,17 @@ endfunction
 
 " Cの場合、[[で十分そう
 function! WhatFunction()
+  let op = "("
+  let cp = ")"
   if exists("b:WhatFunction_LastLine") && b:WhatFunction_LastLine == line(".")
-    return b:WhatFunction
+    return op . b:WhatFunction . cp
   endif
   if &ft == "c"
-    return "[" . WhatFunction_C() . "]"
-  elseif &ft == "python"
-    return "[" . WhatFunction_Py() . "]"
-  elseif &ft == "php"
-    return ''
-    return "[" . WhatFunction_PHP() . "]"
+    return op . WhatFunction_C() . cp
+  elseif op == "python"
+    return op . WhatFunction_Py() . cp
+  elseif op == "php"
+    return op . WhatFunction_PHP() . cp
   else
     return ""
   endif
