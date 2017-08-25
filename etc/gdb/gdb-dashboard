@@ -837,16 +837,12 @@ class Source(Dashboard.Module):
             if int(number) == current_line:
                 # the current line has a different style without ANSI
                 if R.ansi:
-                    if self.highlighted:
-                        line_format = ansi(number_format,
-                                           self.style_current) + ' {}'
-                    else:
-                        line_format = ansi(number_format + ' {}',
-                                           R.style_selected_1)
+                    # reverse current line
+                    line = '\x1b[7m' + re.sub(r'\x1b\[.*?m', '', line) + '\x1b[0m'
                 else:
                     # just show a plain text indicator
                     line_format = number_format + '>{}'
-            elif is_breakpoint:
+            if is_breakpoint:
                 if enabled[str(number)]:
                     line_format = ansi(number_format, self.style_break) + ' {}'
                 else:
