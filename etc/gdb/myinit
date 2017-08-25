@@ -1,5 +1,11 @@
 # gdb-dashboardに依存しない設定ファイル
 
+# gdb自身の環境変数を設定
+python
+import os
+os.environ["GDB_RUNNING"] = "true"
+end
+
 # カレントディレクトリの.gdbinitを読み込む
 set auto-load local-gdbinit
 set auto-load safe-path /

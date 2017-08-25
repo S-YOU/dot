@@ -179,6 +179,19 @@ set synmaxcol=300
 " showmodeにしていると、PHPの引数表示が上書きされてしまう
 set showmode
 
+augroup Gdb
+  au!
+  au VimEnter * call _DetectGdb()
+augroup END
+
+function! _DetectGdb()
+  if exists("$GDB_RUNNING")
+    mark A
+    sign define current_line text=> texthl=StatusLine
+    exe "sign place 1 line=" . line(".") . " name=current_line file=" . expand("%:p")
+  endif
+endfunction
+
 " 検索 -------------------------------------------------------------
 set ignorecase
 set smartcase
