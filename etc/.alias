@@ -157,6 +157,7 @@ pagerize() {
 }
 
 pagerize find
+pagerize locate
 pagerize readelf
 pagerize tree
 pagerize xxd

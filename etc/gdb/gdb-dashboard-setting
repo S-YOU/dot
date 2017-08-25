@@ -12,11 +12,6 @@ dashboard source -style style_current "48;5;232;38;5;231"
 dashboard source -style style_break "48;5;88;38;5;231"
 dashboard source -style style_break_disabled "48;5;66;38;5;231"
 
-python
-import os
-gdb.execute("dashboard source -style tabsize %s" % os.getenv("GDB_TABSIZE", "4"))
-end
-
 define asm
     dashboard -layout registers source assembly
     dashboard source -style context 5
