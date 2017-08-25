@@ -14,19 +14,8 @@ dashboard source -style style_break_disabled "48;5;66;38;5;231"
 
 python
 import os
-gdb.execute("dashboard source -style tabstop %s" % os.getenv("GDB_TABSIZE", "4"))
+gdb.execute("dashboard source -style tabsize %s" % os.getenv("GDB_TABSIZE", "4"))
 end
-
-define list-full-source
-    dashboard source -style context 100000
-    dashboard
-    dashboard source -style context 12
-end
-document list-full-source
-# ソースコード全体を表示する
-end
-
-alias all = list-full-source
 
 define asm
     dashboard -layout registers source assembly
