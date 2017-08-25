@@ -31,6 +31,15 @@ $if gdb
     "\e[D": "server fin \C-m"
 $endif
 
+$if ruby
+    "\e[A": "continue \C-m"
+    # Down: next
+    "\e[B": "next \C-m"
+    # Right: step
+    "\e[C": "step \C-m"
+    # Left; fin
+    "\e[D": "finish \C-m"
+$endif
 
 $if python
 $else

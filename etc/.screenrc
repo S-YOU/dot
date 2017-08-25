@@ -49,7 +49,7 @@ defnonblock 5
 #
 # %? A  %?    条件Aが真ならAを表示
 # %? B %: C %?    条件Bが真ならBを、偽ならCを表示
-hardstatus alwayslastline "[%H] %-w%{.b}%n %t%{-}%+w %= %?%E.%? %f"
+hardstatus alwayslastline "[%H] %-w%{.b}%n %t%{-}%+w %=%?%E%{.b} C-t %{-}%?"
 caption splitonly "%?%F%{.b}%?%n %t"
 
 bind H
