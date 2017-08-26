@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+# EC2インスタンスを起動し、runningになるまで待つスクリプト
+
+require "json"
+
+def usage_exit
+  puts "Usage: #{$0} INSTANCE_ID"
+  exit 1
+end
+
+def system_e(*args)
+  ret = system(*args)
+  if !ret
+    raise "Failed to execute command: #{args}"
+  end
+end
+
+instance_id = (ARGV[0] || usage_exit)
+
+# 起動
+cmd = "aws ec2 start-instances --instance-ids #{instance_id}"
+system_e(cmd)
+
+# 待つ
+i = 0
+while true
+  cmd = "aws ec2 describe-instances --instance-ids #{instance_id}"
+  json = `#{cmd}`
+  parsed = JSON.load(json)
+  instance = parsed["Reservations"][0]["Instances"][0]
+
+  if i == 0
+    puts
+    tags = instance["Tags"]
+    tags.each do |tag|
+      puts "#{tag['Key']}: #{tag['Value']}"
+    end
+    puts
+  end
+
+  state_name = instance["State"]["Name"]
+  public_ip = instance["PublicIpAddress"]
+  private_ip = instance["PrivateIpAddress"]
+  puts "state=#{state_name}  public_ip=#{public_ip}  private_ip=#{private_ip}"
+
+  if state_name == "running"
+    break
+  end
+
+  sleep 2
+  i += 1
+end
