@@ -1,0 +1,45 @@
+#!/bin/sh
+
+# Route53のDNS設定を更新するスクリプト
+# Usage: FQDN="***" HOSTED_ZONE_ID="***" update-route53
+
+set -eux
+
+rm -f r53.json
+
+# 設定を表示
+echo "HOSTED_ZONE_ID=$HOSTED_ZONE_ID"
+echo "FQDN=$FQDN"
+
+IP=""
+
+while [ "$IP" = "" ]; do
+    echo "Fetching IP address ..."
+    IP=$(curl -v http://169.254.169.254/latest/meta-data/public-ipv4 || true)
+    sleep 1
+done
+
+cat > r53.json <<EOF
+{
+  "Comment" : "",
+  "Changes" : [
+    {
+      "Action" : "UPSERT",
+      "ResourceRecordSet" : {
+        "Name" : "${FQDN}",
+        "Type" : "A",
+        "TTL" : 300,
+        "ResourceRecords" : [
+          {
+            "Value": "${IP}"
+          }
+        ]
+      }
+    }
+  ]
+}
+EOF
+
+aws route53 change-resource-record-sets --hosted-zone-id $HOSTED_ZONE_ID --change-batch file://r53.json
+
+echo "Done"
