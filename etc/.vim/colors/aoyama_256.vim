@@ -94,6 +94,8 @@ hi markdownCode         cterm=None              ctermfg=5               ctermbg=
 hi pythonTripleString cterm=Bold ctermfg=28
 hi pythonTripleQuotes cterm=Bold ctermfg=28
 
+hi Breakpoint           cterm=None              ctermfg=124             ctermbg=124
+
 "Cursor		カーソル下の文字
 "CursorIM	Cursorと同じだが、IMEモードにいるとき使われる|CursorIM|。
 "CursorColumn	'cursorcolumn'がオンになっているときのカーソルがある画面上の桁

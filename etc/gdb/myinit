@@ -37,25 +37,43 @@ alias im = info macro
 alias w = disp
 alias uw = undisp
 
-define bd
-    clear *$pc
-end
-
-define ib
-    set logging file /tmp/gdb-ib.tmp
+define redirect-on
+    set logging file $arg0
     set logging redirect 
     set logging overwrite on
     set logging on
-    info b
+end
+
+define redirect-off
     set logging off
-    shell gdb-ib < /tmp/gdb-ib.tmp && rm /tmp/gdb-ib.tmp
+end
+
+define bd
+    clear *$pc
+end
+document bd
+# カレント行のブレークポイントを削除する
+end
+
+define ib
+    redirect-on /tmp/gdb-ib.tmp
+    info b
+    redirect-off
+    shell gdb-ib < /tmp/gdb-ib.tmp && rm -f /tmp/gdb-ib.tmp
 end
 document ib
 # info bの結果に色をつける
 end
 
 define ed
+    # Vimの中でsignで表示するために、ブレークポイント情報を保存しておく
+    redirect-on /tmp/gdb-ed.tmp
+    info b
+    redirect-off /tmp/gdb-ed.tmp
+
     edit *$pc
+
+    shell rm -f /tmp/gdb-ed.tmp
 end
 document ed
 # 現在行を指定してエディタを起動する。
@@ -94,12 +112,9 @@ document xxd
 end
 
 define bt2
-    set logging file /tmp/gdb-bt2.tmp
-    set logging redirect 
-    set logging overwrite on
-    set logging on
+    redirect-on /tmp/gdb-bt2.tmp
     bt
-    set logging off
+    redirect-off
     shell gdb-bt2 /tmp/gdb-bt2.tmp
 end
 document bt2
@@ -127,12 +142,10 @@ end
 
 define sb
     # 「warning: Nothing to save.」を抑制するため
-    set logging file /dev/null
-    set logging redirect on
-    set logging on
+    redirect-on /dev/null
     shell rm -f .breakpoints
     save breakpoints .breakpoints
-    set logging off
+    redirect-off
 end
 document sb
 # ブレークポイントをファイルに保存する

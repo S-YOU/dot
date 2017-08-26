@@ -188,8 +188,52 @@ function! _DetectGdb()
   if exists("$GDB_RUNNING")
     mark A
     sign define current_line text=> texthl=StatusLine
+    sign define breakpoint text=.  texthl=Breakpoint
     exe "sign place 1 line=" . line(".") . " name=current_line file=" . expand("%:p")
+    call _SetBreakpointSigns(_ReadGdbBreakpoints())
   endif
+endfunction
+
+function! _ReadGdbBreakpoints()
+  let ret = []
+  let fname = "/tmp/gdb-ed.tmp"
+  if !filereadable(fname)
+    return
+  endif
+  let lines = readfile(fname)
+  for line in lines
+    let a = split(line)
+    if a[0] != "" && a[1] == "breakpoint"
+      let enabled = a[3]
+      if enabled == "y"
+        let re = '\(\S\+\):\(\d\+\)$'
+        let matchpos = match(line, re)
+        let location = strpart(line, matchpos)
+        let filename = substitute(location, re, '\1', '')
+        let linenum = substitute(location, re, '\2', '')
+        call add(ret, [filename, linenum])
+      endif
+    endif
+  endfor
+  return ret
+endfunction
+
+function! _SetBreakpointSigns(bps)
+  try
+    let current_file = expand("%:t")
+    let bufnr = bufnr("%")
+    let sign_id = 100
+    for bp in a:bps
+      let fname = bp[0]
+      let linenum = bp[1]
+      if fname == current_file
+        exe "sign place " . sign_id . " line=" . linenum . " name=breakpoint buffer=" . bufnr
+        let sign_id = sign_id + 1
+      endif
+    endfor
+  catch
+    echomsg v:exception
+  endtry
 endfunction
 
 " 検索 -------------------------------------------------------------
