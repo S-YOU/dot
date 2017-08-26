@@ -1688,21 +1688,21 @@ function! GetProtoLine()
   let &so = 0
   let istypedef = 0
   " find closing brace
-  let closing_lnum = search('^}','cW')
+  keepjumps let closing_lnum = search('^}','cW')
   if closing_lnum > 0
     if getline(line(".")) =~ '\w\s*;\s*$'
       let istypedef = 1
       let closingline = getline(".")
     endif
     " go to the opening brace
-    normal! %
+    keepjumps normal! %
     " if the start position is between the two braces
     if line(".") <= line_save
       if istypedef
         let ret = matchstr(closingline, '\w\+\s*;')
       else 
         " find a line contains function name
-        let lnum = search('\w\+(','bcnW')
+        keepjumps let lnum = search('\w\+(','bcnW')
         if lnum > 0
           let ret = getline(lnum)
         endif
@@ -1710,8 +1710,8 @@ function! GetProtoLine()
     endif
   endif
   " restore position and screen line
-  exe "normal! " . top . "Gz\<CR>"
-  call cursor(line_save, col_save)
+  exe "keepjumps normal! " . top . "Gz\<CR>"
+  keepjumps call cursor(line_save, col_save)
   let &so = so_save
   return ret
 endfunction
