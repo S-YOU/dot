@@ -243,8 +243,9 @@ class Dashboard(gdb.Command):
         if self.is_running() and not self.output:
             width = Dashboard.get_term_width()
             gdb.write(Dashboard.clear_screen())
-            gdb.write(divider(width, 'Output/messages', True))
-            gdb.write('\n')
+            # hide label
+            #gdb.write(divider(width, 'Output/messages', True))
+            #gdb.write('\n')
             gdb.flush()
 
     def on_stop(self, _):
