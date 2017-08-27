@@ -21,6 +21,7 @@ export LESS='-iFMXR -j10'
 export LESS_TERMCAP_so=$'\E[48;5;151m'  # lessで反転表示部分をカラー表示
 export LESS_TERMCAP_se=$'\E[0m'  # http://misc.flogisoft.com/bash/tip_colors_and_formatting#background1
 export PAGER=less
+export PYTHONDONTWRITEBYTECODE=true
 
 umask 002
 
