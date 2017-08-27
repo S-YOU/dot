@@ -78,6 +78,8 @@ bind | eval "split -v" focus next next      # 縦分割
 # Pageup, Pagedownでウィンドウ切り替え
 bindkey "^[[5~" prev
 bindkey "^[[6~" next
+bindkey "^[p" prev
+bindkey "^[n" next
 # F11 F12. vim起動中も有効にするためには、-aつきでも定義しないといけない
 #bindkey -k -a F1 prev
 #bindkey -k -a F2 next
