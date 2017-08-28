@@ -7,6 +7,8 @@ escape ^T^T
 # vimでEscの反応が遅くなるのを防ぐため
 maptimeout 0
 
+term screen-256color-bce
+
 # 256色対応
 termcapinfo xterm* 'Co#256'
 # 背景色設定

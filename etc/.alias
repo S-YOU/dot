@@ -45,7 +45,7 @@ alias pt='pt --follow'
 alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
-alias vil='vim -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -'
+alias vil='vim -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -c "nunmap <C-p>"  -'
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
 
