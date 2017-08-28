@@ -1763,6 +1763,9 @@ endfunction
 
 " Cの場合、[[で十分そう
 function! WhatFunction()
+  if &diff
+    return
+  endif
   let op = "("
   let cp = ")"
   if exists("b:WhatFunction_LastLine") && b:WhatFunction_LastLine == line(".")
