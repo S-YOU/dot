@@ -31,7 +31,7 @@ $if gdb
     "\e[D": "server fin \C-m"
     # hoge<C-w> で p hoge を実行する
     # 続けて <C-p><C-w> で pp hoge を実行する
-    "\C-w": "\M-@ \C-ap\C-m"
+    "\C-s": "\M-@ \C-ap\C-m"
     "\M-@": vi-bWord
 $endif
 

@@ -178,6 +178,7 @@ exit_status_text() {
 }
 
 source $DOT/etc/mollifier-git-zsh-prompt
+source $DOT/etc/safe-paste.plugin.zsh
 
 
 #-----------------------------------------------------------------------------
@@ -260,7 +261,6 @@ type() {
 unalias run-help > /dev/null 2>&1
 autoload run-help
 alias help=run-help
-
 
 if [ -e ~/.zshrc.local ]; then
     . ~/.zshrc.local
