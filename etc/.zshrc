@@ -53,7 +53,7 @@ setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させ�
 setopt hist_ignore_all_dups # 新しいエントリが重複なら古いエントリを削除する
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
-is-at-least 5.3.1 && setopt glob_starshort  # **.c で **/*.c と同じにする
+is-at-least 5.2 && setopt glob_star_short  # **.c で **/*.c と同じ展開をする
 
 CDPATH=$HOME/bm:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
