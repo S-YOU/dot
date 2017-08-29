@@ -17,6 +17,8 @@
 #      i. /etc/zlogin
 #     ii. ~/.zlogin
 
+autoload -Uz is-at-least
+
 # Emacs(bash)と同じキーバインド
 bindkey -e
 bindkey "^I" menu-expand-or-complete
@@ -51,6 +53,7 @@ setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させ�
 setopt hist_ignore_all_dups # 新しいエントリが重複なら古いエントリを削除する
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
+is-at-least 5.3.1 && setopt glob_starshort  # **.c で **/*.c と同じにする
 
 CDPATH=$HOME/bm:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
@@ -125,7 +128,6 @@ zle -N quote-word
 bindkey "^[q" quote-word
 
 # ディレクトリ移動履歴をfzfしてcd
-autoload -Uz is-at-least
 if is-at-least 4.3.11; then
   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
   add-zsh-hook chpwd chpwd_recent_dirs
