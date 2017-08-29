@@ -28,10 +28,6 @@ bindkey '^[^]' vi-find-prev-char
 
 autoload -Uz colors && colors
 
-# URLをペーストしたとき、自動的に?や&をエスケープする
-#autoload -U url-quote-magic
-#zle -N self-insert url-quote-magic
-
 
 #-----------------------------------------------------------------------------
 #	オプション
@@ -52,6 +48,7 @@ setopt glob_complete		# *<Tab>の挙動を bash 風に
 setopt sh_word_split		# クォートされていない変数の値の中の空白の扱い
 setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイルに入れない
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
+setopt hist_ignore_all_dups # 新しいエントリが重複なら古いエントリを削除する
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 
@@ -88,7 +85,7 @@ case "$OSTYPE" in
 esac
 
 # カレントに候補がないときだけCDPATHを候補にする
-zstyle ':completion*:path-directories' ignored-patterns '*'
+#zstyle ':completion*:path-directories' ignored-patterns '*'
 
 compdef _files r
 compdef '_files -g "*.hs"' runghc
@@ -99,25 +96,12 @@ _bm() {
     return 1
 }
 
-# pecoでカレントディレクト以下のファイルを補完
-peco-set-cursor() {
-    CURSOR=$#BUFFER             # カーソルを文末に移動
-    #zle -R -c                   # refresh
-	zle reset-prompt
-}
-peco-select-file() {
-    BUFFER="$LBUFFER$(command ls -A | fzf --prompt "$LBUFFER> ")"
-    peco-set-cursor
-}
-peco-select-file-recursive() {
-	# FIXME: $IGNORED_DIRSを参照するようにする
-    BUFFER="$LBUFFER`command find . \\( -name .git -or -name .svn -or -name bundle -or -name node_modules \\) -prune -or \\( -type f -print \\) | fzf --prompt "$LBUFFER> "`"
-    peco-set-cursor
-}
-zle -N peco-select-file
-zle -N peco-select-file-recursive
-bindkey '^O1'   peco-select-file
-bindkey '^O^O'  peco-select-file-recursive
+
+#-----------------------------------------------------------------------------
+#	ウィジェット
+#-----------------------------------------------------------------------------
+
+SELECTOR="fzf"
 
 # fgとbgを完全に無視したCtrl-P
 _up-line-or-history-ignoring() {
@@ -137,9 +121,47 @@ quote-word() {
     zle vi-backward-blank-word
     zle quote-region
 }
-
 zle -N quote-word
 bindkey "^[q" quote-word
+
+# ディレクトリ移動履歴をfzfしてcd
+autoload -Uz is-at-least
+if is-at-least 4.3.11; then
+  autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+  add-zsh-hook chpwd chpwd_recent_dirs
+  zstyle ':chpwd:*' recent-dirs-max 1000
+  zstyle ':chpwd:*' recent-dirs-default yes
+  zstyle ':completion:*' recent-dirs-insert both
+fi
+
+function select-cdr () {
+    local selected_dir=$(cdr -l | awk '{ print $2 }' | $SELECTOR)
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    #zle clear-screen
+}
+zle -N select-cdr
+bindkey '^xc' select-cdr
+
+# コマンド履歴をfzf
+function select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+    BUFFER=$(\history -n 1 | \
+        eval $tac | \
+        $SELECTOR --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N select-history
+bindkey '^r' select-history
+
 
 #-----------------------------------------------------------------------------
 #	プロンプト
