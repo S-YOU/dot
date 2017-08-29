@@ -143,7 +143,7 @@ function select-cdr () {
     #zle clear-screen
 }
 zle -N select-cdr
-bindkey '^xc' select-cdr
+bindkey '^@' select-cdr
 
 # コマンド履歴をfzf
 function select-history() {

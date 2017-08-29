@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 
 def help
   puts "sc - 新しいscreenウィンドウを開いてそこでコマンドを起動するスクリプト"
