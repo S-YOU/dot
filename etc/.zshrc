@@ -131,6 +131,16 @@ _up-line-or-history-ignoring() {
 zle -N _up-line-or-history-ignoring
 bindkey '^P' _up-line-or-history-ignoring
 
+# 空白で区切りられた単語をシングルクォートで囲む
+quote-word() {
+    zle set-mark-command
+    zle vi-backward-blank-word
+    zle quote-region
+}
+
+zle -N quote-word
+bindkey "^[q" quote-word
+
 #-----------------------------------------------------------------------------
 #	プロンプト
 #-----------------------------------------------------------------------------
