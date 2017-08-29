@@ -177,8 +177,8 @@ exit_status_text() {
 	echo "%(?..<%?> )"
 }
 
-source $DOT/etc/mollifier-git-zsh-prompt
-source $DOT/etc/safe-paste.plugin.zsh
+source $DOT/etc/zsh/mollifier-git-zsh-prompt
+source $DOT/etc/zsh/safe-paste.plugin.zsh
 
 
 #-----------------------------------------------------------------------------
