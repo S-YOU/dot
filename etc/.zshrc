@@ -89,6 +89,8 @@ esac
 
 # カレントに候補がないときだけCDPATHを候補にする
 #zstyle ':completion*:path-directories' ignored-patterns '*'
+# 候補をグループ分けする
+zstyle ':completion:*' group-name ''
 
 compdef _files r
 compdef '_files -g "*.hs"' runghc

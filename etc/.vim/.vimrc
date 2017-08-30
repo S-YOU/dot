@@ -624,6 +624,8 @@ function! _Echon(highlight, msg)
   echohl None
 endfunction
 
+command! MRU CtrlPMRU
+
 command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 cabbrev brep Brep
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
