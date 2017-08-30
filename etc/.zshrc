@@ -104,7 +104,7 @@ _bm() {
 #	ウィジェット
 #-----------------------------------------------------------------------------
 
-SELECTOR="fzf"
+SELECTOR="fzf --no-sort"
 
 # fgとbgを完全に無視したCtrl-P
 _up-line-or-history-ignoring() {
