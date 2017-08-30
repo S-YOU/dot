@@ -243,7 +243,9 @@ bm() {
             else
                 BMNAME="$3"
             fi
-            ln -sv "$TARGET" "$BMDIR"/"$BMNAME"
+            LINK_PATH="$BMDIR"/"$BMNAME"
+            [ -L "$LINK_PATH" ] && command rm "$LINK_PATH"
+            ln -sv "$TARGET" "$LINK_PATH"
             ;;
         ls)
             ls -l "$BMDIR"
