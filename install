@@ -30,6 +30,7 @@ cd "$ETC"
 
 link .alias
 link .bashrc
+link .bash_profile
 link .ctags
 link .gdbinit
 link .gdbinit.d
