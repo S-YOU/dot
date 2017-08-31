@@ -816,12 +816,16 @@ class Source(Dashboard.Module):
                 ts and ts > self.ts):  # file modified in the meanwhile
             self.file_name = file_name
             self.ts = ts
+            if self.filter != "":
+                source = os.popen(self.filter % self.file_name).read()
+            else:
+                with open(self.file_name) as source_file:
+                    source = source_file.read()
             try:
                 highlighter = Highlighter(self.file_name, tabsize=self.tabsize)
                 self.highlighted = highlighter.active
-                with open(self.file_name) as source_file:
-                    source = highlighter.process(source_file.read())
-                    self.source_lines = source.split('\n')
+                source = highlighter.process(source)
+                self.source_lines = source.split('\n')
             except Exception as e:
                 msg = 'Cannot display "{}" ({})'.format(self.file_name, e)
                 return [ansi(msg, R.style_error)]
@@ -876,6 +880,11 @@ class Source(Dashboard.Module):
             },
             'style_break_disabled': {
                 'default': '0;30;44'
+            },
+            'filter': {
+                'doc': 'shell command to filter source. Ex: "nkf -w %s"',
+                'type': str,
+                'default': ""
             }
         }
 
