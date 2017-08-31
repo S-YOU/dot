@@ -106,7 +106,7 @@ _bm() {
 #	ウィジェット
 #-----------------------------------------------------------------------------
 
-SELECTOR="fzf --no-sort"
+SELECTOR="fzf --no-sort --exact"
 
 # fgとbgを完全に無視したCtrl-P
 _up-line-or-history-ignoring() {
@@ -151,7 +151,7 @@ bindkey '^@' select-cdr
 
 # コマンド履歴をfzf
 function select-history() {
-    BUFFER=$(\history -n 1 | \
+    BUFFER=$(\history -r -n 1 | \
         $SELECTOR --query "$LBUFFER")
     CURSOR=$#BUFFER
     zle clear-screen
