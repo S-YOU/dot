@@ -226,6 +226,20 @@ preexec() {
 	fi
 }
 
+# cd: skipping directories that contain only a single sub-directory
+# https://www.reddit.com/r/zsh/comments/6omtk9/cd_skipping_directories_that_contain_only_a/
+#function chpwd() {
+#    files=$(ls -A | wc -l)
+#    if [[ $files = "1" ]]; then
+#        zmodload zsh/parameter
+#        if [[ "cd .." != $history[$HISTCMD] ]]; then
+#            f=$(ls -A)
+#            if [[ -d "$f" ]]; then
+#                cd "$f"
+#            fi
+#        fi
+#    fi
+#}
 
 #-----------------------------------------------------------------------------
 #	エイリアス

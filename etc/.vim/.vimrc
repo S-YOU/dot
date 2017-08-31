@@ -627,7 +627,6 @@ endfunction
 command! MRU CtrlPMRU
 
 command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
-cabbrev brep Brep
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(query)
   cclose
@@ -689,7 +688,7 @@ noreab printF printf
 noreab fpf fprintf(stderr,);<Left><Left>
 noreab transtate translate
 
-function! DefineAbbreb(abb, content, type, modifier)
+function! DefineAbbrev(abb, content, type, modifier)
   exe a:type . "noreab " . a:modifier . " " . a:abb . " " . a:content . "<C-r>=_FinishAbbreb()<CR>"
 endfunction
 function! _FinishAbbreb()
@@ -701,15 +700,24 @@ function! _FinishAbbreb()
   return ''
 endfunction
 
-call DefineAbbreb('vd', 'var_dump(#CURSOR#)', 'i', '')
-call DefineAbbreb('ph', '<?php  ?><left><left><left>', 'i', '')
-call DefineAbbreb('pe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbreb('phe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbreb('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '')
-call DefineAbbreb('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '')
-call DefineAbbreb('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
-call DefineAbbreb('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
-call DefineAbbreb('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
+call DefineAbbrev('vd', 'var_dump(#CURSOR#)', 'i', '')
+call DefineAbbrev('ph', '<?php  ?><left><left><left>', 'i', '')
+call DefineAbbrev('pe', '<?php echo #CURSOR# ?>', 'i', '')
+call DefineAbbrev('phe', '<?php echo #CURSOR# ?>', 'i', '')
+call DefineAbbrev('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '')
+call DefineAbbrev('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '')
+call DefineAbbrev('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
+call DefineAbbrev('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
+call DefineAbbrev('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
+
+function! DefineCommandAbbrev(abbrev, command)
+  let len = strlen(a:abbrev)
+  let cmd = printf("cnoreab <expr> %s (getcmdtype() == ':' && getcmdpos() == %d) ? '%s' : '%s'", a:abbrev, len + 1, a:command, a:abbrev)
+  exe cmd
+endfunction
+
+call DefineCommandAbbrev('brep', 'Brep')
+call DefineCommandAbbrev('mru', 'MRU')
 
 
 
@@ -1107,7 +1115,7 @@ endfunction
 
 function! Csharp_Setting()
   let b:commentSymbol = "//"
-  call DefineAbbreb('cl', 'System.Console.WriteLine(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('cl', 'System.Console.WriteLine(#CURSOR#);', 'i', '<buffer>')
 endfunction
 
 
@@ -1141,7 +1149,7 @@ function! HTML_Setting()
   setlocal iskeyword+=-,@
   setlocal dictionary+=~/.vim/dict/htmldict.txt
   inoremap <buffer> <C-x><C-c> <C-o>ma</<C-x><C-o><Esc>`aa
-  call DefineAbbreb('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
   let b:commentSymbol = '//'
   call _EnableCloseTagByCtrlP()
 endfunction
@@ -1172,7 +1180,7 @@ endfunction
 
 function! JavaScript_Setting()
   let b:commentSymbol = "//"
-  call DefineAbbreb('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
 endfunction
 
 function! Lisp_Setting()
@@ -1204,8 +1212,8 @@ function! PHP_Setting()
   call InstallFunctionHint()
   nnoremap <silent> vf :<C-u>call PHP_SelectFunction()<CR>
   setlocal indentkeys=0{,0},0),:,!^F,o,O,e,*<Return>,=*/
-  "call DefineAbbreb('try', 'try {<Enter>;#CURSOR#<Enter><Up><End><Left><Left><Left><Left><Left><Left><Left><Left><Bs><Down>}<Enter>catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}<Enter>', 'i', '<buffer>')
-  call DefineAbbreb('catch', 'catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}', 'i', '<buffer>')
+  "call DefineAbbrev('try', 'try {<Enter>;#CURSOR#<Enter><Up><End><Left><Left><Left><Left><Left><Left><Left><Left><Bs><Down>}<Enter>catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}<Enter>', 'i', '<buffer>')
+  call DefineAbbrev('catch', 'catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}', 'i', '<buffer>')
   call _EnableCloseTagByCtrlP()
 endfunction
 
@@ -1302,7 +1310,7 @@ function! Ruby_Setting()
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
-  call DefineAbbreb('bb', 'byebug', '', '')
+  call DefineAbbrev('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
     let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
