@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# -Oで指定できるオプション
+# http://pygments.org/docs/formatters/#HtmlFormatter
+#
+# スタイルギャラリー
+# https://help.farbox.com/pygments.html
+
+set -e
+
+if [ "$1" = "" ]; then
+    echo "Usage: $0 FILE..."
+    echo
+
+    python <<EOF
+from pygments.styles import get_all_styles
+styles = list(get_all_styles())
+styles.sort()
+print("Available styles")
+for s in styles:
+    print("    " + s)
+EOF
+    exit 1
+fi
+
+STYLE=${STYLE:-vs}
+LINENOS=${LINENOS:-table}
+
+for i in "$@"; do
+    out="$i.html"
+    set -x
+    pygmentize -f html -O full,style=$STYLE,linenos=$LINENOS,title="$i" "$i" > "$out"
+    # https://stackoverflow.com/questions/13195655/bash-set-x-without-it-being-printed
+    { set +x; } 2>/dev/null
+done

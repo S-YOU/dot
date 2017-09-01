@@ -7,6 +7,11 @@ set -e
 
 . "$DOT/bin/_dryrun.sh"
 
+if [ "$1" = "" ]; then
+    echo "Example： fnsed 's@hoge@moge@' hoge*"
+    exit 1
+fi
+
 pattern="$1"
 shift
 
