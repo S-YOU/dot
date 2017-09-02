@@ -487,7 +487,7 @@ nnoremap <silent> <space>* :<C-u>let @/ = '\<' . expand("\<cword\>") . '\>'<CR>:
 " コマンドライン
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
-cnoremap <expr> <C-d> (getcmdpos()==strlen(getcmdline())+1 ? "\<C-d>" : "\<Del>")
+cnoremap <expr> <C-d> (getcmdpos() == 1 ? "b \<C-d>"  : (getcmdpos()==strlen(getcmdline())+1 ? "\<C-d>" : "\<Del>"))
 " / で検索時、<C-j>を押すとマッチの末尾に移動
 cnoremap <expr> <C-j> (getcmdtype()=="/" \|\| getcmdtype()=="?") ? "\<C-e>/e+1\<CR>" : "\<C-e>"
 cnoremap <C-f> <Right>
