@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require "open-uri"
+require "erb"
+
+ARGV.each do |str|
+  str.each_char do |c|
+    display = []
+    display << c
+    c.each_codepoint do |cp|
+      display << "\tU+" + cp.to_s(16)
+      display << "\t" + cp.to_s
+
+      url = "https://codepoints.net/api/v1/name/#{cp.to_s(16)}"
+      open(url, "r") do |f|
+        display << "\t" + f.string
+      end
+    end
+
+    buf = ""
+    c.each_byte do |b|
+      buf += b.to_s(16) + " "
+    end
+    display << buf
+
+    puts display.join("\t")
+    
+    #url = "http://www.ltg.ed.ac.uk/~richard/utf-8.cgi?input=#{ERB::Util.url_encode(c)}&mode=char"
+    #open(url, "r") do |f|
+      #content = f.read
+      #content =~ /<table border='2'>\n(.*?)<\/table>/m
+      #puts $1.gsub(/<\/td>/, "\t\t\t\t").gsub(/<.*?>/,  "").gsub(/^\s+/, "")
+    #end
+  end
+end
