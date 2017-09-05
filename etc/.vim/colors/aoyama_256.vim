@@ -83,12 +83,13 @@ hi phpVarSelector       cterm=None              ctermfg=129             ctermbg=
 " Markdown
 hi! def link markdownError    Normal
 hi! def link markdownItalic   Normal
-hi markdownH1           cterm=Bold              ctermfg=None            ctermbg=11              
-hi markdownH2           cterm=Bold              ctermfg=None            ctermbg=11              
-hi markdownH3           cterm=Bold              ctermfg=None            ctermbg=11              
-hi markdownH4           cterm=Bold              ctermfg=None            ctermbg=11              
-hi markdownH5           cterm=Bold              ctermfg=None            ctermbg=11              
-hi markdownH6           cterm=Bold              ctermfg=None            ctermbg=11              
+hi markdownHeadingDelimiter cterm=Bold          ctermfg=None            ctermbg=229
+hi markdownH1           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownH2           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownH3           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownH4           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownH5           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownH6           cterm=Bold              ctermfg=None            ctermbg=229
 hi markdownCode         cterm=None              ctermfg=5               ctermbg=None
 
 hi pythonTripleString cterm=Bold ctermfg=28
