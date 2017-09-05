@@ -150,6 +150,14 @@ pagerize() {
     $cmd() {
         if [ -t 1 ]; then
             command $cmd \"\$@\" | less -F
+            case "$SHELL" in
+                *bash*)
+                    return ${PIPESTATUS[0]}
+                    ;;
+                *zsh*)
+                    return $pipestatus[1]
+                    ;;
+            esac
         else
             command $cmd \"\$@\"
         fi

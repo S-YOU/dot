@@ -531,6 +531,7 @@ function! _GetLastSearchedWord()
 endfunction
 cnoremap <expr> <C-r>/ _GetLastSearchedWord()
 inoremap <expr> <C-r>/ _GetLastSearchedWord()
+cnoremap <C-v> <C-r>"
 
 " コマンドラインへパスなどを挿入
 cnoremap <expr> <C-t>  _GetProjectRoot() . "/\<C-d>"
