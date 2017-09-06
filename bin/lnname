@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+key="$EWS_KEY"
+
+for line_name in "$@"; do
+    url="http://api.ekispert.jp/v1/json/operationLine?key=${key}&name=${line_name}"
+    curl -s "$url" | jq .
+done
