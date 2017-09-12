@@ -177,7 +177,7 @@ set vb t_vb=
 set lazyredraw
 set synmaxcol=300
 " showmodeにしていると、PHPの引数表示が上書きされてしまう
-set showmode
+set noshowmode
 
 augroup Gdb
   au!
@@ -349,7 +349,7 @@ endfunction
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
 inoremap # X<BS>#
-noremap # :call _ToggleCommentSelection()<CR>
+noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
 inoremap <C-f> <right>
