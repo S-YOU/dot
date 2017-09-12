@@ -2661,18 +2661,25 @@ command! PutFromFile r ~/.yank
 function! _YankToFile(reg, show_message)
   let yankfile = "~/.yank"
   let lines = split(getreg(a:reg), "\n")
+  let os_clipboard_msg = ""
   call writefile(lines, expand(yankfile), "b")
+  if executable("pbcopy")
+    call system("pbcopy < ~/.yank")
+    let os_clipboard_msg .= " + OS clipboard"
+  endif
   " http://www.evernote.com/l/ANNgwtCY7uFA1r3MQy2PUS_F2rVP3zA9ojM/
   "if $TERM =~ 'screen'
     "call system("USER=ao screen -X readbuf")
   "endif
   if a:show_message
-    if getregtype(a:reg) ==# "v"
-      let msg = "Copied " . lines[0] . " to " . yankfile
-    else
-      let msg = "Copied " . len(lines) . " lines to " . yankfile
-    endif
-    echomsg msg
+    let line_count = len(lines)
+    let msg = "Copied " . line_count . " lines to " . yankfile . os_clipboard_msg
+    call _Echon("Normal", msg)
+    "echon msg
+
+    let msg2 = " [" . strpart(lines[0], 0, winwidth('.') - strlen(msg) - 15) . "]"
+    call _Echon("Normal", msg2)
+    "echon msg2
   endif
 endfunction
 "=============================================================================
