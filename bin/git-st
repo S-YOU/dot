@@ -1,7 +1,8 @@
 #!/bin/sh
 
+set -e
+
 git log -1
 echo
 git status --short --branch
 git skipped
-
