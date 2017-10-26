@@ -543,7 +543,7 @@ function! _GetProjectRoot()
   let a = system("pjroot")
   let a = substitute(a, "\n", "", "")
   if a == "not exist"
-    let a = g:topdir
+    let a = getcwd()
   end
   let a = substitute(a, expand("$HOME"), "~", "")
   return a
@@ -972,8 +972,8 @@ augroup MyAutocmd
 augroup END
 
 function! _VimEnter()
-  let g:topdir=getcwd()
   let g:pjroot = expand(_GetProjectRoot())
+  let g:topdir = g:pjroot
 
   if filereadable(g:pjroot . "/Gemfile") && isdirectory(g:pjroot . "/public")
     let &path = &path . "," . g:pjroot . "/public"

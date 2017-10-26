@@ -12,9 +12,13 @@ ARGV.each do |str|
       display << "\t" + cp.to_s
 
       url = "https://codepoints.net/api/v1/name/#{cp.to_s(16)}"
+      #puts url
       open(url, "r") do |f|
         display << "\t" + f.string
       end
+
+      url2 = "http://www.ltg.ed.ac.uk/~richard/utf-8.cgi?input=#{ERB::Util.url_encode(c)}&mode=char"
+      puts url2
     end
 
     buf = ""
@@ -25,7 +29,6 @@ ARGV.each do |str|
 
     puts display.join("\t")
     
-    #url = "http://www.ltg.ed.ac.uk/~richard/utf-8.cgi?input=#{ERB::Util.url_encode(c)}&mode=char"
     #open(url, "r") do |f|
       #content = f.read
       #content =~ /<table border='2'>\n(.*?)<\/table>/m
