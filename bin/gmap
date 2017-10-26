@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# GoogleMapsを開くスクリプト
+# Usage:
+#   gmap 35.5 139.5
+
+url="https://www.google.co.jp/maps?q=$1,$2+(ココ)"
+echo "$url"
+
+type open > /dev/null 2>&1 && open "$url"
