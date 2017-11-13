@@ -97,6 +97,14 @@ hi pythonTripleQuotes cterm=Bold ctermfg=28
 
 hi Breakpoint           cterm=None              ctermfg=124             ctermbg=124
 
+let g:did_minibufexplorer_syntax_inits = 1
+hi MBENormal ctermfg=None ctermbg=None
+hi MBEChanged ctermfg=None ctermbg=None
+hi MBEVisibleNormal ctermfg=None ctermbg=None
+hi MBEVisibleChanged ctermfg=None ctermbg=None
+hi MBEVisibleActiveNormal ctermfg=63 ctermbg=None
+hi MBEVisibleActiveChanged ctermfg=None ctermbg=None
+
 "Cursor		カーソル下の文字
 "CursorIM	Cursorと同じだが、IMEモードにいるとき使われる|CursorIM|。
 "CursorColumn	'cursorcolumn'がオンになっているときのカーソルがある画面上の桁

@@ -33,6 +33,7 @@ set runtimepath^=~/.vim/bundle/ctrlp
 set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
+"set runtimepath^=~/.vim/bundle/minibufexpl.vim-6.5.2
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
@@ -428,6 +429,7 @@ nnoremap <silent> <space>l :call BufRing_Forward()<CR>
 "nnoremap <silent> <space>l :bn<CR>
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
+nnoremap <silent> <C-x><C-d> :<C-u>MBEToggle<CR>
 nnoremap <silent> <expr> <tab> (getline(".")[col(".")-1]==' ' ? "s\<tab>\<Esc>l" : "i\<tab>\<Esc>l")
 nnoremap <silent> <space><space> i<space><Esc>l
 "noremap gf gF
@@ -2467,7 +2469,72 @@ function! _ShowNERDTree()
     exe (idx + 1) . "wincmd w"
   else
     NERDTree
+    call _MyBE_Init()
+    wincmd k
   endif
+endfunction
+
+function! _MyBE_Init()
+  call SingletonBuffer("MyBufExpl", "10split")
+  set buftype=nofile nobuflisted
+  setlocal statusline=--Buffers--
+  setlocal nonumber
+  setlocal winfixheight
+  call _MyBE_Update()
+  nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
+  nnoremap <buffer> R :<C-u>call _MyBE_Update()<CR>
+  "nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
+endfunction
+
+function! _MyBE_Update()
+  let orig_winnr = winnr()
+  for w in range(1, winnr("$"))
+    exe w . "wincmd w"
+    if bufname("%") == "MyBufExpl"
+      silent! %d
+      let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+      for bufnr in buflist
+        " basenameだけ表示する
+        " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
+        call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+      endfor
+      silent! $d
+    endif
+  endfor
+  exe orig_winnr . "wincmd w"
+endfunction
+
+" 未実装
+" 直前のウィンドウを取得するいい方法がないため
+function! _MyBE_Open()
+  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+endfunction
+
+function! _MyBE_Delete()
+  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+  let mybe_winnr = winnr()
+  while bufwinnr(bufnr) != -1
+    exe bufwinnr(bufnr) . "wincmd w"
+    bp
+    if bufnr(".") == bufnr
+      break
+    endif
+  endwhile
+  exe 'bd ' . bufnr
+  call SingletonBuffer("MyBufExpl", "10split")
+  call _MyBE_Update()
+endfunction
+
+augroup MyBE
+  au!
+  au BufAdd * call _MyBE_Update()
+  au BufDelete * call _MyBE_Update()
+augroup END
+
+function! _MyBE_GetBufferNumberFromCurrentLine()
+  let line = getline(".")
+  let line = substitute(line, ":.*", "", "g")
+  return line
 endfunction
 
 " markdown で```rbの記法を有効にする
@@ -2484,6 +2551,13 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](' . join(map(exclude_dirs, "substitute(v:val, '\\.', '\\.', 'g')"), '|') . ')$',
   \ 'file': '\v\.(o)$',
   \ }
+
+" MiniBufExpl
+let g:miniBufExplBRSplit = 1   " Put new window below
+let g:miniBufExplVSplit = 31   " column width in chars
+let g:miniBufExplorerAutoStart = 0
+let g:miniBufExplSplitToEdge = 0
+
 
 function! MyFoldText()
   let line = getline(v:foldstart)

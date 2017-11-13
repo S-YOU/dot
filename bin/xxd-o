@@ -13,7 +13,7 @@ bytes = "\0" * zero_count + File.binread(dumpbin_path)
 # オフセットを16の倍数で丸めたもの（2行目以降で使用）
 offset16 = arg_offset - (arg_offset % 16) 
 
-printf("%#{base}s  0 1  2 3  4 5  6 7  8 9  A B  C D  E F   0123456789ABCDEF\n", " ");
+printf("%#{base}s  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F   0123456789ABCDEF\n", " ");
 
 bytes.each_char.each_slice(16).with_index do |line, li|
   if li == 0
@@ -24,9 +24,9 @@ bytes.each_char.each_slice(16).with_index do |line, li|
   address   = sprintf("%0#{base}x: ", off)
   hex_part  = line.map.with_index {|chr, i|
     if li == 0 && i < zero_count
-      i.even? ? "  " : "   "
+      "   "
     else
-      sprintf("%02x" + (i.even? ? "" : " "), chr.ord)
+      sprintf("%02x ", chr.ord)
     end
   }.join
   char_part = line.map.with_index {|chr, i|
