@@ -2480,13 +2480,13 @@ function! _MyBE_Init()
   setlocal statusline=--Buffers--
   setlocal nonumber
   setlocal winfixheight
-  call _MyBE_Update()
+  call _MyBE_Update("")
   nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
-  nnoremap <buffer> R :<C-u>call _MyBE_Update()<CR>
+  nnoremap <buffer> R :<C-u>call _MyBE_Update("")<CR>
   "nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
 endfunction
 
-function! _MyBE_Update()
+function! _MyBE_Update(bufnr_to_be_deleted)
   let orig_winnr = winnr()
   for w in range(1, winnr("$"))
     exe w . "wincmd w"
@@ -2494,9 +2494,11 @@ function! _MyBE_Update()
       silent! %d
       let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
       for bufnr in buflist
-        " basenameだけ表示する
-        " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
-        call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+        if bufnr != a:bufnr_to_be_deleted
+          " basenameだけ表示する
+          " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
+          call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+        endif
       endfor
       silent! $d
     endif
@@ -2522,13 +2524,13 @@ function! _MyBE_Delete()
   endwhile
   exe 'bd ' . bufnr
   call SingletonBuffer("MyBufExpl", "10split")
-  call _MyBE_Update()
+  call _MyBE_Update("")
 endfunction
 
 augroup MyBE
   au!
-  au BufAdd * call _MyBE_Update()
-  au BufDelete * call _MyBE_Update()
+  au BufAdd * call _MyBE_Update("")
+  au BufDelete * call _MyBE_Update(expand("<abuf>"))
 augroup END
 
 function! _MyBE_GetBufferNumberFromCurrentLine()
