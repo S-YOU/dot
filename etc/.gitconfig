@@ -47,6 +47,7 @@
 	# マージされているブランチをリモートから削除する
 	remove-unused-branches = !git branch -r --merged | grep -v master | sed 's/origin\\///' | xargs -n 1 git push --delete origin
 	vimdiff = difftool --tool=vimdiff --prompt
+	bro = browse
 	# 追跡されていないファイルを削除するには
 	# git clean -n    # dry run  .gitignoreされているファイルは含めない
 	# git clean -f    # execute  
