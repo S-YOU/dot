@@ -1776,6 +1776,9 @@ endfunction
 
 " Cの場合、[[で十分そう
 function! WhatFunction()
+  if exists("g:WhatFunction_disable")
+    return
+  endif
   if &diff
     return
   endif
@@ -2483,7 +2486,7 @@ function! _MyBE_Init()
   call _MyBE_Update("")
   nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
   nnoremap <buffer> R :<C-u>call _MyBE_Update("")<CR>
-  "nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
+  nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
 endfunction
 
 function! _MyBE_Update(bufnr_to_be_deleted)
@@ -2497,19 +2500,23 @@ function! _MyBE_Update(bufnr_to_be_deleted)
         if bufnr != a:bufnr_to_be_deleted
           " basenameだけ表示する
           " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
-          call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+          "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+          call append(line(".")-1, substitute(bufname(bufnr), '.*/', '', '') . "\t(" . bufnr . ")")
         endif
       endfor
       silent! $d
+      %sort
+      normal! gg
     endif
   endfor
   exe orig_winnr . "wincmd w"
 endfunction
 
-" 未実装
-" 直前のウィンドウを取得するいい方法がないため
+" 直前のウィンドウを取得するもっといい方法はないか？
 function! _MyBE_Open()
   let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+  wincmd h
+  exe "b " . bufnr
 endfunction
 
 function! _MyBE_Delete()
@@ -2535,7 +2542,7 @@ augroup END
 
 function! _MyBE_GetBufferNumberFromCurrentLine()
   let line = getline(".")
-  let line = substitute(line, ":.*", "", "g")
+  let line = substitute(line, '.*(\(\d\+\))', '\1', 'g')
   return line
 endfunction
 
