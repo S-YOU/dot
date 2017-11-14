@@ -26,3 +26,5 @@ else
     mv -iv "$tmp" "$dir"
     echo "$dir に展開しました。行儀の悪いzipでした。"
 fi
+
+rm -rf "$tmp"
