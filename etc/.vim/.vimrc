@@ -2492,9 +2492,9 @@ endfunction
 function! _MyBE_Update(bufnr_to_be_deleted)
   let orig_winnr = winnr()
   for w in range(1, winnr("$"))
-    exe w . "wincmd w"
+    exe "noautocmd " . w . "wincmd w"
     if bufname("%") == "MyBufExpl"
-      silent! %d
+      silent! %d _
       let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
       for bufnr in buflist
         if bufnr != a:bufnr_to_be_deleted
@@ -2504,12 +2504,12 @@ function! _MyBE_Update(bufnr_to_be_deleted)
           call append(line(".")-1, substitute(bufname(bufnr), '.*/', '', '') . "\t(" . bufnr . ")")
         endif
       endfor
-      silent! $d
+      silent! $d _
       %sort
       normal! gg
     endif
   endfor
-  exe orig_winnr . "wincmd w"
+  exe "noautocmd " . orig_winnr . "wincmd w"
 endfunction
 
 " 直前のウィンドウを取得するもっといい方法はないか？
