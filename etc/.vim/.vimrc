@@ -1784,9 +1784,12 @@ function! WhatFunction()
   endif
   let op = "("
   let cp = ")"
-  if exists("b:WhatFunction_LastLine") && b:WhatFunction_LastLine == line(".")
-    return op . b:WhatFunction . cp
+  if exists("w:WhatFunction_LastLine") && w:WhatFunction_LastLine == line(".")
+    if exists("w:WhatFunction")
+      return op . w:WhatFunction . cp
+    endif
   endif
+  let w:WhatFunction_LastLine = line(".")
   if &ft == "c"
     return op . WhatFunction_C() . cp
   elseif op == "python"
@@ -1799,14 +1802,13 @@ function! WhatFunction()
 endfunction
 
 function! WhatFunction_C()
-  let b:WhatFunction_LastLine = line(".")
   if &ft != "c" && &ft != "cpp"
-    let b:WhatFunction = ""
+    let w:WhatFunction = ""
     return ""
   endif 
   let proto = GetProtoLine() 
   if proto == ""
-    let b:WhatFunction = "-"
+    let w:WhatFunction = "-"
     return "-"
   endif 
   if stridx(proto, '(') > 0
@@ -1818,7 +1820,7 @@ function! WhatFunction_C()
   else
     let ret = strpart(proto, 0, 15) . "..."
   endif 
-  let b:WhatFunction = ret
+  let w:WhatFunction = ret
   return ret
 endfunction
 
@@ -1836,15 +1838,14 @@ endfunction
 
 
 function! WhatFunction_Py()
-  let b:WhatFunction_LastLine = line(".")
   let proto = GetProtoLinePy() 
   if proto == ""
-    let b:WhatFunction = "?"
+    let w:WhatFunction = "?"
     return "?"
   endif 
   let ret = substitute(proto, '^\s*\(def\|class\)\s*', '', '')
   let ret = substitute(ret, '(.*', '', '')
-  let b:WhatFunction = ret
+  let w:WhatFunction = ret
   return ret
 endfunction
 
@@ -1861,17 +1862,13 @@ function! GetProtoLinePHP()
 endfunction
 
 function! WhatFunction_PHP()
-  if exists("b:WhatFunction_LastLine") && b:WhatFunction_LastLine == line(".")
-    return b:WhatFunction
-  endif
-  let b:WhatFunction_LastLine = line(".")
   let proto = GetProtoLinePHP() 
   if proto == ""
-    let b:WhatFunction = "?"
+    let w:WhatFunction = "?"
     return "?"
   endif 
   let ret = substitute(proto, '.*function\s\+\(\w\+\).*', '\1', '')
-  let b:WhatFunction = ret
+  let w:WhatFunction = ret
   return ret
 endfunction
 
