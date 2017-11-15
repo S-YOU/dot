@@ -2566,6 +2566,7 @@ let g:miniBufExplBRSplit = 1   " Put new window below
 let g:miniBufExplVSplit = 31   " column width in chars
 let g:miniBufExplorerAutoStart = 0
 let g:miniBufExplSplitToEdge = 0
+let g:miniBufExplShowBufNumbers = 0
 
 
 function! MyFoldText()

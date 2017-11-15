@@ -1,3 +1,7 @@
+if !exists("g:loaded_EditorConfig")
+  finish
+endif
+
 if exists("g:loaded_editorconfig_setting") || &cp
   finish
 endif
