@@ -5,7 +5,7 @@
 " 積極的に使うべき機能
 " + で同じインデントの次の行へ移動
 " V+ で同じインデントの範囲を選択。同様にd+で削除。
-" :Fold （何にマップしようか）
+" <Space>ff でsyntaxにより折り畳む
 " d, で大文字まで削除。c, で大文字まで修正（キャメルケースを編集するのに便利）
 "
 " まだマッピングに使っていないキー
@@ -161,7 +161,7 @@ set nowrap
 set nolist listchars=tab:^\ 
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
-set statusline=%n:\ %F:%l,%v\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %p%%\ %02B
+set statusline=%n:\ %F:%l,%v\ %p%%\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %02B
 set showcmd
 set report=0
 set cmdheight=1
@@ -1776,6 +1776,10 @@ endfunction
 
 " Cの場合、[[で十分そう
 function! WhatFunction()
+  " 折り畳みが有効の場合、jkによる移動がおかしくなってしまうので、WhatFunctionを無効化する
+  if &foldenable
+    return
+  endif
   if exists("g:WhatFunction_disable")
     return
   endif
@@ -2575,6 +2579,8 @@ function! MyFoldText()
 endfunction
 
 command! Fold call Fold()
+" 全ての折りたたみを開くには zR
+nnoremap <Space>ff :<C-u>Fold<CR>
 
 function! Fold()
   set foldmethod=manual
@@ -2587,7 +2593,10 @@ function! Fold()
       endif
     endwhile
     call setpos(".", save_cursor)
+  else
+    set foldmethod=syntax foldenable
   endif
+  normal! zM
 endfunction
 
 function! _MemorizeModifiedTime()
