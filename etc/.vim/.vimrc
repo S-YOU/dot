@@ -1642,8 +1642,13 @@ function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
   let start_indent = indent(line)
   let stepvalue = a:fwd ? 1 : -1 
   let is_consecutive = 1
+  let skip_same_indent_lines_at_first = 1 " 同じインデントの行が続く場合、スキップする
   while (line > 0 && line <= lastline)
     let line = line + stepvalue
+    if skip_same_indent_lines_at_first && indent(line) == start_indent
+      continue
+    endif
+    let skip_same_indent_lines_at_first = 0
     if ( ! a:lowerlevel && indent(line) == start_indent ||  a:lowerlevel && indent(line) < start_indent)
       if (! a:skipblanks || strlen(getline(line)) > 0)
         if (a:exclusive)
