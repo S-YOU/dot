@@ -33,6 +33,7 @@ set runtimepath^=~/.vim/bundle/ctrlp
 set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
+set runtimepath^=~/.vim/bundle/vim-indexed-search
 "set runtimepath^=~/.vim/bundle/minibufexpl.vim-6.5.2
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
@@ -2573,6 +2574,11 @@ let g:miniBufExplVSplit = 31   " column width in chars
 let g:miniBufExplorerAutoStart = 0
 let g:miniBufExplSplitToEdge = 0
 let g:miniBufExplShowBufNumbers = 0
+
+" vim-indexed-search
+let g:indexed_search_colors = 0
+let g:indexed_search_numbered_only = 0
+let g:indexed_search_n_always_searches_forward = 0
 
 
 function! MyFoldText()
