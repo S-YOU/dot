@@ -2508,7 +2508,13 @@ function! _MyBE_Update(bufnr_to_be_deleted)
           " basenameだけ表示する
           " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
           "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
-          call append(line(".")-1, substitute(bufname(bufnr), '.*/', '', '') . "\t(" . bufnr . ")")
+          let bufname = bufname(bufnr)
+          if bufname == ""
+            let bufname = "[No Name]"
+          else
+            let bufname = substitute(bufname(bufnr), '.*/', '', '')
+          endif
+          call append(line(".")-1, bufname . "\t(" . bufnr . ")")
         endif
       endfor
       silent! $d _
