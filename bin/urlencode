@@ -5,7 +5,7 @@ require "uri"
 
 if ARGV.length == 0
 	while gets
-		print URI.escape($_)
+    puts URI.escape($_.chomp)
 	end
 else
 	puts URI.escape(ARGV.join(" "))

@@ -56,8 +56,11 @@ awsenv() {
     if [ "$1" = "" ]; then
         ruby "$rbpath"
     else
-        eval $(ruby "$rbpath" "$@")
-        ruby "$rbpath"
+        local commands=$(ruby "$rbpath" "$@")
+        if [ "$commands" != "" ]; then
+            eval "$commands"
+            ruby "$rbpath"
+        fi
     fi
 }
 

@@ -22,9 +22,14 @@ end
 
 
 if arg_profile_name = ARGV[0]
-  prof = profiles[arg_profile_name]
-  puts "export AWS_ACCESS_KEY_ID='#{prof["aws_access_key_id"]}';"
-  puts "export AWS_SECRET_ACCESS_KEY='#{prof["aws_secret_access_key"]}';"
+  if profiles.key?(arg_profile_name)
+    prof = profiles[arg_profile_name]
+    puts "export AWS_ACCESS_KEY_ID='#{prof["aws_access_key_id"]}';"
+    puts "export AWS_SECRET_ACCESS_KEY='#{prof["aws_secret_access_key"]}';"
+  else
+    STDERR.puts "\x1b[0;31mError: key '#{arg_profile_name}' not found.\x1b[0m"
+    exit 1
+  end
 else
   # show all
   current = nil
@@ -42,3 +47,5 @@ else
   puts "AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}"
   puts "AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}"
 end
+
+exit 0
