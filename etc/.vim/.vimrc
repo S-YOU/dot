@@ -1762,13 +1762,13 @@ endfunction
 function! WhatFunction()
   " 折り畳みが有効の場合、jkによる移動がおかしくなってしまうので、WhatFunctionを無効化する
   if &foldenable
-    return
+    return ""
   endif
   if exists("g:WhatFunction_disable")
-    return
+    return ""
   endif
   if &diff
-    return
+    return ""
   endif
   let op = "("
   let cp = ")"
