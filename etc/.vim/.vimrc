@@ -1648,6 +1648,9 @@ onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 0, 1, 0)<cr>
 onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
 xnoremap <silent> +  <esc>:call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
 xnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
+nmap <silent> <F6> v+zf
+nmap <silent> z+ v+zf
+nmap <silent> z- v-zf
 
 
 function! _BufInfo()
