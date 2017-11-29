@@ -1278,30 +1278,6 @@ function! PHP_SyntaxCheck()
   return 1
 endfunction
 
-command! -nargs=1 PHPMan call _PHPMan("<args>")
-function! _PHPMan(name)
-  if executable("w3m")
-    call ScratchBuffer("[PHPMan]", "split", "delete") | %d
-    "new | setlocal bt=nofile bh=delete
-    if &enc ==? "cp932" || &enc ==? "sjis"
-      let locale = "ja_JP.SJIS"
-    elseif &enc ==? "utf8" || &enc ==? "utf-8"
-      let locale = "ja_JP.UTF-8"
-    elseif &enc ==? "euc-jp"
-      let locale = "ja_JP.EUC-JP"
-    else
-      let locale = "C"
-    end
-    exe "r!export LANG=".locale." && w3m -dump http://www.php.net/ja/".a:name
-    if search("^説明")
-      exe "normal! 2kz\<CR>"
-    endif
-    set ft=php
-  else
-    echo "w3m does not exist."
-  endif
-endfunction
-
 function! Python_Setting()
   setlocal ts=4 sts=4 sw=4 et list
   setlocal nosmartindent
