@@ -83,13 +83,13 @@ hi phpVarSelector       cterm=None              ctermfg=129             ctermbg=
 " Markdown
 hi! def link markdownError    Normal
 hi! def link markdownItalic   Normal
-hi markdownHeadingDelimiter cterm=Bold          ctermfg=None            ctermbg=229
-hi markdownH1           cterm=Bold              ctermfg=None            ctermbg=229
-hi markdownH2           cterm=Bold              ctermfg=None            ctermbg=229
-hi markdownH3           cterm=Bold              ctermfg=None            ctermbg=229
-hi markdownH4           cterm=Bold              ctermfg=None            ctermbg=229
-hi markdownH5           cterm=Bold              ctermfg=None            ctermbg=229
-hi markdownH6           cterm=Bold              ctermfg=None            ctermbg=229
+hi markdownHeadingDelimiter cterm=Bold          ctermfg=None            ctermbg=190
+hi markdownH1           cterm=Bold              ctermfg=None            ctermbg=190
+hi markdownH2           cterm=Bold              ctermfg=None            ctermbg=190
+hi markdownH3           cterm=Bold              ctermfg=None            ctermbg=190
+hi markdownH4           cterm=Bold              ctermfg=None            ctermbg=190
+hi markdownH5           cterm=Bold              ctermfg=None            ctermbg=190
+hi markdownH6           cterm=Bold              ctermfg=None            ctermbg=190
 hi markdownCode         cterm=None              ctermfg=5               ctermbg=None
 
 hi pythonTripleString cterm=Bold ctermfg=28
@@ -104,6 +104,9 @@ hi MBEVisibleNormal ctermfg=None ctermbg=None
 hi MBEVisibleChanged ctermfg=None ctermbg=None
 hi MBEVisibleActiveNormal ctermfg=63 ctermbg=None
 hi MBEVisibleActiveChanged ctermfg=None ctermbg=None
+
+hi xmlTagName ctermfg=5 cterm=bold
+hi xmlEndTag ctermfg=5 cterm=bold
 
 "Cursor		カーソル下の文字
 "CursorIM	Cursorと同じだが、IMEモードにいるとき使われる|CursorIM|。
