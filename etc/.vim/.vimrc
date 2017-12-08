@@ -2819,6 +2819,7 @@ function! _YankToFile(reg, show_message)
   endif
 endfunction
 
+" tablineに表示する可能性のあるバッファをリストアップする
 function! _GetBuffersForTabLine()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
   let ret = []
@@ -2830,11 +2831,12 @@ function! _GetBuffersForTabLine()
     else
       let disp = " " . disp . " "
     endif
-    call add(ret, {"num": bufnum, "disp": disp, "name": origname, "displen": strlen(disp)})
+    call add(ret, {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)})
   endfor
   return ret
 endfunction
 
+" 与えられたバッファのリストをtablineの文字列に変換する
 function! _BufListToTabLine(buflist, curbufnr)
   let tl = ""
   let a = []
@@ -2852,6 +2854,7 @@ let g:tabline_current_visible_buffers = []
 function! _MyTabLine()
   let curbufnr = bufnr("%")
 
+  " 可能な場合は表示順が変わらず、カレントバッファのハイライトだけが変わるようにする
   for buf in g:tabline_current_visible_buffers
     if buf["num"] == curbufnr
       return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
@@ -2921,6 +2924,7 @@ function! _UpdateShowTabline()
   else
     set showtabline=0
   endif
+  let g:tabline_current_visible_buffers = []
 endfunction
 
 augroup TabLine
