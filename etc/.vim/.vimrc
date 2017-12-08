@@ -34,6 +34,7 @@ set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
 set runtimepath^=~/.vim/bundle/vim-indexed-search
+"set runtimepath^=~/.vim/bundle/vim-airline
 "set runtimepath^=~/.vim/bundle/minibufexpl.vim-6.5.2
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
@@ -163,6 +164,7 @@ set nolist listchars=tab:^\
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%n:\ %F:%l,%v\ %p%%\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %02B
+set tabline=%!_MyTabLine()
 set showcmd
 set report=0
 set cmdheight=1
@@ -425,8 +427,10 @@ nmap caa vaac
 
 
 " バッファ・ウィンドウ ----------------------------------------------
-nnoremap <silent> <space>h :call BufRing_Back()<CR>
-nnoremap <silent> <space>l :call BufRing_Forward()<CR>
+"nnoremap <silent> <space>h :call BufRing_Back()<CR>
+"nnoremap <silent> <space>h :call BufRing_Back()<CR>
+nnoremap <silent> <space>h :<C-u>bp<CR>
+nnoremap <silent> <space>l :<C-u>bn<CR>
 "nnoremap <silent> <space>l :bn<CR>
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
@@ -472,16 +476,18 @@ nnoremap <silent> <Space>R :<C-u>call ExecSystem('input')<CR>
 
 " 機能トグル
 command! ShowTabstop echo (&list ? 'list' : 'nolist') (&et ? 'expandtab' : 'noexpandtab') 'ts=' . &ts . ' sts=' . &sts . ' sw=' . &sw
-nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-nnoremap <C-l>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
-nnoremap <C-l>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
-nnoremap <C-l>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
-nnoremap <C-l><C-e> :set expandtab!<CR>:set expandtab?<CR>
-nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
-nnoremap <C-l><C-n> :windo set number!<CR>:set number?<CR>
-nnoremap <C-l><C-w> :set wrap!<CR>:set wrap?<CR>
-nnoremap <C-l><C-u> :set cuc!<CR>
+nnoremap <C-h> :bp<CR>
+nnoremap <C-l> :bn<CR>
+"nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
+"nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
+nnoremap <C-m>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
+nnoremap <C-m>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
+nnoremap <C-m>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
+"nnoremap <C-l><C-e> :set expandtab!<CR>:set expandtab?<CR>
+"nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
+nnoremap <C-m><C-n> :windo set number!<CR>:set number?<CR>
+nnoremap <C-m><C-w> :set wrap!<CR>:set wrap?<CR>
+nnoremap <C-m><C-u> :set cuc!<CR>
 nnoremap <silent> <space>* :<C-u>let @/ = '\<' . expand("\<cword\>") . '\>'<CR>:set hls<CR>
 "nnoremap <C-l> :noh<CR><C-l>
 
@@ -2457,118 +2463,118 @@ function! _ShowNERDTree()
     exe (idx + 1) . "wincmd w"
   else
     NERDTree
-    call _MyBE_Init()
+    "call _MyBE_Init()
     wincmd k
   endif
 endfunction
 
-function! _MyBE_Init() abort
-  call SingletonBuffer("--Buffers--", "10split")
-  set buftype=nofile nobuflisted
-  setlocal statusline=--Buffers--
-  setlocal nonumber
-  setlocal winfixheight
-  call _MyBE_Update("", bufnr("%"))
-  nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
-  nnoremap <buffer> R :<C-u>call _MyBE_Update("", bufnr("%"))<CR>
-  nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
-  nnoremap <buffer> <C-@> :<C-u>call _MyBE_Preview()<CR>
-  nnoremap <buffer> <C-p> k:<C-u>call _MyBE_Preview()<CR>
-  nnoremap <buffer> <C-n> j:<C-u>call _MyBE_Preview()<CR>
-  syn match MyBE_Current /^%/ | hi MyBE_Current ctermfg=197
-endfunction
-
-function! _MyBE_Update(bufnr_to_be_deleted, current_bufnr) abort
-  let orig_winnr = winnr()
-  for w in range(1, winnr("$"))
-    try
-      exe "noautocmd " . w . "wincmd w"
-    catch /E788/
-      return
-    endtry
-    if bufname("%") == "--Buffers--"
-      let current_line = ""
-      silent! %d _
-      let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-      let line_number = 0
-      for bufnr in buflist
-        if bufnr != a:bufnr_to_be_deleted
-          let line_number += 1
-          " basenameだけ表示する
-          " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
-          "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
-          let bufname = bufname(bufnr)
-          if bufname == ""
-            let bufname = "[No Name]"
-          else
-            let bufname = substitute(bufname(bufnr), '.*/', '', '')
-          endif
-          if bufnr == a:current_bufnr
-            let current_line = line_number
-          endif
-          call append(line(".")-1, (bufnr == a:current_bufnr ? "% " : "  ") . bufname . "\t(" . bufnr . ")")
-        else
-          let g:hoge = line_number
-          let current_line = line_number
-        endif
-      endfor
-      silent! $d _
-      if current_line != ""
-        exe current_line
-      endif
-    endif
-  endfor
-  exe "noautocmd " . orig_winnr . "wincmd w"
-endfunction
-"nnoremap <Space>b :<C-u>call _MyBE_Switch()<CR>
-nnoremap <Space>b :<C-u>call SingletonBuffer("--Buffers--", "32vs")<CR>
-
-function! _MyBE_Switch() abort
-  let windows = WindowContains(GetBufferNumberByName("--Buffers--", 0))
-  if len(windows) > 0
-    let winnr = windows[0]
-    exe winnr . "wincmd w"
-  endif
-endfunction
-
-" 直前のウィンドウを取得するもっといい方法はないか？
-function! _MyBE_Open() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  noautocmd wincmd h
-  exe "b " . bufnr
-endfunction
-
-function! _MyBE_Preview() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  noautocmd wincmd h
-  exe "b " . bufnr
-  noautocmd wincmd p
-endfunction
-
-function! _MyBE_Delete() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  let mybe_winnr = winnr()
-  while bufwinnr(bufnr) != -1
-    exe bufwinnr(bufnr) . "wincmd w"
-    bp
-    if bufnr(".") == bufnr
-      break
-    endif
-  endwhile
-  silent exe 'bd ' . bufnr
-endfunction
-
-augroup MyBE
-  au!
-  au BufEnter * if buflisted(bufnr("%")) | call _MyBE_Update("", bufnr("%")) | endif
-  au BufDelete * call _MyBE_Update(expand("<abuf>"), "")
-augroup END
-
-function! _MyBE_GetBufferNumberFromCurrentLine()
-  let line = getline(".")
-  let line = substitute(line, '.*(\(\d\+\))', '\1', 'g')
-  return str2nr(line)
-endfunction
+"function! _MyBE_Init() abort
+"  call SingletonBuffer("--Buffers--", "10split")
+"  set buftype=nofile nobuflisted
+"  setlocal statusline=--Buffers--
+"  setlocal nonumber
+"  setlocal winfixheight
+"  call _MyBE_Update("", bufnr("%"))
+"  nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
+"  nnoremap <buffer> R :<C-u>call _MyBE_Update("", bufnr("%"))<CR>
+"  nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
+"  nnoremap <buffer> <C-@> :<C-u>call _MyBE_Preview()<CR>
+"  nnoremap <buffer> <C-p> k:<C-u>call _MyBE_Preview()<CR>
+"  nnoremap <buffer> <C-n> j:<C-u>call _MyBE_Preview()<CR>
+"  syn match MyBE_Current /^%/ | hi MyBE_Current ctermfg=197
+"endfunction
+"
+"function! _MyBE_Update(bufnr_to_be_deleted, current_bufnr) abort
+"  let orig_winnr = winnr()
+"  for w in range(1, winnr("$"))
+"    try
+"      exe "noautocmd " . w . "wincmd w"
+"    catch /E788/
+"      return
+"    endtry
+"    if bufname("%") == "--Buffers--"
+"      let current_line = ""
+"      silent! %d _
+"      let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+"      let line_number = 0
+"      for bufnr in buflist
+"        if bufnr != a:bufnr_to_be_deleted
+"          let line_number += 1
+"          " basenameだけ表示する
+"          " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
+"          "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
+"          let bufname = bufname(bufnr)
+"          if bufname == ""
+"            let bufname = "[No Name]"
+"          else
+"            let bufname = substitute(bufname(bufnr), '.*/', '', '')
+"          endif
+"          if bufnr == a:current_bufnr
+"            let current_line = line_number
+"          endif
+"          call append(line(".")-1, (bufnr == a:current_bufnr ? "% " : "  ") . bufname . "\t(" . bufnr . ")")
+"        else
+"          let g:hoge = line_number
+"          let current_line = line_number
+"        endif
+"      endfor
+"      silent! $d _
+"      if current_line != ""
+"        exe current_line
+"      endif
+"    endif
+"  endfor
+"  exe "noautocmd " . orig_winnr . "wincmd w"
+"endfunction
+""nnoremap <Space>b :<C-u>call _MyBE_Switch()<CR>
+"nnoremap <Space>b :<C-u>call SingletonBuffer("--Buffers--", "32vs")<CR>
+"
+"function! _MyBE_Switch() abort
+"  let windows = WindowContains(GetBufferNumberByName("--Buffers--", 0))
+"  if len(windows) > 0
+"    let winnr = windows[0]
+"    exe winnr . "wincmd w"
+"  endif
+"endfunction
+"
+"" 直前のウィンドウを取得するもっといい方法はないか？
+"function! _MyBE_Open() abort
+"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+"  noautocmd wincmd h
+"  exe "b " . bufnr
+"endfunction
+"
+"function! _MyBE_Preview() abort
+"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+"  noautocmd wincmd h
+"  exe "b " . bufnr
+"  noautocmd wincmd p
+"endfunction
+"
+"function! _MyBE_Delete() abort
+"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
+"  let mybe_winnr = winnr()
+"  while bufwinnr(bufnr) != -1
+"    exe bufwinnr(bufnr) . "wincmd w"
+"    bp
+"    if bufnr(".") == bufnr
+"      break
+"    endif
+"  endwhile
+"  silent exe 'bd ' . bufnr
+"endfunction
+"
+"augroup MyBE
+"  au!
+"  au BufEnter * if buflisted(bufnr("%")) | call _MyBE_Update("", bufnr("%")) | endif
+"  au BufDelete * call _MyBE_Update(expand("<abuf>"), "")
+"augroup END
+"
+"function! _MyBE_GetBufferNumberFromCurrentLine()
+"  let line = getline(".")
+"  let line = substitute(line, '.*(\(\d\+\))', '\1', 'g')
+"  return str2nr(line)
+"endfunction
 
 " markdown で```rbの記法を有効にする
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'ruby', 'rb=ruby', 'javascript', 'js=javascript', 'php']
@@ -2812,6 +2818,76 @@ function! _YankToFile(reg, show_message)
     "echon msg2
   endif
 endfunction
+
+function! _GetBufferNumbersOnTabLine()
+  return filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+endfunction
+
+let g:tabline = ""
+function! _MyTabLine()
+  let buflist = _GetBufferNumbersOnTabLine()
+  let bnames = []
+  let tl = ""
+  let i = 0
+  let current_i = -1
+  for bnum in buflist
+    let bname = bufname(bnum)
+    let bname = substitute(bname, '.*/', '', '')
+    if bname == ""
+      let bname = "[No Name]"
+    endif
+    let bname = " " . bname . " "
+    if bnum == bufnr("%")
+      "let bname = "%#TabLineSel#" . bname . "%#TabLineFill#"
+      let tl = "%#TabLineSel#" . bname . "%#TabLineFill#"
+      let current_i = i
+    endif
+    call add(bnames, bname)
+    let i += 1
+  endfor
+  if current_i < 0
+    return g:tabline
+  endif
+
+  let command_sequence_len = strlen("%#TabLineSel#") + strlen("%#TabLineFill#")
+
+  let j = 1
+  let len = len(bnames)
+  while j < len
+    if current_i + j < len
+      let tmp = tl . "|" . bnames[current_i + j]
+      if strlen(tmp) - command_sequence_len >= winwidth(0)
+        break
+      endif
+      let tl = tmp
+    endif
+    if current_i - j >= 0
+      let tmp = bnames[current_i - j] . "|" . tl
+      if strlen(tmp) - command_sequence_len >= winwidth(0)
+        break
+      endif
+      let tl = tmp
+    endif
+    let j += 1
+  endwhile
+  let g:tabline = tl
+  return tl
+endfunction
+
+function! _UpdateShowTabline()
+  if len(_GetBufferNumbersOnTabLine()) >= 2
+    set showtabline=2
+  else
+    set showtabline=0
+  endif
+endfunction
+
+augroup TabLine
+  au!
+  au BufNewFile,BufReadPost * call _UpdateShowTabline()
+  au BufDelete * call _UpdateShowTabline()
+augroup END
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
@@ -2819,3 +2895,12 @@ endfunction
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
+
+
+"let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#show_tabs = 0
+"let g:airline#extensions#wordcount#formatter = 'unique_tail_improved'
+"augroup MyAirline
+  "au!
+  "au WinEnter * let w:airline_disabled = 1
+"augroup END

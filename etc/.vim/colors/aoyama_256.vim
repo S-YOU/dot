@@ -37,7 +37,10 @@ hi DiffText             cterm=None              ctermfg=7               ctermbg=
 hi Directory            cterm=None              ctermfg=blue            ctermbg=None
 hi Error                cterm=None              ctermfg=white           ctermbg=cyan
 hi ErrorMsg             cterm=None              ctermfg=16              ctermbg=217
-hi Folded               cterm=None              ctermfg=232             ctermbg=189
+hi Folded               cterm=None              ctermfg=232             ctermbg=255
+hi TabLineSel           cterm=bold                                      ctermbg=190
+hi TabLineFill                                  ctermfg=252             ctermbg=0
+
 hi Function             cterm=None              ctermfg=232             ctermbg=None
 hi FunctionName cterm=bold ctermfg=93 ctermbg=none
 
