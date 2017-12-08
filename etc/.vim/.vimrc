@@ -2819,63 +2819,104 @@ function! _YankToFile(reg, show_message)
   endif
 endfunction
 
-function! _GetBufferNumbersOnTabLine()
-  return filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+function! _GetBuffersForTabLine()
+  let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+  let ret = []
+  for bufnum in bufnums
+    let origname = bufname(bufnum)
+    let disp = substitute(origname, '.*/', '', '')
+    if disp == ""
+      let disp = " [No Name] "
+    else
+      let disp = " " . disp . " "
+    endif
+    call add(ret, {"num": bufnum, "disp": disp, "name": origname, "displen": strlen(disp)})
+  endfor
+  return ret
 endfunction
 
-let g:tabline = ""
-function! _MyTabLine()
-  let buflist = _GetBufferNumbersOnTabLine()
-  let bnames = []
+function! _BufListToTabLine(buflist, curbufnr)
   let tl = ""
-  let i = 0
-  let current_i = -1
-  for bnum in buflist
-    let bname = bufname(bnum)
-    let bname = substitute(bname, '.*/', '', '')
-    if bname == ""
-      let bname = "[No Name]"
+  let a = []
+  for buf in a:buflist
+    if buf["num"] == a:curbufnr
+      call add(a, "%#TabLineSel#" . buf["disp"] . "%#TabLineFill#")
+    else
+      call add(a, buf["disp"])
     endif
-    let bname = " " . bname . " "
-    if bnum == bufnr("%")
-      "let bname = "%#TabLineSel#" . bname . "%#TabLineFill#"
-      let tl = "%#TabLineSel#" . bname . "%#TabLineFill#"
+  endfor
+  return join(a, "|")
+endfunction
+
+let g:tabline_current_visible_buffers = []
+function! _MyTabLine()
+  let curbufnr = bufnr("%")
+
+  for buf in g:tabline_current_visible_buffers
+    if buf["num"] == curbufnr
+      return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+    endif
+  endfor
+
+  let lensum = 0
+  let buflist = _GetBuffersForTabLine()
+
+  let current_i = -1
+  let i = 0
+  for buf in buflist
+    let bnum = buf["num"]
+    if bnum == curbufnr
       let current_i = i
     endif
-    call add(bnames, bname)
     let i += 1
   endfor
-  if current_i < 0
-    return g:tabline
-  endif
 
-  let command_sequence_len = strlen("%#TabLineSel#") + strlen("%#TabLineFill#")
+  let visible_buffers = []
 
-  let j = 1
-  let len = len(bnames)
-  while j < len
-    if current_i + j < len
-      let tmp = tl . "|" . bnames[current_i + j]
-      if strlen(tmp) - command_sequence_len >= winwidth(0)
-        break
-      endif
-      let tl = tmp
+  call add(visible_buffers, buflist[current_i])
+  let lensum = buflist[current_i]["displen"]
+
+  " 1. カレントより前の部分を追加
+  let prev_i = current_i - 1
+  while prev_i % 3 != 1 && prev_i >= 0
+    if lensum + buflist[prev_i]["displen"] < &columns
+      call insert(visible_buffers, buflist[prev_i])
+      let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
+      let prev_i -= 1
+    else
+      break
     endif
-    if current_i - j >= 0
-      let tmp = bnames[current_i - j] . "|" . tl
-      if strlen(tmp) - command_sequence_len >= winwidth(0)
-        break
-      endif
-      let tl = tmp
-    endif
-    let j += 1
   endwhile
-  let g:tabline = tl
-  return tl
+
+  " カレントより後の部分を追加
+  let next_i = current_i + 1
+  while next_i < len(buflist)
+    if lensum + buflist[next_i]["displen"] < &columns
+      call add(visible_buffers, buflist[next_i])
+      let lensum += buflist[next_i]["displen"] + 1  " |の分プラス1
+      let next_i += 1
+    else
+      break
+    endif
+  endwhile
+
+  " もしまだスペースが余っているならさらにカレントより前を追加
+  while prev_i >= 0
+    if lensum + buflist[prev_i]["displen"] < &columns
+      call insert(visible_buffers, buflist[prev_i])
+      let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
+      let prev_i -= 1
+    else
+      break
+    endif
+  endwhile
+
+  let g:tabline_current_visible_buffers = visible_buffers
+  return _BufListToTabLine(visible_buffers, curbufnr)
 endfunction
 
 function! _UpdateShowTabline()
-  if len(_GetBufferNumbersOnTabLine()) >= 2
+  if len(_GetBuffersForTabLine()) >= 2
     set showtabline=2
   else
     set showtabline=0
