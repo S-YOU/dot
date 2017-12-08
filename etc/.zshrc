@@ -106,7 +106,9 @@ _bm() {
 #	ウィジェット
 #-----------------------------------------------------------------------------
 
-SELECTOR="fzf --no-sort --exact"
+if type fzf > /dev/null 2>&1; then
+    SELECTOR="fzf --no-sort --exact"
+fi
 
 # fgとbgを完全に無視したCtrl-P
 _up-line-or-history-ignoring() {
@@ -138,26 +140,28 @@ if is-at-least 4.3.11; then
   zstyle ':completion:*' recent-dirs-insert both
 fi
 
-function select-cdr () {
-    local selected_dir=$(cdr -l | awk '{ print $2 }' | $SELECTOR)
-    if [ -n "$selected_dir" ]; then
-        BUFFER="cd ${selected_dir}"
-        zle accept-line
-    fi
-    #zle clear-screen
-}
-zle -N select-cdr
-bindkey '^@' select-cdr
+if [ "$SELECTOR" != "" ]; then
+    function select-cdr () {
+        local selected_dir=$(cdr -l | awk '{ print $2 }' | $SELECTOR)
+        if [ -n "$selected_dir" ]; then
+            BUFFER="cd ${selected_dir}"
+            zle accept-line
+        fi
+        #zle clear-screen
+    }
+    zle -N select-cdr
+    bindkey '^@' select-cdr
 
-# コマンド履歴をfzf
-function select-history() {
-    BUFFER=$(\history -r -n 1 | \
-        $SELECTOR --query "$LBUFFER")
-    CURSOR=$#BUFFER
-    zle clear-screen
-}
-zle -N select-history
-bindkey '^r' select-history
+    # コマンド履歴をfzf
+    function select-history() {
+        BUFFER=$(\history -r -n 1 | \
+            $SELECTOR --query "$LBUFFER")
+        CURSOR=$#BUFFER
+        zle clear-screen
+    }
+    zle -N select-history
+    bindkey '^r' select-history
+fi
 
 
 #-----------------------------------------------------------------------------
