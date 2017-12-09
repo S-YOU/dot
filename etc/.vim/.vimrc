@@ -428,6 +428,7 @@ nnoremap <silent> <F4> :<C-u>runtime macros/vimsh.vim<CR>
 nnoremap <silent> <Space>r :<C-u>call ExecSystem('last')<CR>
 nnoremap <silent> <Space>a :<C-u>SetAutoExec<CR>
 nnoremap <silent> <Space>R :<C-u>call ExecSystem('input')<CR>
+xnoremap <silent> <Space>r <C-c>:<C-u>call EvalSelection()<CR>
 
 " 機能トグル
 command! ShowTabstop echo (&list ? 'list' : 'nolist') (&et ? 'expandtab' : 'noexpandtab') 'ts=' . &ts . ' sts=' . &sts . ' sw=' . &sw
@@ -2079,9 +2080,13 @@ function! Rename(name, bang)
   endif
 endfunction
 
-function! _GetExecSystemDefault()
-  let filepath = expand("%:p")
-  let filename = expand("%")
+function! _GetExecSystemDefault(...)
+  if a:0 == 0
+    let filepath = expand("%:p")
+    let filename = expand("%")
+  else
+    let filename = a:1
+  endif
   let ret = ""
   if 0
   elseif &ft ==? "c" || &ft ==? "cpp"
@@ -2125,11 +2130,13 @@ function! ExecSystem(mode, ...)
 
   let mode = a:mode
 
-  if filepath == ""
-    echomsg "ファイル名がついていません"
-    return
-  elseif (!filereadable(filepath) || getbufvar(bufnr, "&modified")) && &buftype != "nofile"
-    w
+  if mode != "selection"
+    if filepath == ""
+      echomsg "ファイル名がついていません"
+      return
+    elseif (!filereadable(filepath) || getbufvar(bufnr, "&modified")) && &buftype != "nofile"
+      w
+    endif
   endif
 
   " コマンドを入力
@@ -2148,19 +2155,24 @@ function! ExecSystem(mode, ...)
     let cmd = b:_exec_system_last_cmd
   elseif mode == 'argument'  " 関数の引数でコマンドを指定
     let cmd = a:000[0]
+  elseif mode == 'selection'
+    let cmd = _GetExecSystemDefault(expand("~/tmp/.EvalSelection.tmp"))
   else
     echomsg "ExecSystem: Invalid argument [" . a:mode . "]"
     return
   endif
 
-  if getbufvar(bufnr, "auto_exec_count") == ""
-    call setbufvar(bufnr, "auto_exec_count", 0)
+  if mode != "selection"
+    if getbufvar(bufnr, "auto_exec_count") == ""
+      call setbufvar(bufnr, "auto_exec_count", 0)
+    endif
+    call setbufvar(bufnr, "auto_exec_count", getbufvar(bufnr, "auto_exec_count") + 1)
   endif
-  call setbufvar(bufnr, "auto_exec_count", getbufvar(bufnr, "auto_exec_count") + 1)
+
   if cmd != ""
     let b:_exec_system_last_cmd = cmd
 
-    call ScratchBuffer("_out_", "split", "hide") | %d
+    call ScratchBuffer("_out_", "split", "hide") | silent %d
     setlocal nobuflisted
     exe "chdir " . dir
     sil! exec cmd
@@ -2182,13 +2194,15 @@ function! ExecSystem(mode, ...)
   exe winnr . "wincmd w"
   redraw
 
-  if getbufvar(bufnr, "auto_exec_count") == 1
-    if confirm("保存時に自動実行するようにしますか？", "&Y\n&N") == 1
-      let b:enable_auto_exec_system = 1
+  if mode != "selection"
+    if getbufvar(bufnr, "auto_exec_count") == 1
+      if confirm("保存時に自動実行するようにしますか？", "&Y\n&N") == 1
+        let b:enable_auto_exec_system = 1
+      endif
     endif
-  endif
-  if !exists("b:enable_auto_exec_system")
-    let b:enable_auto_exec_system = 0
+    if !exists("b:enable_auto_exec_system")
+      let b:enable_auto_exec_system = 0
+    endif
   endif
 endfunction
 
@@ -2892,6 +2906,26 @@ augroup TabLine
   au BufNewFile,BufReadPost * call _UpdateShowTabline()
   au BufDelete * call _UpdateShowTabline()
 augroup END
+
+function! _SaveSelectionToFile(filename) abort
+  silent normal! gv"xy
+  let reg = getreg('x')
+  let lines = split(reg, '\n')
+  call writefile(lines, a:filename)
+  return lines
+endfunction
+
+function! EvalSelection()
+  let ft = &ft
+  let filename = expand("~/tmp/.EvalSelection.tmp")
+  let lines = _SaveSelectionToFile(filename)
+  if ft == "vim"
+    exe "@x\<CR>"
+    call _Echo("Question", "Sourced " . len(lines) . " lines.")
+  else
+    call ExecSystem("selection")
+  endif
+endfunction
 
 "=============================================================================
 "   ▲実験室  Experimental
