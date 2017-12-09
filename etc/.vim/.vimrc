@@ -436,16 +436,15 @@ nnoremap <C-h> :bp<CR>
 nnoremap <C-l> :bn<CR>
 "nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
 "nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-nnoremap <C-m>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
-nnoremap <C-m>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
-nnoremap <C-m>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
-"nnoremap <C-l><C-e> :set expandtab!<CR>:set expandtab?<CR>
-"nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
-nnoremap <C-m><C-n> :windo set number!<CR>:set number?<CR>
-nnoremap <C-m><C-w> :set wrap!<CR>:set wrap?<CR>
-nnoremap <C-m><C-u> :set cuc!<CR>
-nnoremap <silent> <space>* :<C-u>let @/ = '\<' . expand("\<cword\>") . '\>'<CR>:set hls<CR>
-nnoremap <C-m> :noh<CR><C-l>
+nnoremap <C-@>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
+nnoremap <C-@>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
+nnoremap <C-@>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
+nnoremap <C-@><C-e> :set expandtab!<CR>:set expandtab?<CR>
+nnoremap <C-@><C-f> :set foldenable!<CR>:set foldenable?<CR>
+nnoremap <C-@><C-n> :windo set number!<CR>:set number?<CR>
+nnoremap <C-@><C-w> :set wrap!<CR>:set wrap?<CR>
+nnoremap <C-@><C-u> :set cuc!<CR>
+nnoremap <C-@><C-@> :noh<CR>
 
 " その他 ----------------------------------------------------------- 
 
@@ -592,7 +591,7 @@ endfunction
 
 command! MRU CtrlPMRU
 
-command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
+command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(query)
   cclose
@@ -684,6 +683,7 @@ endfunction
 
 call DefineCommandAbbrev('brep', 'Brep')
 call DefineCommandAbbrev('mru', 'MRU')
+call DefineCommandAbbrev('bd', 'Bclose')
 
 
 
@@ -917,7 +917,6 @@ augroup MyAutocmd
   au FileType php         call PHP_Setting()
   au FileType python      call Python_Setting()
   au FileType qf call AdjustWindowHeight(1)
-  au FileType qf call _Echo("MoreMsg", "F2 F3で移動できます")
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
   au FileType qf setlocal nobuflisted
   au FileType qf syn match qfError "warning" contained
