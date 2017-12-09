@@ -37,7 +37,7 @@ set runtimepath^=~/.vim/bundle/vim-indexed-search
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
-set timeoutlen=300
+set timeoutlen=2000
 set updatetime=500
 set viminfo='600,s100,h
 set diffopt=filler,iwhite
@@ -1609,6 +1609,8 @@ onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 0, 1, 0)<cr>
 onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
 xnoremap <silent> +  <esc>:call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
 xnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
+nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 1, 1, 0)<cr>^
+nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 1, 1, 0)<cr>^
 " カレント行から同じインデントの行までを折りたたむ
 nmap <silent> zq v+zf
 
@@ -2436,113 +2438,6 @@ function! _ShowNERDTree()
   endif
 endfunction
 
-"function! _MyBE_Init() abort
-"  call SingletonBuffer("--Buffers--", "10split")
-"  set buftype=nofile nobuflisted
-"  setlocal statusline=--Buffers--
-"  setlocal nonumber
-"  setlocal winfixheight
-"  call _MyBE_Update("", bufnr("%"))
-"  nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
-"  nnoremap <buffer> R :<C-u>call _MyBE_Update("", bufnr("%"))<CR>
-"  nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
-"  nnoremap <buffer> <C-@> :<C-u>call _MyBE_Preview()<CR>
-"  nnoremap <buffer> <C-p> k:<C-u>call _MyBE_Preview()<CR>
-"  nnoremap <buffer> <C-n> j:<C-u>call _MyBE_Preview()<CR>
-"  syn match MyBE_Current /^%/ | hi MyBE_Current ctermfg=197
-"endfunction
-"
-"function! _MyBE_Update(bufnr_to_be_deleted, current_bufnr) abort
-"  let orig_winnr = winnr()
-"  for w in range(1, winnr("$"))
-"    try
-"      exe "noautocmd " . w . "wincmd w"
-"    catch /E788/
-"      return
-"    endtry
-"    if bufname("%") == "--Buffers--"
-"      let current_line = ""
-"      silent! %d _
-"      let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-"      let line_number = 0
-"      for bufnr in buflist
-"        if bufnr != a:bufnr_to_be_deleted
-"          let line_number += 1
-"          " basenameだけ表示する
-"          " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
-"          "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
-"          let bufname = bufname(bufnr)
-"          if bufname == ""
-"            let bufname = "[No Name]"
-"          else
-"            let bufname = substitute(bufname(bufnr), '.*/', '', '')
-"          endif
-"          if bufnr == a:current_bufnr
-"            let current_line = line_number
-"          endif
-"          call append(line(".")-1, (bufnr == a:current_bufnr ? "% " : "  ") . bufname . "\t(" . bufnr . ")")
-"        else
-"          let g:hoge = line_number
-"          let current_line = line_number
-"        endif
-"      endfor
-"      silent! $d _
-"      if current_line != ""
-"        exe current_line
-"      endif
-"    endif
-"  endfor
-"  exe "noautocmd " . orig_winnr . "wincmd w"
-"endfunction
-""nnoremap <Space>b :<C-u>call _MyBE_Switch()<CR>
-"nnoremap <Space>b :<C-u>call SingletonBuffer("--Buffers--", "32vs")<CR>
-"
-"function! _MyBE_Switch() abort
-"  let windows = WindowContains(GetBufferNumberByName("--Buffers--", 0))
-"  if len(windows) > 0
-"    let winnr = windows[0]
-"    exe winnr . "wincmd w"
-"  endif
-"endfunction
-"
-"" 直前のウィンドウを取得するもっといい方法はないか？
-"function! _MyBE_Open() abort
-"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-"  noautocmd wincmd h
-"  exe "b " . bufnr
-"endfunction
-"
-"function! _MyBE_Preview() abort
-"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-"  noautocmd wincmd h
-"  exe "b " . bufnr
-"  noautocmd wincmd p
-"endfunction
-"
-"function! _MyBE_Delete() abort
-"  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-"  let mybe_winnr = winnr()
-"  while bufwinnr(bufnr) != -1
-"    exe bufwinnr(bufnr) . "wincmd w"
-"    bp
-"    if bufnr(".") == bufnr
-"      break
-"    endif
-"  endwhile
-"  silent exe 'bd ' . bufnr
-"endfunction
-"
-"augroup MyBE
-"  au!
-"  au BufEnter * if buflisted(bufnr("%")) | call _MyBE_Update("", bufnr("%")) | endif
-"  au BufDelete * call _MyBE_Update(expand("<abuf>"), "")
-"augroup END
-"
-"function! _MyBE_GetBufferNumberFromCurrentLine()
-"  let line = getline(".")
-"  let line = substitute(line, '.*(\(\d\+\))', '\1', 'g')
-"  return str2nr(line)
-"endfunction
 
 " markdown で```rbの記法を有効にする
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'ruby', 'rb=ruby', 'javascript', 'js=javascript', 'php']
