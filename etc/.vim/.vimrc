@@ -34,7 +34,6 @@ set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
 set runtimepath^=~/.vim/bundle/vim-indexed-search
-"set runtimepath^=~/.vim/bundle/vim-airline
 "set runtimepath^=~/.vim/bundle/minibufexpl.vim-6.5.2
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
@@ -2819,7 +2818,7 @@ function! _YankToFile(reg, show_message)
   endif
 endfunction
 
-" tablineに表示する可能性のあるバッファをリストアップする
+" tablineに表示する可能性のあるバッファの情報を集める
 function! _GetBuffersForTabLine()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
   let ret = []
@@ -2873,6 +2872,11 @@ function! _MyTabLine()
     endif
     let i += 1
   endfor
+
+  " カレントバッファがtablineに載せないものであれば、変えないようにする
+  if current_i == -1
+    return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+  endif
 
   let visible_buffers = []
 
@@ -2940,12 +2944,3 @@ augroup END
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
-
-
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#show_tabs = 0
-"let g:airline#extensions#wordcount#formatter = 'unique_tail_improved'
-"augroup MyAirline
-  "au!
-  "au WinEnter * let w:airline_disabled = 1
-"augroup END
