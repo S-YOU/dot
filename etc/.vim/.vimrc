@@ -389,6 +389,7 @@ nmap caa vaac
 nnoremap <silent> <space>h :<C-u>bp<CR>
 nnoremap <silent> <space>l :<C-u>bn<CR>
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
+nnoremap <space>I :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPMRUFiles<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
 nnoremap <silent> <expr> <tab> (getline(".")[col(".")-1]==' ' ? "s\<tab>\<Esc>l" : "i\<tab>\<Esc>l")
 nnoremap <silent> <space><space> i<space><Esc>l
@@ -593,6 +594,7 @@ command! MRU CtrlPMRU
 
 command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 " 読み込まれているバッファを対象にgrepする
+nnoremap <Space>B :<C-u>Brep<Space>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(...) abort
   if a:0 == 1
@@ -626,6 +628,7 @@ function! _Bufgrep(...) abort
     "redraw!
   endif
 endfunction
+
 " 全バッファに対して置換する
 " 使い方: Replace s@hoge@moge@
 " bufdo s@hoge@moge@gce との違いは、unlistedなバッファも対象にすること
@@ -1458,7 +1461,9 @@ function! _BufcloseCloseIt()
   endif
 
   if buflisted(l:currentBufNum)
-    execute("bdelete" . l:currentBufNum)
+    " 開き直したとき、新しいバッファ番号が振られるように、bwipeを使う
+    "execute("bdelete" . l:currentBufNum)
+    execute("bwipe" . l:currentBufNum)
   endif
 endfunction
 
