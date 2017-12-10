@@ -592,22 +592,38 @@ endfunction
 command! MRU CtrlPMRU
 
 command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
+" 読み込まれているバッファを対象にgrepする
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
-function! _Bufgrep(query)
+function! _Bufgrep(...) abort
+  if a:0 == 1
+    let query = a:1
+    let ignorecase = 0
+  else
+    if a:1 == '-i'
+      let query = a:2
+      let ignorecase = 1
+    else
+      call _Echo("ErrorMsg", "Usage: :Brep [-i] query")
+      return
+    endif
+  endif
+  let query = substitute(query, '/', '\\/', 'g')
+
   cclose
   call setqflist([])
   let bn = bufnr("%")
-  exe "sil! bufdo! vimgrepadd /" . a:query . "/j %"
+  " \C により大文字小文字を区別させる
+  exe "sil! bufdo! vimgrepadd /" . (ignorecase ? '\c' : '\C') . query . "/j %"
   let qflen = len(getqflist())
   if qflen == 0
     sil! exe "b" . bn
     call _Echo("WarningMsg","検索結果: 0件")
   else
     cfirst
-    cw
-    let winheight = qflen > 10 ? 10 : qflen
-    exe winheight . "wincmd _"
-    redraw!
+    "cw
+    "let winheight = qflen > 10 ? 10 : qflen
+    "exe winheight . "wincmd _"
+    "redraw!
   endif
 endfunction
 " 全バッファに対して置換する
