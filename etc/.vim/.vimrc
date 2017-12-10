@@ -594,7 +594,7 @@ command! MRU CtrlPMRU
 
 command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
 " 読み込まれているバッファを対象にgrepする
-nnoremap <Space>B :<C-u>Brep<Space>
+nnoremap <Space>B :<C-u>Brep<Space><C-r><C-w>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(...) abort
   if a:0 == 1
@@ -615,7 +615,7 @@ function! _Bufgrep(...) abort
   call setqflist([])
   let bn = bufnr("%")
   " \C により大文字小文字を区別させる
-  exe "sil! bufdo! vimgrepadd /" . (ignorecase ? '\c' : '\C') . query . "/j %"
+  exe "sil! bufdo! vimgrepadd /" . (ignorecase ? '\c' : '\C') . query . "/jg %"
   let qflen = len(getqflist())
   if qflen == 0
     sil! exe "b" . bn
