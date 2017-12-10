@@ -1,5 +1,5 @@
 call NERDTreeAddKeyMap({
-        \ 'key': 'foo',
+        \ 'key': 'D',
         \ 'callback': 'NERDTreeMyDeleteHandler',
         \ 'quickhelpText': 'rma.shでカレントノードを削除する',
         \ 'scope': 'FileNode' })
