@@ -6,8 +6,8 @@ IRB.conf[:EVAL_HISTORY] = 1000
 IRB.conf[:SAVE_HISTORY] = 100 
 
 # ヒストリーを有効にする
-HISTFILE = "~/.irb_history"
-MAXHISTSIZE = 100
+HISTFILE = "~/.irb_history" unless defined?(HISTFILE)
+MAXHISTSIZE = 100 unless defined?(MAXHISTSIZE)
    
 begin
   if defined? Readline::HISTORY
