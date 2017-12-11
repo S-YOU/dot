@@ -2408,6 +2408,7 @@ let g:NERDTreeMapToggleFilters =  'a'
 let g:NERDTreeAutoDeleteBuffer=1
 let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['\.o$']
+let g:NERDTreeHighlightCursorline = 0
 let g:MyNERDTreeRemoveFileCmd = executable("rma.sh") ? "rma.sh" : "rm"
 
 function! Nerdtree_Setting()
@@ -2702,7 +2703,7 @@ endfunction
 " tablineに表示する可能性のあるバッファの情報を集める
 function! _GetBuffersForTabLine()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-  let ret = []
+  let ret = g:tabline_current_visible_buffers
   for bufnum in bufnums
     let origname = bufname(bufnum)
     let disp = substitute(origname, '.*/', '', '')
@@ -2711,7 +2712,23 @@ function! _GetBuffersForTabLine()
     else
       let disp = " " . disp . " "
     endif
-    call add(ret, {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)})
+    let bufinfo = {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)}
+
+    let found_i = -1
+    let i = 0
+    for buf in ret
+      if buf["num"] == bufnum
+        let found_i = i
+        break
+      endif
+      let i += 1
+    endfor
+    if found_i >= 0
+      let ret[i] = bufinfo
+    else
+      call add(ret, bufinfo)
+    endif
+
   endfor
   return ret
 endfunction
@@ -2733,6 +2750,15 @@ endfunction
 let g:tabline_current_visible_buffers = []
 function! _MyTabLine()
   let curbufnr = bufnr("%")
+
+  " 非表示バッファがリストに含まれていたら削除する（NERDTreeなど、後からbuflistedをセットした場合に起こりうる）
+  let i = 0
+  for buf in g:tabline_current_visible_buffers
+    if !buflisted(buf["num"])
+      call remove(g:tabline_current_visible_buffers, i)
+    endif
+    let i += 1
+  endfor
 
   " 可能な場合は表示順が変わらず、カレントバッファのハイライトだけが変わるようにする
   for buf in g:tabline_current_visible_buffers
@@ -2809,12 +2835,12 @@ function! _UpdateShowTabline()
   else
     set showtabline=0
   endif
-  let g:tabline_current_visible_buffers = []
+  "let g:tabline_current_visible_buffers = []
 endfunction
 
 augroup TabLine
   au!
-  au BufNewFile,BufReadPost * call _UpdateShowTabline()
+  au BufNewFile,BufReadPost,BufWritePost * call _UpdateShowTabline()
   au BufDelete * call _UpdateShowTabline()
 augroup END
 
@@ -2826,13 +2852,21 @@ nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1)<CR>
 " バッファの順番を入れ替える
 function! _MoveBufferTab(delta) abort
   let curbufnr = bufnr("%")
+  let len = len(g:tabline_current_visible_buffers)
 
-  for i in range(len(g:tabline_current_visible_buffers))
+  for i in range(len)
     let buf = g:tabline_current_visible_buffers[i]
     if buf["num"] == curbufnr
+      if i + a:delta < 0
+        let j = len - 1
+      elseif i + a:delta > len - 1
+        let j = 0
+      else
+        let j = i + a:delta
+      endif
       let tmp = g:tabline_current_visible_buffers[i]
-      let g:tabline_current_visible_buffers[i] = g:tabline_current_visible_buffers[i + a:delta]
-      let g:tabline_current_visible_buffers[i + a:delta] = tmp
+      let g:tabline_current_visible_buffers[i] = g:tabline_current_visible_buffers[j]
+      let g:tabline_current_visible_buffers[j] = tmp
       " redraw
       set showtabline=0
       set showtabline=2
