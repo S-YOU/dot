@@ -2701,9 +2701,9 @@ function! _YankToFile(reg, show_message)
 endfunction
 
 " tablineに表示する可能性のあるバッファの情報を集める
-function! _GetBuffersForTabLine()
+function! _UpdateBufferList()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-  let ret = copy(g:tabline_current_visible_buffers)
+  let ret = copy(g:all_buffers)
   for bufnum in bufnums
     let origname = bufname(bufnum)
     let disp = substitute(origname, '.*/', '', '')
@@ -2728,8 +2728,8 @@ function! _GetBuffersForTabLine()
     else
       call add(ret, bufinfo)
     endif
-
   endfor
+  let g:all_buffers = ret
   return ret
 endfunction
 
@@ -2747,10 +2747,19 @@ function! _BufListToTabLine(buflist, curbufnr)
   return join(a, "|")
 endfunction
 
+let g:all_buffers = []
 let g:tabline_current_visible_buffers = []
 function! _MyTabLine()
   let curbufnr = bufnr("%")
 
+  " 非表示バッファがリストに含まれていたら削除する（NERDTreeなど、後からbuflistedをセットした場合に起こりうる）
+  let i = 0
+  for buf in g:all_buffers
+    if !buflisted(buf["num"])
+      call remove(g:all_buffers, i)
+    endif
+    let i += 1
+  endfor
   " 非表示バッファがリストに含まれていたら削除する（NERDTreeなど、後からbuflistedをセットした場合に起こりうる）
   let i = 0
   for buf in g:tabline_current_visible_buffers
@@ -2768,7 +2777,7 @@ function! _MyTabLine()
   endfor
 
   let lensum = 0
-  let buflist = _GetBuffersForTabLine()
+  let buflist = _UpdateBufferList()
 
   let current_i = -1
   let i = 0
@@ -2830,7 +2839,7 @@ function! _MyTabLine()
 endfunction
 
 function! _UpdateShowTabline()
-  if len(_GetBuffersForTabLine()) >= 2
+  if len(_UpdateBufferList()) >= 2
     set showtabline=2
   else
     set showtabline=0
@@ -2852,8 +2861,26 @@ nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
 " バッファの順番を入れ替える
 function! _MoveBufferTab(delta) abort
   let curbufnr = bufnr("%")
-  let len = len(g:tabline_current_visible_buffers)
 
+  let len = len(g:all_buffers)
+  for j in range(len)
+    let buf = g:all_buffers[j]
+    if buf["num"] == curbufnr
+      if j + a:delta < 0
+        let k = len - 1
+      elseif j + a:delta > len - 1
+        let k = 0
+      else
+        let k = j + a:delta
+      endif
+      let tmp = g:all_buffers[j]
+      let g:all_buffers[j] = g:all_buffers[k]
+      let g:all_buffers[k] = tmp
+      break
+    endif
+  endfor
+
+  let len = len(g:tabline_current_visible_buffers)
   for i in range(len)
     let buf = g:tabline_current_visible_buffers[i]
     if buf["num"] == curbufnr
@@ -2870,7 +2897,7 @@ function! _MoveBufferTab(delta) abort
       " redraw
       "set showtabline=0
       set showtabline=2
-      return
+      break
     endif
   endfor
 endfunction
@@ -2879,25 +2906,25 @@ endfunction
 function! _SwitchBufferTab(delta) abort
   let curbufnr = bufnr("%")
 
-  for i in range(len(g:tabline_current_visible_buffers))
-    let buf = g:tabline_current_visible_buffers[i]
+  for i in range(len(g:all_buffers))
+    let buf = g:all_buffers[i]
     if buf["num"] == curbufnr
-      if i + a:delta >= len(g:tabline_current_visible_buffers)
+      if i + a:delta >= len(g:all_buffers)
         let j = 0
       elseif i + a:delta < 0
-        let j = len(g:tabline_current_visible_buffers) - 1
+        let j = len(g:all_buffers) - 1
       else
         let j = i + a:delta
       endif
-      exe "b" . g:tabline_current_visible_buffers[j]["num"]
+      exe "b" . g:all_buffers[j]["num"]
       return
     endif
   endfor
-  if a:delta > 0
-    bn
-  else
-    bp
-  endif
+  "if a:delta > 0
+  "  bn
+  "else
+  "  bp
+  "endif
 endfunction
 
 function! _SaveSelectionToFile(filename) abort
