@@ -2704,19 +2704,24 @@ endfunction
 let g:tabline_all_buffers = []        " tablineで管理する全バッファのリスト
 let g:tabline_visible_buffers = []    " 今表示しているバッファのリスト
 
+function! _GetBufInfoFromBufNum(bnum)
+  let origname = bufname(a:bnum)
+  let disp = substitute(origname, '.*/', '', '')
+  if disp == ""
+    let disp = " [No Name] "
+  else
+    let disp = " " . disp . " "
+  endif
+  let bufinfo = { "name": origname, "num": a:bnum, "disp": disp, "displen": strdisplaywidth(disp) }
+  return bufinfo
+endfunction
+
 " tablineに表示する可能性のあるバッファの情報を集める
 function! _UpdateBufferList()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
   let ret = copy(g:tabline_all_buffers)
   for bufnum in bufnums
-    let origname = bufname(bufnum)
-    let disp = substitute(origname, '.*/', '', '')
-    if disp == ""
-      let disp = " [No Name] "
-    else
-      let disp = " " . disp . " "
-    endif
-    let bufinfo = {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)}
+    let bufinfo = _GetBufInfoFromBufNum(bufnum)
 
     " バッファがリネームされている可能性があるので、既存のデータを更新する
     let found_i = -1
