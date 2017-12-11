@@ -2846,8 +2846,8 @@ augroup END
 
 nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
-nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1)<CR>
-nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1)<CR>
+nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count)<CR>
+nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count)<CR>
 
 " バッファの順番を入れ替える
 function! _MoveBufferTab(delta) abort
@@ -2868,7 +2868,7 @@ function! _MoveBufferTab(delta) abort
       let g:tabline_current_visible_buffers[i] = g:tabline_current_visible_buffers[j]
       let g:tabline_current_visible_buffers[j] = tmp
       " redraw
-      set showtabline=0
+      "set showtabline=0
       set showtabline=2
       return
     endif
