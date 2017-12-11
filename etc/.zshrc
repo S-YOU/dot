@@ -67,10 +67,11 @@ SAVEHIST=100000
 autoload -Uz compinit && compinit -u
 
 # 補完候補をメニューで選択
-zstyle ':completion:*' menu select 
+zstyle ':completion:*' menu select
 zmodload zsh/complist
 bindkey -M menuselect '^M' .accept-line
-bindkey -M menuselect '^D' accept-and-infer-next-history
+bindkey -M menuselect '^D' accept
+bindkey -M menuselect '^O' accept-and-infer-next-history
 bindkey -M menuselect '^F' forward-char
 bindkey -M menuselect '^B' backward-char
 bindkey -M menuselect '^P' up-line-or-history
@@ -165,31 +166,6 @@ if [ "$SELECTOR" != "" ]; then
     zle -N select-history
     bindkey '^r' select-history
 fi
-
-function delete-char-or-menu-complete() {
-    if [ $CURSOR = $#BUFFER ]; then
-        zle menu-complete
-    else
-        zle delete-char
-    fi
-}
-#function delete-char-or-menu-complete() {
-#    if [ $CURSOR = $#BUFFER ]; then
-#        if [ "$DELETE_CHAR_OR_MENU_COMPLETE_SECOND" = 1 ]; then
-#            DELETE_CHAR_OR_MENU_COMPLETE_SECOND=0
-#            zle menu-complete
-#        else
-#            DELETE_CHAR_OR_MENU_COMPLETE_SECOND=1
-#            zle list-choices
-#        fi
-#    else
-#        DELETE_CHAR_OR_MENU_COMPLETE_SECOND=0
-#        zle delete-char
-#    fi
-#}
-zle -N delete-char-or-menu-complete
-bindkey '^D' delete-char-or-menu-complete
-
 
 #-----------------------------------------------------------------------------
 #	プロンプト
