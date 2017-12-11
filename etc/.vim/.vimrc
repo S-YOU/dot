@@ -2729,25 +2729,13 @@ function! _UpdateBufferList()
       let i += 1
     endfor
     if found_i >= 0
-      let ret[i] = bufinfo
+      let ret[i]["num"] = bufinfo["num"]
+      let ret[i]["disp"] = bufinfo["disp"]
+      let ret[i]["name"] = bufinfo["name"]
+      let ret[i]["displen"] = bufinfo["displen"]
     else
       call add(ret, bufinfo)
     endif
-
-    " バッファがリネームされている可能性があるので、既存のデータを更新する
-    let found_i2 = -1
-    let i = 0
-    for buf in g:tabline_visible_buffers
-      if buf["num"] == bufnum
-        let found_i2 = i
-        break
-      endif
-      let i += 1
-    endfor
-    if found_i2 >= 0
-      let g:tabline_visible_buffers[found_i2] = bufinfo
-    endif
-
   endfor
   let g:tabline_all_buffers = ret
   return ret
@@ -2821,7 +2809,7 @@ function! _MyTabLine()
   let prev_i = current_i - 1
   while prev_i % 3 != 1 && prev_i >= 0
     if lensum + buflist[prev_i]["displen"] < &columns
-      call insert(visible_buffers, buflist[prev_i])
+      call insert(visible_buffers, buflist[prev_i]) " 2つのリストで参照が共有される
       let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
       let prev_i -= 1
     else
@@ -2833,7 +2821,7 @@ function! _MyTabLine()
   let next_i = current_i + 1
   while next_i < len(buflist)
     if lensum + buflist[next_i]["displen"] < &columns
-      call add(visible_buffers, buflist[next_i])
+      call add(visible_buffers, buflist[next_i])  " 2つのリストで参照が共有される
       let lensum += buflist[next_i]["displen"] + 1  " |の分プラス1
       let next_i += 1
     else
@@ -2844,7 +2832,7 @@ function! _MyTabLine()
   " もしまだスペースが余っているならさらにカレントより前を追加
   while prev_i >= 0
     if lensum + buflist[prev_i]["displen"] < &columns
-      call insert(visible_buffers, buflist[prev_i])
+      call insert(visible_buffers, buflist[prev_i]) " 2つのリストで参照が共有される
       let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
       let prev_i -= 1
     else
