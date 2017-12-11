@@ -2700,10 +2700,14 @@ function! _YankToFile(reg, show_message)
   endif
 endfunction
 
+" tabline {{{ --------------------------------------------------------------------------
+let g:tabline_all_buffers = []        " tablineで管理する全バッファのリスト
+let g:tabline_visible_buffers = []    " 今表示しているバッファのリスト
+
 " tablineに表示する可能性のあるバッファの情報を集める
 function! _UpdateBufferList()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-  let ret = copy(g:all_buffers)
+  let ret = copy(g:tabline_all_buffers)
   for bufnum in bufnums
     let origname = bufname(bufnum)
     let disp = substitute(origname, '.*/', '', '')
@@ -2729,7 +2733,7 @@ function! _UpdateBufferList()
       call add(ret, bufinfo)
     endif
   endfor
-  let g:all_buffers = ret
+  let g:tabline_all_buffers = ret
   return ret
 endfunction
 
@@ -2747,32 +2751,30 @@ function! _BufListToTabLine(buflist, curbufnr)
   return join(a, "|")
 endfunction
 
-let g:all_buffers = []
-let g:tabline_current_visible_buffers = []
 function! _MyTabLine()
   let curbufnr = bufnr("%")
 
   " 非表示バッファがリストに含まれていたら削除する（NERDTreeなど、後からbuflistedをセットした場合に起こりうる）
   let i = 0
-  for buf in g:all_buffers
+  for buf in g:tabline_all_buffers
     if !buflisted(buf["num"])
-      call remove(g:all_buffers, i)
+      call remove(g:tabline_all_buffers, i)
     endif
     let i += 1
   endfor
   " 非表示バッファがリストに含まれていたら削除する（NERDTreeなど、後からbuflistedをセットした場合に起こりうる）
   let i = 0
-  for buf in g:tabline_current_visible_buffers
+  for buf in g:tabline_visible_buffers
     if !buflisted(buf["num"])
-      call remove(g:tabline_current_visible_buffers, i)
+      call remove(g:tabline_visible_buffers, i)
     endif
     let i += 1
   endfor
 
   " 可能な場合は表示順が変わらず、カレントバッファのハイライトだけが変わるようにする
-  for buf in g:tabline_current_visible_buffers
+  for buf in g:tabline_visible_buffers
     if buf["num"] == curbufnr
-      return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+      return _BufListToTabLine(g:tabline_visible_buffers, curbufnr)
     endif
   endfor
 
@@ -2791,7 +2793,7 @@ function! _MyTabLine()
 
   " カレントバッファがtablineに載せないものであれば、変えないようにする
   if current_i == -1
-    return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+    return _BufListToTabLine(g:tabline_visible_buffers, curbufnr)
   endif
 
   let visible_buffers = []
@@ -2834,7 +2836,7 @@ function! _MyTabLine()
     endif
   endwhile
 
-  let g:tabline_current_visible_buffers = visible_buffers
+  let g:tabline_visible_buffers = visible_buffers
   return _BufListToTabLine(visible_buffers, curbufnr)
 endfunction
 
@@ -2844,7 +2846,6 @@ function! _UpdateShowTabline()
   else
     set showtabline=0
   endif
-  "let g:tabline_current_visible_buffers = []
 endfunction
 
 augroup TabLine
@@ -2857,14 +2858,15 @@ nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
 nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
 nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
+" tabline }}} --------------------------------------------------------------------------
 
 " バッファの順番を入れ替える
 function! _MoveBufferTab(delta) abort
   let curbufnr = bufnr("%")
 
-  let len = len(g:all_buffers)
+  let len = len(g:tabline_all_buffers)
   for j in range(len)
-    let buf = g:all_buffers[j]
+    let buf = g:tabline_all_buffers[j]
     if buf["num"] == curbufnr
       if j + a:delta < 0
         let k = len - 1
@@ -2873,16 +2875,16 @@ function! _MoveBufferTab(delta) abort
       else
         let k = j + a:delta
       endif
-      let tmp = g:all_buffers[j]
-      let g:all_buffers[j] = g:all_buffers[k]
-      let g:all_buffers[k] = tmp
+      let tmp = g:tabline_all_buffers[j]
+      let g:tabline_all_buffers[j] = g:tabline_all_buffers[k]
+      let g:tabline_all_buffers[k] = tmp
       break
     endif
   endfor
 
-  let len = len(g:tabline_current_visible_buffers)
+  let len = len(g:tabline_visible_buffers)
   for i in range(len)
-    let buf = g:tabline_current_visible_buffers[i]
+    let buf = g:tabline_visible_buffers[i]
     if buf["num"] == curbufnr
       if i + a:delta < 0
         let j = len - 1
@@ -2891,9 +2893,9 @@ function! _MoveBufferTab(delta) abort
       else
         let j = i + a:delta
       endif
-      let tmp = g:tabline_current_visible_buffers[i]
-      let g:tabline_current_visible_buffers[i] = g:tabline_current_visible_buffers[j]
-      let g:tabline_current_visible_buffers[j] = tmp
+      let tmp = g:tabline_visible_buffers[i]
+      let g:tabline_visible_buffers[i] = g:tabline_visible_buffers[j]
+      let g:tabline_visible_buffers[j] = tmp
       " redraw
       "set showtabline=0
       set showtabline=2
@@ -2906,17 +2908,17 @@ endfunction
 function! _SwitchBufferTab(delta) abort
   let curbufnr = bufnr("%")
 
-  for i in range(len(g:all_buffers))
-    let buf = g:all_buffers[i]
+  for i in range(len(g:tabline_all_buffers))
+    let buf = g:tabline_all_buffers[i]
     if buf["num"] == curbufnr
-      if i + a:delta >= len(g:all_buffers)
+      if i + a:delta >= len(g:tabline_all_buffers)
         let j = 0
       elseif i + a:delta < 0
-        let j = len(g:all_buffers) - 1
+        let j = len(g:tabline_all_buffers) - 1
       else
         let j = i + a:delta
       endif
-      exe "b" . g:all_buffers[j]["num"]
+      exe "b" . g:tabline_all_buffers[j]["num"]
       return
     endif
   endfor
