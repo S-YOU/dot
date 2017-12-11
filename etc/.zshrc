@@ -145,6 +145,7 @@ if is-at-least 4.3.11; then
 fi
 
 source $DOT/etc/zsh/key-bindings.zsh
+bindkey '^S' fzf-file-widget
 
 
 #-----------------------------------------------------------------------------
