@@ -2703,7 +2703,7 @@ endfunction
 " tablineに表示する可能性のあるバッファの情報を集める
 function! _GetBuffersForTabLine()
   let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-  let ret = g:tabline_current_visible_buffers
+  let ret = copy(g:tabline_current_visible_buffers)
   for bufnum in bufnums
     let origname = bufname(bufnum)
     let disp = substitute(origname, '.*/', '', '')
@@ -2846,8 +2846,8 @@ augroup END
 
 nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
-nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count)<CR>
-nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count)<CR>
+nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
+nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
 
 " バッファの順番を入れ替える
 function! _MoveBufferTab(delta) abort
