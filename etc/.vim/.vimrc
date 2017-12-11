@@ -384,10 +384,6 @@ nmap caa vaac
 
 
 " バッファ・ウィンドウ ----------------------------------------------
-"nnoremap <silent> <space>h :call BufRing_Back()<CR>
-"nnoremap <silent> <space>h :call BufRing_Back()<CR>
-nnoremap <silent> <space>h :<C-u>bp<CR>
-nnoremap <silent> <space>l :<C-u>bn<CR>
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
 nnoremap <space>I :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPMRUFiles<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
@@ -2821,6 +2817,54 @@ augroup TabLine
   au BufNewFile,BufReadPost * call _UpdateShowTabline()
   au BufDelete * call _UpdateShowTabline()
 augroup END
+
+nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
+nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
+nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1)<CR>
+nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1)<CR>
+
+" バッファの順番を入れ替える
+function! _MoveBufferTab(delta) abort
+  let curbufnr = bufnr("%")
+
+  for i in range(len(g:tabline_current_visible_buffers))
+    let buf = g:tabline_current_visible_buffers[i]
+    if buf["num"] == curbufnr
+      let tmp = g:tabline_current_visible_buffers[i]
+      let g:tabline_current_visible_buffers[i] = g:tabline_current_visible_buffers[i + a:delta]
+      let g:tabline_current_visible_buffers[i + a:delta] = tmp
+      " redraw
+      set showtabline=0
+      set showtabline=2
+      return
+    endif
+  endfor
+endfunction
+
+" :bp :bn の代わり
+function! _SwitchBufferTab(delta) abort
+  let curbufnr = bufnr("%")
+
+  for i in range(len(g:tabline_current_visible_buffers))
+    let buf = g:tabline_current_visible_buffers[i]
+    if buf["num"] == curbufnr
+      if i + a:delta >= len(g:tabline_current_visible_buffers)
+        let j = 0
+      elseif i + a:delta < 0
+        let j = len(g:tabline_current_visible_buffers) - 1
+      else
+        let j = i + a:delta
+      endif
+      exe "b" . g:tabline_current_visible_buffers[j]["num"]
+      return
+    endif
+  endfor
+  if a:delta > 0
+    bn
+  else
+    bp
+  endif
+endfunction
 
 function! _SaveSelectionToFile(filename) abort
   silent normal! gv"xy
