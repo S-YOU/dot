@@ -2718,6 +2718,7 @@ function! _UpdateBufferList()
     endif
     let bufinfo = {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)}
 
+    " バッファがリネームされている可能性があるので、既存のデータを更新する
     let found_i = -1
     let i = 0
     for buf in ret
@@ -2732,6 +2733,21 @@ function! _UpdateBufferList()
     else
       call add(ret, bufinfo)
     endif
+
+    " バッファがリネームされている可能性があるので、既存のデータを更新する
+    let found_i2 = -1
+    let i = 0
+    for buf in g:tabline_visible_buffers
+      if buf["num"] == bufnum
+        let found_i2 = i
+        break
+      endif
+      let i += 1
+    endfor
+    if found_i2 >= 0
+      let g:tabline_visible_buffers[found_i2] = bufinfo
+    endif
+
   endfor
   let g:tabline_all_buffers = ret
   return ret
