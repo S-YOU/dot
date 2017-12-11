@@ -70,10 +70,13 @@ autoload -Uz compinit && compinit -u
 zstyle ':completion:*' menu select 
 zmodload zsh/complist
 bindkey -M menuselect '^M' .accept-line
+bindkey -M menuselect '^D' accept-and-infer-next-history
 bindkey -M menuselect '^F' forward-char
 bindkey -M menuselect '^B' backward-char
 bindkey -M menuselect '^P' up-line-or-history
 bindkey -M menuselect '^N' down-line-or-history
+bindkey -M menuselect '^J' up-line-or-history
+bindkey -M menuselect '^K' down-line-or-history
 
 #compctl -M 'm:{a-z}={A-Z}'	# 大文字小文字を区別しない
 # 大文字小文字を区別しない。
@@ -162,6 +165,30 @@ if [ "$SELECTOR" != "" ]; then
     zle -N select-history
     bindkey '^r' select-history
 fi
+
+function delete-char-or-menu-complete() {
+    if [ $CURSOR = $#BUFFER ]; then
+        zle menu-complete
+    else
+        zle delete-char
+    fi
+}
+#function delete-char-or-menu-complete() {
+#    if [ $CURSOR = $#BUFFER ]; then
+#        if [ "$DELETE_CHAR_OR_MENU_COMPLETE_SECOND" = 1 ]; then
+#            DELETE_CHAR_OR_MENU_COMPLETE_SECOND=0
+#            zle menu-complete
+#        else
+#            DELETE_CHAR_OR_MENU_COMPLETE_SECOND=1
+#            zle list-choices
+#        fi
+#    else
+#        DELETE_CHAR_OR_MENU_COMPLETE_SECOND=0
+#        zle delete-char
+#    fi
+#}
+zle -N delete-char-or-menu-complete
+bindkey '^D' delete-char-or-menu-complete
 
 
 #-----------------------------------------------------------------------------

@@ -37,7 +37,10 @@ hi DiffText             cterm=None              ctermfg=7               ctermbg=
 hi Directory            cterm=None              ctermfg=blue            ctermbg=None
 hi Error                cterm=None              ctermfg=white           ctermbg=cyan
 hi ErrorMsg             cterm=None              ctermfg=16              ctermbg=217
-hi Folded               cterm=None              ctermfg=232             ctermbg=189
+hi Folded               cterm=None              ctermfg=232             ctermbg=255
+hi TabLineSel           cterm=bold                                      ctermbg=190
+hi TabLineFill                                  ctermfg=252             ctermbg=0
+
 hi Function             cterm=None              ctermfg=232             ctermbg=None
 hi FunctionName cterm=bold ctermfg=93 ctermbg=none
 
@@ -83,14 +86,11 @@ hi phpVarSelector       cterm=None              ctermfg=129             ctermbg=
 " Markdown
 hi! def link markdownError    Normal
 hi! def link markdownItalic   Normal
-hi markdownHeadingDelimiter cterm=Bold          ctermfg=None            ctermbg=190
-hi markdownH1           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownH2           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownH3           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownH4           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownH5           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownH6           cterm=Bold              ctermfg=None            ctermbg=190
-hi markdownCode         cterm=None              ctermfg=5               ctermbg=None
+for name in ['markdownHeadingDelimiter'] + map(range(1, 6), "'markdownH' . v:val")
+  exe "hi " . name . " cterm=underline         ctermfg=198               ctermbg=None"
+endfor
+hi markdownCode             cterm=None              ctermfg=28               ctermbg=None
+hi markdownLinkText         cterm=underline         ctermfg=4                ctermbg=None
 
 hi pythonTripleString cterm=Bold ctermfg=28
 hi pythonTripleQuotes cterm=Bold ctermfg=28

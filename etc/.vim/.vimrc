@@ -34,11 +34,10 @@ set runtimepath^=~/.vim/bundle/nerdtree
 set runtimepath^=~/.vim/bundle/vim-go
 set runtimepath^=~/.vim/bundle/editorconfig-vim-master
 set runtimepath^=~/.vim/bundle/vim-indexed-search
-"set runtimepath^=~/.vim/bundle/minibufexpl.vim-6.5.2
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
-set timeoutlen=300
+set timeoutlen=2000
 set updatetime=500
 set viminfo='600,s100,h
 set diffopt=filler,iwhite
@@ -65,47 +64,6 @@ endif
 
 " 日本語  ---------------------------------------------------------
 set fencs=ucs-bom,utf-8,iso-2022-jp-3,eucjp-ms,cp932,latin1
-"if &encoding !=# 'utf-8'
-"  set encoding=japan
-"  set fileencoding=japan
-"endif
-"if has('iconv')
-"  let s:enc_euc = 'euc-jp'
-"  let s:enc_jis = 'iso-2022-jp'
-"  if iconv("\x87\x64\x87\x6a", 'cp932', 'eucjp-ms') ==# "\xad\xc5\xad\xcb"
-"    let s:enc_euc = 'eucjp-ms'
-"    let s:enc_jis = 'iso-2022-jp-3'
-"  elseif iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
-"    let s:enc_euc = 'euc-jisx0213'
-"    let s:enc_jis = 'iso-2022-jp-3'
-"  endif
-"  if &encoding ==# 'utf-8'
-"    let s:fileencodings_default = &fileencodings
-"    if has('mac')
-"      let &fileencodings = s:enc_jis .','. s:enc_euc
-"      let &fileencodings = &fileencodings .','. s:fileencodings_default
-"    else
-"      let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
-"      let &fileencodings = &fileencodings .','. s:fileencodings_default
-"    endif
-"    unlet s:fileencodings_default
-"  else
-"    let &fileencodings = &fileencodings .','. s:enc_jis
-"    set fileencodings+=utf-8,ucs-2le,ucs-2
-"    if &encoding =~# '^\(euc-jp\|euc-jisx0213\|eucjp-ms\)$'
-"      set fileencodings+=cp932
-"      set fileencodings-=euc-jp
-"      set fileencodings-=euc-jisx0213
-"      set fileencodings-=eucjp-ms
-"      let &encoding = s:enc_euc
-"      let &fileencoding = s:enc_euc
-"    else
-"      let &fileencodings = &fileencodings .','. s:enc_euc
-"    endif
-"  endif
-"  unlet s:enc_euc
-"  unlet s:enc_jis
-"endif
 set ambiwidth=double
 
 " ファイル --------------------------------------------------------
@@ -163,6 +121,7 @@ set nolist listchars=tab:^\
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
 set statusline=%n:\ %F:%l,%v\ %p%%\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}\ %02B
+set tabline=%!_MyTabLine()
 set showcmd
 set report=0
 set cmdheight=1
@@ -425,12 +384,13 @@ nmap caa vaac
 
 
 " バッファ・ウィンドウ ----------------------------------------------
-nnoremap <silent> <space>h :call BufRing_Back()<CR>
-nnoremap <silent> <space>l :call BufRing_Forward()<CR>
-"nnoremap <silent> <space>l :bn<CR>
+"nnoremap <silent> <space>h :call BufRing_Back()<CR>
+"nnoremap <silent> <space>h :call BufRing_Back()<CR>
+nnoremap <silent> <space>h :<C-u>bp<CR>
+nnoremap <silent> <space>l :<C-u>bn<CR>
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
+nnoremap <space>I :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPMRUFiles<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
-nnoremap <silent> <C-x><C-d> :<C-u>MBEToggle<CR>
 nnoremap <silent> <expr> <tab> (getline(".")[col(".")-1]==' ' ? "s\<tab>\<Esc>l" : "i\<tab>\<Esc>l")
 nnoremap <silent> <space><space> i<space><Esc>l
 "noremap gf gF
@@ -469,21 +429,23 @@ nnoremap <silent> <F4> :<C-u>runtime macros/vimsh.vim<CR>
 nnoremap <silent> <Space>r :<C-u>call ExecSystem('last')<CR>
 nnoremap <silent> <Space>a :<C-u>SetAutoExec<CR>
 nnoremap <silent> <Space>R :<C-u>call ExecSystem('input')<CR>
+xnoremap <silent> <Space>r <C-c>:<C-u>call EvalSelection()<CR>
 
 " 機能トグル
 command! ShowTabstop echo (&list ? 'list' : 'nolist') (&et ? 'expandtab' : 'noexpandtab') 'ts=' . &ts . ' sts=' . &sts . ' sw=' . &sw
-nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-nnoremap <C-l>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
-nnoremap <C-l>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
-nnoremap <C-l>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
-nnoremap <C-l><C-e> :set expandtab!<CR>:set expandtab?<CR>
-nnoremap <C-l><C-f> :set foldenable!<CR>:set foldenable?<CR>
-nnoremap <C-l><C-n> :windo set number!<CR>:set number?<CR>
-nnoremap <C-l><C-w> :set wrap!<CR>:set wrap?<CR>
-nnoremap <C-l><C-u> :set cuc!<CR>
-nnoremap <silent> <space>* :<C-u>let @/ = '\<' . expand("\<cword\>") . '\>'<CR>:set hls<CR>
-"nnoremap <C-l> :noh<CR><C-l>
+nnoremap <C-h> :bp<CR>
+nnoremap <C-l> :bn<CR>
+"nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
+"nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
+nnoremap <C-@>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
+nnoremap <C-@>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
+nnoremap <C-@>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
+nnoremap <C-@><C-e> :set expandtab!<CR>:set expandtab?<CR>
+nnoremap <C-@><C-f> :set foldenable!<CR>:set foldenable?<CR>
+nnoremap <C-@><C-n> :windo set number!<CR>:set number?<CR>
+nnoremap <C-@><C-w> :set wrap!<CR>:set wrap?<CR>
+nnoremap <C-@><C-u> :set cuc!<CR>
+nnoremap <C-@><C-@> :noh<CR>
 
 " その他 ----------------------------------------------------------- 
 
@@ -630,25 +592,43 @@ endfunction
 
 command! MRU CtrlPMRU
 
-command! -nargs=+ Grep silent grep <args> | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
+command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
+" 読み込まれているバッファを対象にgrepする
+nnoremap <Space>B :<C-u>Brep<Space><C-r><C-w>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
-function! _Bufgrep(query)
+function! _Bufgrep(...) abort
+  if a:0 == 1
+    let query = a:1
+    let ignorecase = 0
+  else
+    if a:1 == '-i'
+      let query = a:2
+      let ignorecase = 1
+    else
+      call _Echo("ErrorMsg", "Usage: :Brep [-i] query")
+      return
+    endif
+  endif
+  let query = substitute(query, '/', '\\/', 'g')
+
   cclose
   call setqflist([])
   let bn = bufnr("%")
-  exe "sil! bufdo! vimgrepadd /" . a:query . "/j %"
+  " \C により大文字小文字を区別させる
+  exe "sil! bufdo! vimgrepadd /" . (ignorecase ? '\c' : '\C') . query . "/jg %"
   let qflen = len(getqflist())
   if qflen == 0
     sil! exe "b" . bn
     call _Echo("WarningMsg","検索結果: 0件")
   else
     cfirst
-    cw
-    let winheight = qflen > 10 ? 10 : qflen
-    exe winheight . "wincmd _"
-    redraw!
+    "cw
+    "let winheight = qflen > 10 ? 10 : qflen
+    "exe winheight . "wincmd _"
+    "redraw!
   endif
 endfunction
+
 " 全バッファに対して置換する
 " 使い方: Replace s@hoge@moge@
 " bufdo s@hoge@moge@gce との違いは、unlistedなバッファも対象にすること
@@ -722,6 +702,7 @@ endfunction
 
 call DefineCommandAbbrev('brep', 'Brep')
 call DefineCommandAbbrev('mru', 'MRU')
+call DefineCommandAbbrev('bd', 'Bclose')
 
 
 
@@ -955,7 +936,6 @@ augroup MyAutocmd
   au FileType php         call PHP_Setting()
   au FileType python      call Python_Setting()
   au FileType qf call AdjustWindowHeight(1)
-  au FileType qf call _Echo("MoreMsg", "F2 F3で移動できます")
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
   au FileType qf setlocal nobuflisted
   au FileType qf syn match qfError "warning" contained
@@ -1481,7 +1461,9 @@ function! _BufcloseCloseIt()
   endif
 
   if buflisted(l:currentBufNum)
-    execute("bdelete" . l:currentBufNum)
+    " 開き直したとき、新しいバッファ番号が振られるように、bwipeを使う
+    "execute("bdelete" . l:currentBufNum)
+    execute("bwipe" . l:currentBufNum)
   endif
 endfunction
 
@@ -1648,6 +1630,8 @@ onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 0, 1, 0)<cr>
 onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
 xnoremap <silent> +  <esc>:call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
 xnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
+nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 1, 1, 0)<cr>^
+nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 1, 1, 0)<cr>^
 " カレント行から同じインデントの行までを折りたたむ
 nmap <silent> zq v+zf
 
@@ -2118,9 +2102,13 @@ function! Rename(name, bang)
   endif
 endfunction
 
-function! _GetExecSystemDefault()
-  let filepath = expand("%:p")
-  let filename = expand("%")
+function! _GetExecSystemDefault(...)
+  if a:0 == 0
+    let filepath = expand("%:p")
+    let filename = expand("%")
+  else
+    let filename = a:1
+  endif
   let ret = ""
   if 0
   elseif &ft ==? "c" || &ft ==? "cpp"
@@ -2164,11 +2152,13 @@ function! ExecSystem(mode, ...)
 
   let mode = a:mode
 
-  if filepath == ""
-    echomsg "ファイル名がついていません"
-    return
-  elseif (!filereadable(filepath) || getbufvar(bufnr, "&modified")) && &buftype != "nofile"
-    w
+  if mode != "selection"
+    if filepath == ""
+      echomsg "ファイル名がついていません"
+      return
+    elseif (!filereadable(filepath) || getbufvar(bufnr, "&modified")) && &buftype != "nofile"
+      w
+    endif
   endif
 
   " コマンドを入力
@@ -2187,19 +2177,24 @@ function! ExecSystem(mode, ...)
     let cmd = b:_exec_system_last_cmd
   elseif mode == 'argument'  " 関数の引数でコマンドを指定
     let cmd = a:000[0]
+  elseif mode == 'selection'
+    let cmd = _GetExecSystemDefault(expand("~/tmp/.EvalSelection.tmp"))
   else
     echomsg "ExecSystem: Invalid argument [" . a:mode . "]"
     return
   endif
 
-  if getbufvar(bufnr, "auto_exec_count") == ""
-    call setbufvar(bufnr, "auto_exec_count", 0)
+  if mode != "selection"
+    if getbufvar(bufnr, "auto_exec_count") == ""
+      call setbufvar(bufnr, "auto_exec_count", 0)
+    endif
+    call setbufvar(bufnr, "auto_exec_count", getbufvar(bufnr, "auto_exec_count") + 1)
   endif
-  call setbufvar(bufnr, "auto_exec_count", getbufvar(bufnr, "auto_exec_count") + 1)
+
   if cmd != ""
     let b:_exec_system_last_cmd = cmd
 
-    call ScratchBuffer("_out_", "split", "hide") | %d
+    call ScratchBuffer("_out_", "split", "hide") | silent %d
     setlocal nobuflisted
     exe "chdir " . dir
     sil! exec cmd
@@ -2221,13 +2216,15 @@ function! ExecSystem(mode, ...)
   exe winnr . "wincmd w"
   redraw
 
-  if getbufvar(bufnr, "auto_exec_count") == 1
-    if confirm("保存時に自動実行するようにしますか？", "&Y\n&N") == 1
-      let b:enable_auto_exec_system = 1
+  if mode != "selection"
+    if getbufvar(bufnr, "auto_exec_count") == 1
+      if confirm("保存時に自動実行するようにしますか？", "&Y\n&N") == 1
+        let b:enable_auto_exec_system = 1
+      endif
     endif
-  endif
-  if !exists("b:enable_auto_exec_system")
-    let b:enable_auto_exec_system = 0
+    if !exists("b:enable_auto_exec_system")
+      let b:enable_auto_exec_system = 0
+    endif
   endif
 endfunction
 
@@ -2457,118 +2454,11 @@ function! _ShowNERDTree()
     exe (idx + 1) . "wincmd w"
   else
     NERDTree
-    call _MyBE_Init()
+    "call _MyBE_Init()
     wincmd k
   endif
 endfunction
 
-function! _MyBE_Init() abort
-  call SingletonBuffer("--Buffers--", "10split")
-  set buftype=nofile nobuflisted
-  setlocal statusline=--Buffers--
-  setlocal nonumber
-  setlocal winfixheight
-  call _MyBE_Update("", bufnr("%"))
-  nnoremap <buffer> d :<C-u>call _MyBE_Delete()<CR>
-  nnoremap <buffer> R :<C-u>call _MyBE_Update("", bufnr("%"))<CR>
-  nnoremap <buffer> <Enter> :<C-u>call _MyBE_Open()<CR>
-  nnoremap <buffer> <C-@> :<C-u>call _MyBE_Preview()<CR>
-  nnoremap <buffer> <C-p> k:<C-u>call _MyBE_Preview()<CR>
-  nnoremap <buffer> <C-n> j:<C-u>call _MyBE_Preview()<CR>
-  syn match MyBE_Current /^%/ | hi MyBE_Current ctermfg=197
-endfunction
-
-function! _MyBE_Update(bufnr_to_be_deleted, current_bufnr) abort
-  let orig_winnr = winnr()
-  for w in range(1, winnr("$"))
-    try
-      exe "noautocmd " . w . "wincmd w"
-    catch /E788/
-      return
-    endtry
-    if bufname("%") == "--Buffers--"
-      let current_line = ""
-      silent! %d _
-      let buflist = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
-      let line_number = 0
-      for bufnr in buflist
-        if bufnr != a:bufnr_to_be_deleted
-          let line_number += 1
-          " basenameだけ表示する
-          " もし必要なら、basenameが同じファイルがあるときだけパスを表示するようにする
-          "call append(line(".")-1, bufnr . ":" . substitute(bufname(bufnr), '.*/', '', ''))
-          let bufname = bufname(bufnr)
-          if bufname == ""
-            let bufname = "[No Name]"
-          else
-            let bufname = substitute(bufname(bufnr), '.*/', '', '')
-          endif
-          if bufnr == a:current_bufnr
-            let current_line = line_number
-          endif
-          call append(line(".")-1, (bufnr == a:current_bufnr ? "% " : "  ") . bufname . "\t(" . bufnr . ")")
-        else
-          let g:hoge = line_number
-          let current_line = line_number
-        endif
-      endfor
-      silent! $d _
-      if current_line != ""
-        exe current_line
-      endif
-    endif
-  endfor
-  exe "noautocmd " . orig_winnr . "wincmd w"
-endfunction
-"nnoremap <Space>b :<C-u>call _MyBE_Switch()<CR>
-nnoremap <Space>b :<C-u>call SingletonBuffer("--Buffers--", "32vs")<CR>
-
-function! _MyBE_Switch() abort
-  let windows = WindowContains(GetBufferNumberByName("--Buffers--", 0))
-  if len(windows) > 0
-    let winnr = windows[0]
-    exe winnr . "wincmd w"
-  endif
-endfunction
-
-" 直前のウィンドウを取得するもっといい方法はないか？
-function! _MyBE_Open() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  noautocmd wincmd h
-  exe "b " . bufnr
-endfunction
-
-function! _MyBE_Preview() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  noautocmd wincmd h
-  exe "b " . bufnr
-  noautocmd wincmd p
-endfunction
-
-function! _MyBE_Delete() abort
-  let bufnr = _MyBE_GetBufferNumberFromCurrentLine()
-  let mybe_winnr = winnr()
-  while bufwinnr(bufnr) != -1
-    exe bufwinnr(bufnr) . "wincmd w"
-    bp
-    if bufnr(".") == bufnr
-      break
-    endif
-  endwhile
-  silent exe 'bd ' . bufnr
-endfunction
-
-augroup MyBE
-  au!
-  au BufEnter * if buflisted(bufnr("%")) | call _MyBE_Update("", bufnr("%")) | endif
-  au BufDelete * call _MyBE_Update(expand("<abuf>"), "")
-augroup END
-
-function! _MyBE_GetBufferNumberFromCurrentLine()
-  let line = getline(".")
-  let line = substitute(line, '.*(\(\d\+\))', '\1', 'g')
-  return str2nr(line)
-endfunction
 
 " markdown で```rbの記法を有効にする
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'ruby', 'rb=ruby', 'javascript', 'js=javascript', 'php']
@@ -2812,6 +2702,146 @@ function! _YankToFile(reg, show_message)
     "echon msg2
   endif
 endfunction
+
+" tablineに表示する可能性のあるバッファの情報を集める
+function! _GetBuffersForTabLine()
+  let bufnums = filter(range(1, bufnr("$")), 'bufexists(v:val) && buflisted(v:val)')
+  let ret = []
+  for bufnum in bufnums
+    let origname = bufname(bufnum)
+    let disp = substitute(origname, '.*/', '', '')
+    if disp == ""
+      let disp = " [No Name] "
+    else
+      let disp = " " . disp . " "
+    endif
+    call add(ret, {"num": bufnum, "disp": disp, "name": origname, "displen": strdisplaywidth(disp)})
+  endfor
+  return ret
+endfunction
+
+" 与えられたバッファのリストをtablineの文字列に変換する
+function! _BufListToTabLine(buflist, curbufnr)
+  let tl = ""
+  let a = []
+  for buf in a:buflist
+    if buf["num"] == a:curbufnr
+      call add(a, "%#TabLineSel#" . buf["disp"] . "%#TabLineFill#")
+    else
+      call add(a, buf["disp"])
+    endif
+  endfor
+  return join(a, "|")
+endfunction
+
+let g:tabline_current_visible_buffers = []
+function! _MyTabLine()
+  let curbufnr = bufnr("%")
+
+  " 可能な場合は表示順が変わらず、カレントバッファのハイライトだけが変わるようにする
+  for buf in g:tabline_current_visible_buffers
+    if buf["num"] == curbufnr
+      return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+    endif
+  endfor
+
+  let lensum = 0
+  let buflist = _GetBuffersForTabLine()
+
+  let current_i = -1
+  let i = 0
+  for buf in buflist
+    let bnum = buf["num"]
+    if bnum == curbufnr
+      let current_i = i
+    endif
+    let i += 1
+  endfor
+
+  " カレントバッファがtablineに載せないものであれば、変えないようにする
+  if current_i == -1
+    return _BufListToTabLine(g:tabline_current_visible_buffers, curbufnr)
+  endif
+
+  let visible_buffers = []
+
+  call add(visible_buffers, buflist[current_i])
+  let lensum = buflist[current_i]["displen"]
+
+  " 1. カレントより前の部分を追加
+  let prev_i = current_i - 1
+  while prev_i % 3 != 1 && prev_i >= 0
+    if lensum + buflist[prev_i]["displen"] < &columns
+      call insert(visible_buffers, buflist[prev_i])
+      let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
+      let prev_i -= 1
+    else
+      break
+    endif
+  endwhile
+
+  " カレントより後の部分を追加
+  let next_i = current_i + 1
+  while next_i < len(buflist)
+    if lensum + buflist[next_i]["displen"] < &columns
+      call add(visible_buffers, buflist[next_i])
+      let lensum += buflist[next_i]["displen"] + 1  " |の分プラス1
+      let next_i += 1
+    else
+      break
+    endif
+  endwhile
+
+  " もしまだスペースが余っているならさらにカレントより前を追加
+  while prev_i >= 0
+    if lensum + buflist[prev_i]["displen"] < &columns
+      call insert(visible_buffers, buflist[prev_i])
+      let lensum += buflist[prev_i]["displen"] + 1  " |の分プラス1
+      let prev_i -= 1
+    else
+      break
+    endif
+  endwhile
+
+  let g:tabline_current_visible_buffers = visible_buffers
+  return _BufListToTabLine(visible_buffers, curbufnr)
+endfunction
+
+function! _UpdateShowTabline()
+  if len(_GetBuffersForTabLine()) >= 2
+    set showtabline=2
+  else
+    set showtabline=0
+  endif
+  let g:tabline_current_visible_buffers = []
+endfunction
+
+augroup TabLine
+  au!
+  au BufNewFile,BufReadPost * call _UpdateShowTabline()
+  au BufDelete * call _UpdateShowTabline()
+augroup END
+
+function! _SaveSelectionToFile(filename) abort
+  silent normal! gv"xy
+  let reg = getreg('x')
+  let lines = split(reg, '\n')
+  call writefile(lines, a:filename)
+  return lines
+endfunction
+
+function! EvalSelection()
+  let ft = &ft
+  let filename = expand("~/tmp/.EvalSelection.tmp")
+  let lines = _SaveSelectionToFile(filename)
+  if ft == "vim"
+    exe "@x\<CR>"
+    call _Echo("Question", "Sourced " . len(lines) . " lines.")
+  else
+    call ExecSystem("selection")
+  endif
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================

@@ -23,7 +23,7 @@
 	# カレントブランチをoriginにプッシュする
 	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`
 	unstage = reset HEAD
-	modify-history = rebase -i origin/master
+	modify-history = rebase -i HEAD~6
 	# masterからの分岐点以降のコミットを表示する
 	new-commits-from-master = log --oneline --graph master..HEAD
 	zip = !git archive --format=zip --prefix=$(basename $(git exec pwd))/ HEAD > $(basename $(git exec pwd))-$(git symbolic-ref --short HEAD).zip
