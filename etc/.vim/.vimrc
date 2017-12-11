@@ -441,7 +441,7 @@ nnoremap <C-@><C-f> :set foldenable!<CR>:set foldenable?<CR>
 nnoremap <C-@><C-n> :windo set number!<CR>:set number?<CR>
 nnoremap <C-@><C-w> :set wrap!<CR>:set wrap?<CR>
 nnoremap <C-@><C-u> :set cuc!<CR>
-nnoremap <C-@><C-@> :noh<CR>
+nnoremap <C-@><C-@> :noh<CR>:redraw!<CR>
 
 " その他 ----------------------------------------------------------- 
 
