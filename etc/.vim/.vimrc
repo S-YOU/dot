@@ -593,35 +593,42 @@ command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | sile
 nnoremap <Space>B :<C-u>Brep<Space><C-r><C-w>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(...) abort
-  if a:0 == 1
-    let query = a:1
-    let ignorecase = 0
-  else
-    if a:1 == '-i'
-      let query = a:2
+  let query = ''
+  let ignorecase = 0
+  let word_wise = 0
+  for arg in a:000
+    if arg == '-i'
       let ignorecase = 1
+    elseif arg == '-w'
+      let word_wise = 1
     else
-      call _Echo("ErrorMsg", "Usage: :Brep [-i] query")
-      return
+      if query == ''
+        let query = arg
+      else
+        let query .= ' ' . arg
+      endif
     endif
-  endif
+  endfor
   let query = substitute(query, '/', '\\/', 'g')
+  if word_wise
+    let query = '\<' . query . '\>'
+  endif
+  if ignorecase
+    let query = '\c' . query
+  else
+    let query = '\C' . query
+  endif
 
   cclose
   call setqflist([])
   let bn = bufnr("%")
-  " \C により大文字小文字を区別させる
-  exe "sil! bufdo! vimgrepadd /" . (ignorecase ? '\c' : '\C') . query . "/jg %"
+  exe "sil! bufdo! vimgrepadd /" . query . "/jg %"
   let qflen = len(getqflist())
   if qflen == 0
     sil! exe "b" . bn
     call _Echo("WarningMsg","検索結果: 0件")
   else
     cfirst
-    "cw
-    "let winheight = qflen > 10 ? 10 : qflen
-    "exe winheight . "wincmd _"
-    "redraw!
   endif
 endfunction
 
@@ -2867,6 +2874,8 @@ nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
 nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
 nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
+nnoremap <silent> <Space>l :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
+nnoremap <silent> <Space>h :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
 " tabline }}} --------------------------------------------------------------------------
 
 " バッファの順番を入れ替える
