@@ -152,7 +152,7 @@ bindkey '^S' fzf-file-widget
 #	プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
-PROMPT='$(exit_status_text)%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}
+PROMPT='$(exit_status_text)%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(get_prompt_gip)
 [%~:%j]# '
 RPROMPT='$(get_vcs_info_msg)'
 
@@ -166,6 +166,12 @@ get_prompt_hostname() {
 
 exit_status_text() {
 	echo "%(?..<%?> )"
+}
+
+get_prompt_gip() {
+    if [ "$PROMPT_NO_GIP" = "" ]; then
+        echo " $(gip)"
+    fi
 }
 
 source $DOT/etc/zsh/mollifier-git-zsh-prompt

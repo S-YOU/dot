@@ -280,3 +280,7 @@ bm() {
             ;;
     esac
 }
+
+gip() {
+    curl -s ipinfo.io | sed -ne '/"ip":/{s/.*: "//; s/".*//; p}'
+}
