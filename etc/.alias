@@ -282,5 +282,5 @@ bm() {
 }
 
 gip() {
-    curl -s ipinfo.io | sed -ne '/"ip":/{s/.*: "//; s/".*//; p}'
+    curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}'
 }
