@@ -1,0 +1,12 @@
+# MarkdownをHTMLに変換する
+# gem install guard guard-shell
+# guard start
+
+#interactor :off
+#logger device: 'guard.log'
+
+guard :shell do
+  watch(/(.*)\.(md|markdown)$/) {|m| `gfm #{m[0]}`}
+end
+
+# vim: set ft=ruby ts=2 sts=2 sw=2 et:
