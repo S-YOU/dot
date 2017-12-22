@@ -432,7 +432,7 @@ command! ShowTabstop echo (&list ? 'list' : 'nolist') (&et ? 'expandtab' : 'noex
 nnoremap <C-h> :bp<CR>
 nnoremap <C-l> :bn<CR>
 "nnoremap <C-l>      :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
-"nnoremap <C-l><C-l> :nohl<CR>:redraw!<CR>:set list!<CR>:ShowTabstop<CR>
+nnoremap <C-@><C-l> :set list!<CR>:ShowTabstop<CR>
 nnoremap <C-@>2     :set ts=2 sts=2 sw=2<CR>:set ts?<CR>
 nnoremap <C-@>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
 nnoremap <C-@>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
