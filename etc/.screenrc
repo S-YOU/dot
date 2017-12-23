@@ -60,6 +60,7 @@ bind H
 bind h eval "hardcopy -h $HOME/hardcopy.txt"
 bind ^k eval "focus up"
 bind ^j eval "focus down"
+bind ^[ eval copy "stuff \^"
 bind ^b eval copy "stuff H"        # C-bだけでコピーモードに入れるようにする
 bind ^u eval copy "stuff M"
 bind ^v eval readbuf "paste ."      # Vimでヤンクしたテキストを貼り付ける
