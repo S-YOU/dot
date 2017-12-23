@@ -1748,6 +1748,12 @@ endfunction
 " Cの場合、[[で十分そう
 function! WhatFunction()
   " 折り畳みが有効の場合、jkによる移動がおかしくなってしまうので、WhatFunctionを無効化する
+  let mode = mode()
+  " ヴィジュアルモード中にこの関数が呼ばれると、showcmdによる選択行数が表示されなくなってしまうので、
+  " ヴィジュアルモードでは無効化する。
+  if mode == "v" || mode == "V"
+    return ""
+  endif
   if &foldenable
     return ""
   endif
