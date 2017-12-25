@@ -7,6 +7,7 @@ require "net/https"
 require "uri"
 
 COLOR_SUCCESS = "\x1b[0;32m"
+COLOR_WARNING = "\x1b[0;33m"
 COLOR_FAILURE = "\x1b[0;31m"
 COLOR_RESET = "\x1b[0m"
 
@@ -18,6 +19,7 @@ def download(list, thread_id, thread_count)
 
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
   Net::HTTP.start(uri.host, uri.port) do |http|
+    count_by_code = Hash.new(0)
     i = thread_id
     started_at = Time.now
     while i < list.length
@@ -26,15 +28,22 @@ def download(list, thread_id, thread_count)
       req["Connection"] = "Keep-Alive"
       res = http.request(req)
 
-      if res.code.to_s[0] == "2"
-        color = COLOR_SUCCESS
-      else
+      count_by_code[res.code.to_s] += 1
+
+      case res.code.to_s[0]
+      when "5"
         color = COLOR_FAILURE
+      when "4"
+        color = COLOR_WARNING
+      else
+        color = COLOR_SUCCESS
       end
-      puts "#{color}#{Time.now - started_at}\tstatus=#{res.code}\t[#{i}]\t#{url}#{COLOR_RESET}\n"
+      percent = ((i / list.length.to_f) * 100).to_i
+      puts "#{color}elapsed:#{Time.now - started_at}\tstatus:#{res.code}\ti:#{i}\tpercent:#{percent}\turl:#{url}#{COLOR_RESET}\n"
 
       i += thread_count
     end
+    Thread.current[:result] = count_by_code
   end
 end
 
@@ -47,6 +56,14 @@ def download_list(list, thread_count)
   end
 
   threads.each {|t| t.join}
+
+  count_by_code = Hash.new(0)
+  threads.each do |t|
+    t[:result].each do |k, v|
+      count_by_code[k] += v
+    end
+  end
+  return count_by_code
 end
 
 def main
@@ -64,8 +81,10 @@ def main
   list = File.readlines(url_file)
 
   started_at = Time.now
-  download_list(list, thread_count)
-  puts "Elapsed: #{Time.now - started_at} seconds"
+  count_by_code = download_list(list, thread_count)
+  puts "完了。所要時間: #{Time.now - started_at} seconds"
+  puts "総リクエスト数: #{count_by_code.values.reduce(0) {|s, x| s + x}}"
+  p count_by_code
 end
 
 main
