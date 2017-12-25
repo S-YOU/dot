@@ -107,6 +107,7 @@ hi MBEVisibleActiveChanged ctermfg=None ctermbg=None
 
 hi xmlTagName ctermfg=5 cterm=bold
 hi xmlEndTag ctermfg=5 cterm=bold
+hi link xmlCommentError xmlComment
 
 "Cursor		カーソル下の文字
 "CursorIM	Cursorと同じだが、IMEモードにいるとき使われる|CursorIM|。
