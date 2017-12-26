@@ -1,21 +1,32 @@
 #=============================================================================
 #   テキストファイルからURLのリストを読み込み、
-#   マルチスレッドでhttp getするスクリプト
+#   マルチスレッドでhttp getするスクリプト。
+#
+#   URLのリストは全て同一ホストでなければならない。
 #=============================================================================
 
 require "net/https"
 require "uri"
 
-COLOR_SUCCESS = "\x1b[0;32m"
-COLOR_WARNING = "\x1b[0;33m"
-COLOR_FAILURE = "\x1b[0;31m"
-COLOR_RESET = "\x1b[0m"
+COLOR_RED     = "\x1b[0;31m"
+COLOR_GREEN   = "\x1b[0;32m"
+COLOR_YELLOW  = "\x1b[0;33m"
+COLOR_BLUE    = "\x1b[0;34m"
+COLOR_MAGENTA = "\x1b[0;35m"
+COLOR_GYAN    = "\x1b[0;36m"
+COLOR_RESET   = "\x1b[0m"
+
+COLOR_SUCCESS = COLOR_GREEN
+COLOR_WARNING = COLOR_YELLOW
+COLOR_FAILURE = COLOR_RED
 
 def download(list, thread_id, thread_count)
   if list.length == 0
     return
   end
-  uri = URI.parse(list.first.chomp)
+
+  str_url = list.first.chomp
+  uri = URI.parse(str_url)
 
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
   Net::HTTP.start(uri.host, uri.port) do |http|
@@ -45,6 +56,8 @@ def download(list, thread_id, thread_count)
     end
     Thread.current[:result] = count_by_code
   end
+rescue
+  puts "#{COLOR_FAILURE}Error: #{$!.message}#{COLOR_RESET}"
 end
 
 def download_list(list, thread_count)
