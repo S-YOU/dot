@@ -1008,7 +1008,11 @@ endfunction
 function! _MySyntax()
   syn keyword Return    return exit         | hi Return         cterm=bold      ctermfg=1 ctermbg=None gui=bold guifg=red
   syn keyword Break     break last          | hi Break          cterm=None      ctermfg=1 ctermbg=None gui=None guifg=#0000ff
-  syn keyword Continue  continue next       | hi Continue       cterm=None      ctermfg=1 ctermbg=None gui=None guifg=#007F7F
+  if &ft == "ruby"
+    syn keyword Continue  continue next       | hi Continue       cterm=None      ctermfg=1 ctermbg=None gui=None guifg=#007F7F
+  else
+    syn keyword Continue  continue            | hi Continue       cterm=None      ctermfg=1 ctermbg=None gui=None guifg=#007F7F
+  endif
   syn keyword Debug     DEBUG debug dprintf | hi Debug          cterm=underline ctermfg=1 ctermbg=None gui=bold guifg=#ff00ff guibg=#ffffff
   syn keyword Fallthrough fallthrough       | hi Fallthrough    cterm=None      ctermfg=3 ctermbg=None gui=underline guifg=red 
   syn keyword cppPublic   public            | hi cppPublic      cterm=None      ctermfg=2 ctermbg=None gui=None guifg=#0000ff

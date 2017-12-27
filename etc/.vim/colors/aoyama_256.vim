@@ -75,6 +75,9 @@ hi Visual               cterm=None              ctermfg=None            ctermbg=
 hi WarningMsg           cterm=None              ctermfg=232             ctermbg=220
 hi WildMenu             cterm=None              ctermfg=241             ctermbg=229
 
+" go
+hi goSpaceError ctermbg=None
+
 " html
 hi htmlH1               cterm=None              ctermfg=None            ctermbg=None
 hi htmlPreProc          cterm=None              ctermfg=0               ctermbg=43
@@ -92,6 +95,7 @@ endfor
 hi markdownCode             cterm=None              ctermfg=28               ctermbg=None
 hi markdownLinkText         cterm=underline         ctermfg=4                ctermbg=None
 
+" python
 hi pythonTripleString cterm=Bold ctermfg=28
 hi pythonTripleQuotes cterm=Bold ctermfg=28
 

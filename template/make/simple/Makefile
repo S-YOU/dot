@@ -6,8 +6,8 @@ LDFLAGS	=
 
 
 # ソースファイル
-SRCS	= $(wildcard *.c)
-OBJ		= $(SRCS:%.c=%.o)
+SRC 	= $(wildcard *.c)
+OBJ		= $(SRC:%.c=%.o)
 
 all: $(BIN)
 
@@ -18,7 +18,7 @@ $(BIN): $(OBJ)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run: all
-	$(BIN)
+	@$(BIN)
 
 debug: all
 	gdb $(BIN)
