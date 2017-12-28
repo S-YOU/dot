@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -e
+
+tmp="/tmp/ec2start.tmp.$$"
+
+aws ec2 start-instances --instance-ids $1
+
+# runningになるまで待つ
+while true; do
+    sleep 3
+    aws ec2 describe-instances --instance-ids $1 \
+        | jq -r '.Reservations[].Instances[].State.Name, .Reservations[].Instances[].NetworkInterfaces[].Association.PublicIp' | tee "$tmp"
+    status=$(sed -ne '1p' < $tmp)
+    public_ip=$(sed -ne '2p' < $tmp)
+    if [ "$status" = "running" ]; then
+        break
+    fi
+done
+
+# ssh接続可能になるまで待つ
+while true; do
+    echo "Waiting for sshd to start on $public_ip"
+    echo -n "" > /dev/tcp/$public_ip/22
+    if [ $? = 0 ]; then
+        echo "ssh ok"
+        break
+    fi
+    sleep 1
+done
+
+rm -f "$tmp"
