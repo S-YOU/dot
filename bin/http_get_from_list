@@ -5,8 +5,17 @@
 #   テキストファイルからURLのリストを読み込み、
 #   マルチスレッドでhttp getするスクリプト。
 #
-#   URLのリストは全て同一ホストでなければならない。
+#   URLリストファイルの仕様
+#   ・タブ区切り
+#     1. URL（必須）
+#     2. ステータスコードの期待値（省略可）
+#   ・URLは全て同一ホストでなければならない
 #=============================================================================
+
+URL_FILE_EXAMPLE =<<EOF
+http://127.0.0.1:8000/employees/
+http://127.0.0.1:8000/asd
+EOF
 
 require "net/https"
 require "uri"
@@ -23,13 +32,21 @@ COLOR_SUCCESS = COLOR_GREEN
 COLOR_WARNING = COLOR_YELLOW
 COLOR_FAILURE = COLOR_RED
 
+class TargetUrl
+  attr_accessor :url, :expected
+
+  def initialize(url, expected)
+    @url = url
+    @expected = expected
+  end
+end
+
 def download(list, thread_id, thread_count)
   if list.length == 0
     return
   end
 
-  str_url = list.first.chomp
-  uri = URI.parse(str_url)
+  uri = URI.parse(list.first.url)
 
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
   Net::HTTP.start(uri.host, uri.port) do |http|
@@ -37,23 +54,36 @@ def download(list, thread_id, thread_count)
     i = thread_id
     started_at = Time.now
     while i < list.length
-      url = list[i].chomp!
+      url = list[i].url
+      expected = list[i].expected
+
       req = Net::HTTP::Get.new(url)
       req["Connection"] = "Keep-Alive"
       res = http.request(req)
 
       count_by_code[res.code.to_s] += 1
 
-      case res.code.to_s[0]
-      when "5"
-        color = COLOR_FAILURE
-      when "4"
-        color = COLOR_WARNING
+      # expectedがある場合は、それに一致しているかによって色分け
+      if expected
+        if res.code.to_s == expected
+          color = COLOR_SUCCESS
+        else
+          color = COLOR_FAILURE
+        end
       else
-        color = COLOR_SUCCESS
+        # expectedがない場合は、ステータスコードに応じて色分け
+        case res.code.to_s[0]
+        when "5"
+          color = COLOR_FAILURE
+        when "4"
+          color = COLOR_WARNING
+        else
+          color = COLOR_SUCCESS
+        end
       end
+
       percent = ((i / list.length.to_f) * 100).to_i
-      puts "#{color}elapsed:#{Time.now - started_at}\tstatus:#{res.code}\ti:#{i}\tpercent:#{percent}\turl:#{url}#{COLOR_RESET}\n"
+      puts "#{color}elapsed:#{Time.now - started_at}\ti:#{i}\tpercent:#{percent}\tstatus:#{res.code}\texpected:#{expected}\turl:#{url}#{COLOR_RESET}\n"
 
       i += thread_count
     end
@@ -94,7 +124,16 @@ def main
   puts "url_file      = #{url_file}"
   puts "thread_count  = #{thread_count}"
   
-  list = File.readlines(url_file)
+  list0 = File.readlines(url_file)
+  list = list0.map {|line|
+    line.chomp!
+    cols = line.split("\t", 2)
+    if cols.length >= 2
+      TargetUrl.new(cols[0], cols[1])
+    else
+      TargetUrl.new(cols[0], nil)
+    end
+  }
 
   started_at = Time.now
   count_by_code = download_list(list, thread_count)
