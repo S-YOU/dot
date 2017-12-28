@@ -739,8 +739,6 @@ command! TestKeys runtime macros/testkeys.vim
 
 iab //- <Esc>:call _CommentCaption2('-')<CR>
 iab //= <Esc>:call _CommentCaption('=')<CR>
-iab #- <Esc>:call _CommentCaption2('-')<CR>
-iab #= <Esc>:call _CommentCaption('=')<CR>
 
 function! _GetCommentSymbol()
   if exists("b:commentSymbol")
