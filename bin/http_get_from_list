@@ -59,6 +59,7 @@ def download(list, thread_id, thread_count)
 
       req = Net::HTTP::Get.new(url)
       req["Connection"] = "Keep-Alive"
+      request_started_at = Time.now
       res = http.request(req)
 
       count_by_code[res.code.to_s] += 1
@@ -83,7 +84,8 @@ def download(list, thread_id, thread_count)
       end
 
       percent = ((i / list.length.to_f) * 100).to_i
-      puts "#{color}elapsed:#{Time.now - started_at}\ti:#{i}\tpercent:#{percent}\tstatus:#{res.code}\texpected:#{expected}\turl:#{url}#{COLOR_RESET}\n"
+      now = Time.now
+      puts "#{color}total_time:#{now - started_at}\ti:#{i}\tpercent:#{percent}\telapsed:#{now - request_started_at}\tstatus:#{res.code}\texpected:#{expected}\turl:#{url}#{COLOR_RESET}\n"
 
       i += thread_count
     end
