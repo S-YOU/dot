@@ -33,11 +33,26 @@ COLOR_WARNING = COLOR_YELLOW
 COLOR_FAILURE = COLOR_RED
 
 class TargetUrl
-  attr_accessor :url, :expected
+  attr_accessor :uri, :expected
 
   def initialize(url, expected)
-    @url = url
+    unless url.include?("://")
+      url = "http://" + url
+    end
+    @uri = URI.parse(url)
     @expected = expected
+  end
+
+  def host
+    @uri.host
+  end
+
+  def port
+    @uri.port
+  end
+
+  def path
+    @uri.path
   end
 end
 
@@ -46,18 +61,16 @@ def download(list, thread_id, thread_count)
     return
   end
 
-  uri = URI.parse(list.first.url)
-
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
-  Net::HTTP.start(uri.host, uri.port) do |http|
+  Net::HTTP.start(list.first.host, list.first.port) do |http|
     count_by_code = Hash.new(0)
     i = thread_id
     started_at = Time.now
     while i < list.length
-      url = list[i].url
+      url      = list[i].uri
       expected = list[i].expected
 
-      req = Net::HTTP::Get.new(url)
+      req = Net::HTTP::Get.new(list[i].path)
       req["Connection"] = "Keep-Alive"
       request_started_at = Time.now
       res = http.request(req)

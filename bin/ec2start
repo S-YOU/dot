@@ -20,9 +20,8 @@ done
 
 # ssh接続可能になるまで待つ
 while true; do
-    echo "Waiting for sshd to start on $public_ip"
-    echo -n "" > /dev/tcp/$public_ip/22
-    if [ $? = 0 ]; then
+    echo "Waiting for sshd to be ready on $public_ip"
+    if echo -n "" > /dev/tcp/$public_ip/22 > /dev/null 2>&1; then
         echo "ssh ok"
         break
     fi
