@@ -43,17 +43,10 @@ class TargetUrl
     @expected = expected
   end
 
-  def host
-    @uri.host
-  end
-
-  def port
-    @uri.port
-  end
-
-  def path
-    @uri.path
-  end
+  def host;        @uri.host;        end
+  def port;        @uri.port;        end
+  def path;        @uri.path;        end
+  def request_uri; @uri.request_uri; end
 end
 
 def download(list, thread_id, thread_count)
@@ -63,23 +56,25 @@ def download(list, thread_id, thread_count)
 
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
   Net::HTTP.start(list.first.host, list.first.port) do |http|
+    # タイムアウトすると、自動的に1回だけリトライする。この挙動を変えることはできないようである。
+    # https://bugs.ruby-lang.org/issues/10674
+    #http.read_timeout = 1
+    #http.open_timeout = 1
+
     count_by_code = Hash.new(0)
     i = thread_id
     started_at = Time.now
     while i < list.length
-      url      = list[i].uri
-      expected = list[i].expected
+      target_url = list[i]
 
-      req = Net::HTTP::Get.new(list[i].path)
-      req["Connection"] = "Keep-Alive"
       request_started_at = Time.now
-      res = http.request(req)
+      res = http.request_get(target_url.request_uri, {"Connection" => "Keep-Alive"})
 
       count_by_code[res.code.to_s] += 1
 
       # expectedがある場合は、それに一致しているかによって色分け
-      if expected
-        if res.code.to_s == expected
+      if target_url.expected
+        if res.code.to_s == target_url.expected
           color = COLOR_SUCCESS
         else
           color = COLOR_FAILURE
@@ -98,7 +93,7 @@ def download(list, thread_id, thread_count)
 
       percent = ((i / list.length.to_f) * 100).to_i
       now = Time.now
-      puts "#{color}total_time:#{now - started_at}\ti:#{i}\tpercent:#{percent}\telapsed:#{now - request_started_at}\tstatus:#{res.code}\texpected:#{expected}\turl:#{url}#{COLOR_RESET}\n"
+      puts "#{color}total_time:#{now - started_at}\ti:#{i}\tpercent:#{percent}\telapsed:#{now - request_started_at}\tstatus:#{res.code}\texpected:#{target_url.expected}\turl:#{target_url.uri}#{COLOR_RESET}\n"
 
       i += thread_count
     end
