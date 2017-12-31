@@ -181,14 +181,14 @@ ps() {
     if [ $# = 0 ]; then
         case "$OSTYPE" in
             *linux*)
-                command ps axfo user,pid,pgid,tty,ni,rss,vsz,stat,wchan=WIDE-WCHAN-COLUMN,start,args | less +G
+                command ps axfo user,pid,pgid,tty,ni,rss,vsz,stat,wchan=WIDE-WCHAN-COLUMN,start,args
                 ;;
             *)
-                command ps axo user,pid,pgid,tty,ni,rss,vsz,stat,start,args | less +G
+                command ps axo user,pid,pgid,tty,ni,rss,vsz,stat,start,args
                 ;;
         esac
     else
-        command ps "$@" | less +G
+        command ps "$@"
     fi
 }
 
