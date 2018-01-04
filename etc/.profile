@@ -11,6 +11,7 @@ export DOT=${DOT:-$HOME/dot}
 
 pathmunge "$DOT/bin"
 pathmunge "$HOME/bin"
+pathmunge "$HOME/go/bin"
 pathmunge . after
 
 export EDITOR="vim --cmd 'set noswapfile'"

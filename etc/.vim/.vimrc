@@ -268,6 +268,7 @@ noremap <silent> ( /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
 inoremap <silent><C-a> <Esc>I
 inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
+inoremap <silent> <C-l> <Esc>BgUEgi
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
 nnoremap <silent> <C-x><C-o> <C-i>
@@ -1164,6 +1165,11 @@ endfunction
 
 function! Go_Setting()
   let b:commentSymbol = '//'
+  if executable("goimports")
+    let g:go_fmt_command = "goimports"
+  else
+    call _Echo("WarningMsg", "goimportsをインストールするには: go get golang.org/x/tools/cmd/goimports")
+  endif
 endfunction
 
 

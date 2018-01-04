@@ -13,6 +13,9 @@ echo "REPO_NAME = $REPO_NAME"
 
 curl -u "$USER_NAME" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}'
 
-git remote add origin https://github.com/$USER_NAME/$REPO_NAME.git
+#git remote add origin https://github.com/$USER_NAME/$REPO_NAME.git
+git remote add origin git@github.com:$USER_NAME/$REPO_NAME.git
 
 git push -u origin master
+
+echo "https://github.com/aoyama-val/$REPO_NAME"
