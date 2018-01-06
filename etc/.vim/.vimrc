@@ -268,7 +268,8 @@ noremap <silent> ( /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
 inoremap <silent><C-a> <Esc>I
 inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
-inoremap <silent> <C-l> <Esc>BgUEgi
+inoremap <silent> <C-l> <Esc>g~awgi
+vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
 nnoremap <silent> <C-x><C-o> <C-i>
