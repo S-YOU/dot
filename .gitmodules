@@ -1,0 +1,3 @@
+[submodule "etc/.vim/bundle/vim-indexed-search"]
+	path = etc/.vim/bundle/vim-indexed-search
+	url = https://github.com/henrik/vim-indexed-search.git
