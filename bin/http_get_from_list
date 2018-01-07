@@ -62,6 +62,7 @@ def download(list, thread_id, thread_count)
     #http.open_timeout = 1
 
     count_by_code = Hash.new(0)
+    unexpected_count = 0
     i = thread_id
     started_at = Time.now
     while i < list.length
@@ -79,6 +80,7 @@ def download(list, thread_id, thread_count)
             color = COLOR_SUCCESS
           else
             color = COLOR_FAILURE
+            unexpected_count += 1
           end
         else
           # expectedがない場合は、ステータスコードに応じて色分け
@@ -105,7 +107,8 @@ def download(list, thread_id, thread_count)
         puts COLOR_RESET
       end
     end
-    Thread.current[:result] = count_by_code
+    Thread.current[:count_by_code] = count_by_code
+    Thread.current[:unexpected_count] = unexpected_count
   end
 end
 
@@ -120,12 +123,17 @@ def download_list(list, thread_count)
   threads.each {|t| t.join}
 
   count_by_code = Hash.new(0)
+  unexpected_count = 0
   threads.each do |t|
-    t[:result].each do |k, v|
+    t[:count_by_code].each do |k, v|
       count_by_code[k] += v
     end
+    unexpected_count += t[:unexpected_count]
   end
-  return count_by_code
+  return {
+    count_by_code: count_by_code,
+    unexpected_count: unexpected_count,
+  }
 end
 
 def main
@@ -152,9 +160,12 @@ def main
   }
 
   started_at = Time.now
-  count_by_code = download_list(list, thread_count)
+  ret = download_list(list, thread_count)
+  count_by_code = ret[:count_by_code]
+  unexpected_count = ret[:unexpected_count]
   puts "完了。所要時間: #{Time.now - started_at} seconds"
   puts "総リクエスト数: #{count_by_code.values.reduce(0) {|s, x| s + x}}"
+  puts "予期しないステータスコード: #{unexpected_count}"
   p count_by_code
 end
 
