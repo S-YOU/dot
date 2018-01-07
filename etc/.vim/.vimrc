@@ -1171,6 +1171,7 @@ function! Go_Setting()
   else
     call _Echo("WarningMsg", "goimportsをインストールするには: go get golang.org/x/tools/cmd/goimports")
   endif
+  inoreab <buffer> ife if err != nil {<Enter>log.Fatal(err)<Enter>}<Esc><Up>w<C-r>=Eatchar('\s')<CR>
 endfunction
 
 
@@ -2985,6 +2986,8 @@ endfunction
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
+
+let g:go_highlight_trailing_whitespace_error = 0
 
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
