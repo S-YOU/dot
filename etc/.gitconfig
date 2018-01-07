@@ -31,7 +31,7 @@
 	assume-unchanged = update-index --assume-unchanged 
 	no-assume-unchanged = update-index --no-assume-unchanged 
 	alias = !git config --get-regexp ^alias\\. | sort
-	tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %s'
+	tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %Cgreen%s%Creset'
 	# mergeやreset --hardのとき、変更を破棄しない
 	skip-worktree = update-index --skip-worktree
 	no-skip-worktree = update-index --no-skip-worktree
