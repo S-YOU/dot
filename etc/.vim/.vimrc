@@ -950,6 +950,7 @@ augroup MyAutocmd
   au FileType *           call _SetDict()
   au InsertLeave * set nopaste
   au Syntax c,cpp,ruby,java,python,javascript,php,cs call _MySyntax() 
+  au Syntax go call _GoSyntax() 
   au Syntax markdown call _MarkdownSyntax() 
   au Syntax * call _HighlightMixedIndent()
   au VimEnter * call _VimEnter()
@@ -1172,8 +1173,12 @@ function! Go_Setting()
     call _Echo("WarningMsg", "goimportsをインストールするには: go get golang.org/x/tools/cmd/goimports")
   endif
   inoreab <buffer> ife if err != nil {<Enter>log.Fatal(err)<Enter>}<Esc><Up>w<C-r>=Eatchar('\s')<CR>
+  nnoremap <buffer> [[ ?^\w.*{$<CR>:noh<CR>
 endfunction
 
+function! _GoSyntax()
+  syn match FunctionName /\w\+(\@=/
+endfunction
 
 function! JavaScript_Setting()
   let b:commentSymbol = "//"
