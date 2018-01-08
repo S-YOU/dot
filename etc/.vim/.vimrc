@@ -1199,6 +1199,7 @@ function! Go_Setting()
   nnoremap <buffer> [[ ?^\w.*{$<CR>:noh<CR>
 endfunction
 let g:go_highlight_trailing_whitespace_error = 0
+let g:go_template_autocreate = 0
 
 function! _GoSyntax()
   syn match FunctionName /\w\+(\@=/
