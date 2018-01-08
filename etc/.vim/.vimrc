@@ -1165,6 +1165,19 @@ function! _CloseTagByCtrlP()
   endif
 endfunction
 
+" カーソル下の単語を取得する。単語の境界はa:iskeywordにより定義される
+function! _GetWordUnderCursor(iskeyword) abort
+  let iskeyword_old = &iskeyword
+  try
+    if a:iskeyword != ""
+      let &iskeyword = a:iskeyword
+    endif
+    return expand("<cword>")
+  finally
+    let &iskeyword = iskeyword_old
+  endtry
+endfunction
+
 function! Go_Setting()
   let b:commentSymbol = '//'
   if executable("goimports")
@@ -1175,6 +1188,7 @@ function! Go_Setting()
   inoreab <buffer> ife if err != nil {<Enter>log.Fatal(err)<Enter>}<Esc><Up>w<C-r>=Eatchar('\s')<CR>
   nnoremap <buffer> [[ ?^\w.*{$<CR>:noh<CR>
 endfunction
+let g:go_highlight_trailing_whitespace_error = 0
 
 function! _GoSyntax()
   syn match FunctionName /\w\+(\@=/
@@ -2988,11 +3002,24 @@ function! EvalSelection()
   endif
 endfunction
 
+function! _HelpTagAll() abort
+  let old_dir = getcwd()
+  let dirs = glob("~/.vim/bundle/*", 1, 1)
+  for d in dirs
+    let docdir = d . "/doc"
+    if isdirectory(docdir)
+      echomsg "Creating tags in " . docdir
+      exe "cd" docdir
+      helptags .
+    endif
+  endfor
+  exe "cd" old_dir
+endfunction
+command! HelpTagAll call _HelpTagAll()
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
-
-let g:go_highlight_trailing_whitespace_error = 0
 
 if filereadable(expand("~/.vimrc.local"))
   source ~/.vimrc.local
