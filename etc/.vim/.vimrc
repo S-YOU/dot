@@ -29,11 +29,21 @@ filetype indent on
 set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
-set runtimepath^=~/.vim/bundle/ctrlp
-set runtimepath^=~/.vim/bundle/nerdtree
-set runtimepath^=~/.vim/bundle/vim-go
-set runtimepath^=~/.vim/bundle/editorconfig-vim-master
-set runtimepath^=~/.vim/bundle/vim-indexed-search
+function! _UpdateBundle() abort
+  try
+    let dirs = glob("~/.vim/bundle/*", 1, 1)
+    for d in dirs
+      exe "set runtimepath^=" . d
+      let docdir = d . "/doc"
+      if isdirectory(docdir) && !filereadable(docdir . "/tags")
+        exe helptags docdir
+        echomsg "Created tags in " . docdir
+      endif
+    endfor
+  finally
+  endtry
+endfunction
+call _UpdateBundle()
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
@@ -3001,21 +3011,6 @@ function! EvalSelection()
     call ExecSystem("selection")
   endif
 endfunction
-
-function! _HelpTagAll() abort
-  let old_dir = getcwd()
-  let dirs = glob("~/.vim/bundle/*", 1, 1)
-  for d in dirs
-    let docdir = d . "/doc"
-    if isdirectory(docdir)
-      echomsg "Creating tags in " . docdir
-      exe "cd" docdir
-      helptags .
-    endif
-  endfor
-  exe "cd" old_dir
-endfunction
-command! HelpTagAll call _HelpTagAll()
 
 "=============================================================================
 "   ▲実験室  Experimental
