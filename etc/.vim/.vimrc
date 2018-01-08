@@ -36,7 +36,7 @@ function! _UpdateBundle() abort
       exe "set runtimepath^=" . d
       let docdir = d . "/doc"
       if isdirectory(docdir) && !filereadable(docdir . "/tags")
-        exe helptags docdir
+        exe "helptags" docdir
         echomsg "Created tags in " . docdir
       endif
     endfor
