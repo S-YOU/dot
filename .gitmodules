@@ -1,8 +1,6 @@
 [submodule "etc/.vim/bundle/vim-indexed-search"]
 	path = etc/.vim/bundle/vim-indexed-search
 	url = https://github.com/henrik/vim-indexed-search.git
-	shallow = true
 [submodule "etc/.vim/bundle/vim-go"]
 	path = etc/.vim/bundle/vim-go
 	url = https://github.com/aoyama-val/vim-go.git
-	shallow = true
