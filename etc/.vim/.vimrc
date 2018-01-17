@@ -3013,6 +3013,20 @@ function! EvalSelection()
   endif
 endfunction
 
+nnoremap <silent> <C-c> <C-c>:<C-u>Copy<CR>
+vnoremap <silent> <C-c> :Copy<CR>
+command! -range=% Copy <line1>,<line2>call _CopyToClipboard()
+function! _CopyToClipboard() range
+  let start = a:firstline
+  let end = a:lastline
+  if executable('pbcopy')
+  else
+    call _Echo("ErrorMsg", "利用可能なコピーコマンドがありません")
+    return
+  endif
+  echo "Copied " . (end - start + 1) . " lines."
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
