@@ -3013,18 +3013,21 @@ function! EvalSelection()
   endif
 endfunction
 
-nnoremap <silent> <C-c> <C-c>:<C-u>Copy<CR>
+nnoremap <silent> <C-c> :<C-u>Copy<CR>
 vnoremap <silent> <C-c> :Copy<CR>
 command! -range=% Copy <line1>,<line2>call _CopyToClipboard()
 function! _CopyToClipboard() range
+  let save_cursor = getcurpos()
   let start = a:firstline
   let end = a:lastline
   if executable('pbcopy')
+    exe start . "," . end . "w !pbcopy"
   else
     call _Echo("ErrorMsg", "利用可能なコピーコマンドがありません")
     return
   endif
-  echo "Copied " . (end - start + 1) . " lines."
+  call setpos('.', save_cursor)
+  call _Echo("Normal", "Copied " . (end - start + 1) . " lines.")
 endfunction
 
 "=============================================================================
