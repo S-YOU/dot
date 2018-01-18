@@ -96,6 +96,9 @@ endif
 
 " 編集 ------------------------------------------------------------ 
 set autoindent nosmartindent
+set cinoptions=t0,g0,(0
+set cinkeys-=0#
+set indentkeys-=0#
 set smarttab
 " タブの設定について
 "    1. 基本は4
@@ -104,7 +107,6 @@ set smarttab
 " 設定もこの順番で行われる
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set shiftround
-set cinoptions=t0,g0,(0
 set backspace=indent,eol,start
 set formatoptions=tcqnmM
 set virtualedit=block
@@ -321,7 +323,6 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
-inoremap # X<BS>#
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
@@ -1057,6 +1058,8 @@ function! C_Setting()
   setlocal nosmartindent
   setlocal fo-=o
   setlocal omnifunc=_MyCComplete
+  set cinkeys+=0#
+  set indentkeys+=0#
   " インデントレベルを合わせて貼り付け
   nnoremap <buffer> p p=`]`]
   "nnoremap <buffer> n n:redraw<CR>:echo WhatFunction()<CR>
