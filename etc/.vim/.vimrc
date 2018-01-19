@@ -386,7 +386,6 @@ xnoremap <silent> <space>J <Esc>:InsertSpaceBetweenHankakuZenkaku<CR>
 nnoremap <C-x>p :<C-u>r ~/tmp/screen-hardcopy.txt<CR>
 
 "iabbrev /// <Esc>j:FB<CR><BS>
-vnoremap p "0p
 " 関数を範囲選択
 nnoremap vf ][v[[?^s*$<CR>
 " for などのブロックを選択。カーソル位置を for の行におく必要がある。
