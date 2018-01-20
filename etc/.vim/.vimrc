@@ -1312,6 +1312,7 @@ endfunction
 
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
+  nnoremap <silent> <C-x><C-b> :call _YankPath("bundle exec rspec ", 1)<CR>
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
@@ -2728,7 +2729,14 @@ vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
 " 現在のレジスタを~/.yankに保存し、screenで<C-t><C-v>で貼り付けられるようにする
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
-nnoremap <silent> <C-x><C-b> :let @0 = "b " . expand("%").":".line(".")<CR>:call _YankToFile('0', 1)<CR>
+nnoremap <silent> <C-x><C-b> :call _YankPath("", 1)<CR>
+
+function! _YankPath(prefix, full) abort
+  let path = a:full ? expand("%:p") : expand("%")
+  let @0 = a:prefix .path .":".line(".")
+  call _YankToFile('0', 1)
+endfunction
+
 command! PutFromFile r ~/.yank
 function! _YankToFile(reg, show_message)
   let yankfile = "~/.yank"
