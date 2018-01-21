@@ -136,6 +136,33 @@ quote-word() {
 zle -N quote-word
 bindkey "^[q" quote-word
 
+# 単語展開に対応したタブ補完
+_complete-or-expand() {
+    case "$BUFFER" in
+        b)
+            BUFFER="bundle exec "
+            CURSOR=$#BUFFER
+            ;;
+        rs)
+            BUFFER="bundle exec rspec "
+            CURSOR=$#BUFFER
+            ;;
+        ff)
+            BUFFER="bundle exec rspec --fail-fast "
+            CURSOR=$#BUFFER
+            ;;
+        nf)
+            BUFFER="bundle exec rspec --next-failure "
+            CURSOR=$#BUFFER
+            ;;
+        *)
+            zle menu-expand-or-complete
+            ;;
+    esac
+}
+zle -N _complete-or-expand
+bindkey '^I' _complete-or-expand
+
 # ディレクトリ移動履歴をfzfしてcd
 if is-at-least 4.3.11; then
   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
