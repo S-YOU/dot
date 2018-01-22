@@ -1319,7 +1319,11 @@ function! Ruby_Setting()
   call DefineAbbrev('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
-    let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    if expand("%") =~ '_spec\.rb'
+      let b:_exec_system_last_cmd = "0r!rspec " . expand("%:p")
+    else
+      let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    endif
   endif
 endfunction 
 
