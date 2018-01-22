@@ -100,6 +100,7 @@ compdef _files r
 compdef '_files -g "*.hs"' runghc
 compdef _bm bm
 compdef gti='git'
+compdef _path_commands bundle
 
 _bm() {
     _files -W ~/bm && return 0
