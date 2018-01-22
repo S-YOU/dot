@@ -1316,10 +1316,14 @@ function! Ruby_Setting()
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
-  call DefineAbbrev('bb', 'byebug', '', '')
+  "call DefineAbbrev('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
-    let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    if expand("%") =~ '_spec\.rb'
+      let b:_exec_system_last_cmd = "0r!rspec " . expand("%:p")
+    else
+      let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    endif
   endif
 endfunction 
 
