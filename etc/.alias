@@ -214,7 +214,10 @@ svn() {
 
 tt() {
     if [ -t 1 ]; then
-        cd $(pjroot)
+        local root=$(pjroot)
+        if [ "$root" != "not exist" ]; then
+            cd $(pjroot)
+        fi
     else
         pjroot
     fi

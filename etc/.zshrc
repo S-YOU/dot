@@ -100,7 +100,6 @@ compdef _files r
 compdef '_files -g "*.hs"' runghc
 compdef _bm bm
 compdef gti='git'
-compdef _path_commands bundle
 
 _bm() {
     _files -W ~/bm && return 0
@@ -174,7 +173,13 @@ if is-at-least 4.3.11; then
 fi
 
 source $DOT/etc/zsh/key-bindings.zsh
-bindkey '^S' fzf-file-widget
+
+find_file_in_project() {
+    tt
+    zle fzf-file-widget
+}
+zle -N find_file_in_project
+bindkey '^S' find_file_in_project
 
 
 #-----------------------------------------------------------------------------
@@ -205,6 +210,7 @@ get_prompt_gip() {
 
 source $DOT/etc/zsh/mollifier-git-zsh-prompt
 source $DOT/etc/zsh/safe-paste.plugin.zsh
+source $DOT/etc/zsh/auto-ls.zsh
 
 
 #-----------------------------------------------------------------------------
