@@ -3045,7 +3045,7 @@ function! _CopyToClipboard() range
 endfunction
 
 " 指定されたディレクトリが存在しないなら作成して:eする
-command! -nargs=1 E call _E("<args>")
+command! -nargs=1 -complete=file E call _E("<args>")
 function! _E(path) abort
   let dirname  = substitute(a:path, '/[^/]*$', '', '')
   let basename = substitute(a:path, '.*/', '', '')
