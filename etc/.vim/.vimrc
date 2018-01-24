@@ -3045,15 +3045,17 @@ function! _CopyToClipboard() range
 endfunction
 
 " 指定されたディレクトリが存在しないなら作成して:eする
-command! -nargs=1 -complete=file E call _E("<args>")
-function! _E(path) abort
+command! -nargs=1 -complete=file Ee call _E("<args>", "e")
+command! -nargs=1 -complete=file Esp call _E("<args>", "sp")
+command! -nargs=1 -complete=file Evs call _E("<args>", "vs")
+function! _E(path, cmd) abort
   let dirname  = substitute(a:path, '/[^/]*$', '', '')
   let basename = substitute(a:path, '.*/', '', '')
   if !isdirectory(dirname)
-    call mkdir(dirname)
+    call mkdir(dirname, "p")
   endif
-  exe "cd " . dirname
-  exe "e " . basename
+  exe "cd" dirname
+  exe a:cmd  basename
 endfunction
 
 "=============================================================================

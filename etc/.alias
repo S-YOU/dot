@@ -23,9 +23,6 @@ alias fg=' fg'
 alias gdb='gdb --quiet -ex start'
 alias gti='git'
 alias gosh='rlwrap --histsize 10000 -q "\"" --break-chars "(){}[].,#@;|\`\"" -f . -f ~/.vim/dict/schemedict.txt --complete-filenames gosh'
-alias rs='bundle exec rspec'
-alias ff='bundle exec rspec --fail-fast'
-alias nf='bundle exec rspec --next-failure'
 alias la='ls -a'
 # ls
 case "$OSTYPE" in

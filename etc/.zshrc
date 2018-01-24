@@ -144,15 +144,19 @@ _complete-or-expand() {
             CURSOR=$#BUFFER
             ;;
         rs)
-            BUFFER="bundle exec rspec "
+            BUFFER="bin/rspec "
             CURSOR=$#BUFFER
             ;;
         ff)
-            BUFFER="bundle exec rspec --fail-fast "
+            BUFFER="bin/rspec --fail-fast "
             CURSOR=$#BUFFER
             ;;
         nf)
-            BUFFER="bundle exec rspec --next-failure "
+            BUFFER="bin/rspec --next-failure "
+            CURSOR=$#BUFFER
+            ;;
+        of)
+            BUFFER="bin/rspec --only-failures "
             CURSOR=$#BUFFER
             ;;
         *)
@@ -160,6 +164,9 @@ _complete-or-expand() {
             ;;
     esac
 }
+ff="--fail-fast"
+nf="--next-failure"
+of="--only-failures"
 zle -N _complete-or-expand
 bindkey '^I' _complete-or-expand
 
