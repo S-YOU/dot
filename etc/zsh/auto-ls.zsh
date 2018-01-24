@@ -12,7 +12,7 @@ ls_abbrev() {
     opt_ls=('-CF' '--color=always' '--group-directories-first')
     case "${OSTYPE}" in
         freebsd*|darwin*)
-            if type gls > /dev/null 2>&1; then
+            if which gls > /dev/null 2>&1; then
                 cmd_ls='gls'
             else
                 # -G : Enable colorized output.
@@ -20,9 +20,16 @@ ls_abbrev() {
             fi
             ;;
     esac
+    if which timeout > /dev/null 2>&1; then
+        cmd_timeout='timeout 1s'
+    elif which gtimeout > /dev/null 2>&1; then
+        cmd_timeout='gtimeout 1s'
+    else
+        cmd_timeout=''
+    fi
 
     local ls_result
-    ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
+    ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command $cmd_timeout $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
 
     local ls_lines=$(echo "$ls_result" | wc -l)
 
