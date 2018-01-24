@@ -3044,6 +3044,18 @@ function! _CopyToClipboard() range
   call _Echo("Normal", "Copied " . (end - start + 1) . " lines.")
 endfunction
 
+" 指定されたディレクトリが存在しないなら作成して:eする
+command! -nargs=1 E call _E("<args>")
+function! _E(path) abort
+  let dirname  = substitute(a:path, '/[^/]*$', '', '')
+  let basename = substitute(a:path, '.*/', '', '')
+  if !isdirectory(dirname)
+    call mkdir(dirname)
+  endif
+  exe "cd " . dirname
+  exe "e " . basename
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
