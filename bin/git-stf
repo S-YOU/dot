@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export QUERY="$1"
+git status --short --branch | ruby -ane 'puts $F[1..-1].join(" ") if $_.start_with?(ENV["QUERY"])'
