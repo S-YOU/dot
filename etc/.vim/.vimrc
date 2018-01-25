@@ -2137,15 +2137,17 @@ endfunction
 " Christian J. Robinson <infynity@onewest.net>
 " http://www.vim.org/scripts/script.php?script_id=1928
 command! -nargs=* -complete=file -bang Rename :call Rename("<args>", "<bang>")
-function! Rename(name, bang)
+function! Rename(name, bang) abort
   if stridx(a:name, '/') == -1
     let dir = expand("%:p:h") . '/'
   else
     let dir = ''
   endif
   let l:curfile = expand("%:p")
+  let perm = getfperm(l:curfile)
   let v:errmsg = ""
   silent! exe "saveas" . a:bang . " " . fnameescape(dir . a:name)
+  call setfperm(dir . a:name, perm)
   if v:errmsg =~# '^$\|^E329'
     if expand("%:p") !=# l:curfile && filewritable(expand("%:p"))
       silent exe "bwipe! " . l:curfile
