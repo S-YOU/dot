@@ -15,6 +15,11 @@ export HOME=/
 
 TMP=/tmp/gita.tmp.$$
 
+cat > $TMP <<EOF
+#!/bin/sh
+
+EOF
+
 # ファイル一覧を一時ファイルに保存
 git -c core.excludesfile=$OLD_HOME/.gitignore -c color.ui=never status --short | awk '$0 !~ /^( D|D )/ {print}' >> $TMP
 cp -a $TMP $TMP.orig
