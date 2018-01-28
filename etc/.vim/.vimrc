@@ -1435,15 +1435,35 @@ function! _ToggleCommentSelection() range
     let deleteComment = 0
   endif 
 
-  while (cl <= a:lastline) 
-    if deleteComment
-      silent exe deleteCommentCommand
+  if deleteComment
+    while (cl <= a:lastline) 
+        silent exe deleteCommentCommand
+      normal! j
+      let cl = cl + 1
+    endwhile
+  else
+    let min = 999999
+    let j_count = a:lastline - a:firstline
+    for i in range(a:firstline, a:lastline)
+      exe "normal! " . i . "G"
+      normal! ^
+      if getline(".") != ""
+        let vc = virtcol(".")
+        if vc < min
+          let min = vc
+        endif
+      endif
+    endfor
+    if j_count != 0
+      exe "normal! " . a:firstline . "G"
+      exe "normal! " . min . "|"
+      exe "normal! \<C-v>" . j_count . "jI" . cs
     else
-      execute "normal! I" . cs
+      exe "normal! " . a:firstline . "G"
+      exe "normal! I" . cs
     endif
-    normal! j
-    let cl = cl + 1
-  endwhile
+  endif
+  exe "normal! " . a:lastline . "G"
 endfunction
 
 function! _FunctionDescription()
