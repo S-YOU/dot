@@ -1463,7 +1463,7 @@ function! _ToggleCommentSelection() range
       exe "normal! I" . cs
     endif
   endif
-  exe "normal! " . a:lastline . "G"
+  exe "normal! " . (a:lastline + 1) . "G"
 endfunction
 
 function! _FunctionDescription()
