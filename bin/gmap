@@ -7,6 +7,11 @@
 # Google Mapsのクエリーパラメータ
 # https://developers.google.com/maps/documentation/urls/guide
 
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 lat lng"
+    exit 1
+fi
+
 url="https://www.google.com/maps/search/?api=1&query=$1,$2"
 echo "$url"
 
