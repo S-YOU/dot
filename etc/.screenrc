@@ -60,7 +60,6 @@ bind H
 bind h eval "hardcopy -h $HOME/hardcopy.txt"
 bind ^k eval "focus up"
 bind ^j eval "focus down"
-bind ^[ eval copy "stuff \^"
 bind ^b eval copy "stuff H"        # C-bだけでコピーモードに入れるようにする
 bind ^u eval copy "stuff M"
 bind ^v eval readbuf "paste ."      # Vimでヤンクしたテキストを貼り付ける
@@ -83,6 +82,9 @@ bindkey "^[[5~" prev
 bindkey "^[[6~" next
 bindkey "^[p" prev
 bindkey "^[n" next
+bindkey "^[[" copy
+bindkey "^[]" paste .
+
 # F11 F12. vim起動中も有効にするためには、-aつきでも定義しないといけない
 #bindkey -k -a F1 prev
 #bindkey -k -a F2 next
