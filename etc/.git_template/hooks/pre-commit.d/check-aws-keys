@@ -1,8 +1,13 @@
 #!/bin/sh
 
+if [ "$DISABLE_CHECK_AWS_KEYS" != "" ]; then
+    exit 0
+fi
+
 GREP_RESULT=`git diff --cached | grep -i KEY | grep AKI[A]` 
 if [ -n "${GREP_RESULT}" ]; then
     echo 'AWS_ACCESS_KEYがインデックスに入っている可能性があります。git diff --cachedで確認してください。'
+    echo 'または環境変数 DISABLE_CHECK_AWS_KEYS=1 とするとチェックを無効化できます。'
     echo "${GREP_RESULT}" 
     exit 1 
 else
