@@ -1,3 +1,0 @@
-#!/bin/sh
-
-curl -w "@$HOME/dot/bin/curl-format.txt" "$@"
