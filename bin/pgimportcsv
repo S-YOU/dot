@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+require "pathname"
+
+$opt = {}
+$opt[:delimiter] = ","
+$opt[:header] = false
+$opt[:table_name] = nil
+
+usage = <<EOF
+CSV・TSVファイルをPostgreSQLにインポートするためのスクリプト。
+インポートするSQLを出力するだけで実際にインポートはしない。
+EOF
+
+opt = OptionParser.new
+opt.on("-d DELIMITER", "区切り文字")   {|v| $opt[:delimiter] = v}
+opt.on("-t TABLE_NAME", "テーブル名")  {|v| $opt[:table_name] = v}
+opt.on("-H", "ヘッダ")                 {|v| $opt[:header] = true}
+opt.parse!(ARGV)
+
+if ARGV.empty?
+  puts usage
+  exit 1
+end
+
+def print_sql(filename)
+  pathname = Pathname.new(filename)
+  # テーブル名はファイル名から英数字以外を削除したもの
+  table_name = $opt[:table_name] || filename.gsub(/\W+/, "")
+
+  column_count = 0
+  row = nil
+  File.open(filename) do |f|
+    first_line = f.gets.chomp
+    row = first_line.split($opt[:delimiter])
+    column_count = row.length
+  end
+
+  if $opt[:header]
+    column_names = row
+  else
+    column_names = (1..column_count).map {|i| "c#{i}"}
+  end
+
+  puts <<EOF
+DROP TABLE IF EXISTS #{table_name};
+CREATE TABLE #{table_name} (
+  id SERIAL,
+#{
+  column_names.map {|x| "  #{x} TEXT"}.join(",\n")
+}
+);
+
+\\copy #{table_name} (#{column_names.join(', ')}) FROM '#{pathname.realpath}' WITH CSV DELIMITER '#{$opt[:delimiter]}' #{$opt[:header] ? 'HEADER' : ''};
+EOF
+end
+
+print_sql(ARGV[0])
