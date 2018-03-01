@@ -2,6 +2,7 @@
 
 require "optparse"
 require "pathname"
+require "csv"
 
 usage = <<EOF
 CSV・TSVファイルをPostgreSQLにインポートするためのSQLを出力するスクリプト。
@@ -30,12 +31,12 @@ def print_sql(filename)
   row = nil
   File.open(filename) do |f|
     first_line = f.gets.chomp
-    row = first_line.split($opt[:delimiter])
+    row = CSV.parse_line(first_line, col_sep: $opt[:delimiter])
     column_count = row.length
   end
 
   if $opt[:header]
-    column_names = row
+    column_names = row.map {|x| x.downcase.gsub(/\s/, "_")}
   else
     column_names = (1..column_count).map {|i| "c#{i}"}
   end
@@ -43,7 +44,7 @@ def print_sql(filename)
   puts <<EOF
 DROP TABLE IF EXISTS #{table_name};
 CREATE TABLE #{table_name} (
-  id SERIAL,
+  _id SERIAL,
 #{
   column_names.map {|x| "  #{x} TEXT"}.join(",\n")
 }
