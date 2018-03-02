@@ -2,6 +2,7 @@
 
 require "optparse"
 require "pathname"
+require "nkf"
 
 usage = <<EOF
 CSV・TSVファイルをPostgreSQLにインポートするためのSQLを出力するスクリプト。
@@ -13,14 +14,21 @@ EOF
 
 $opt = {}
 $opt[:delimiter] = ","
+$opt[:encoding] = "UTF-8"
 $opt[:header] = false
 $opt[:table_name] = "t"
 
 opt = OptionParser.new
 opt.on("-d DELIMITER", "区切り文字 (default: ,)")   {|v| $opt[:delimiter] = v}
+opt.on("-e ENCODING", "UTF-8 or CP932 (default: UTF-8)")   {|v| $opt[:encoding] = v}
 opt.on("-t TABLE_NAME", "テーブル名 (default: t)")  {|v| $opt[:table_name] = v}
 opt.on("-H", "1行目をヘッダとして扱う (default: false)")                 {|v| $opt[:header] = true}
 opt.parse!(ARGV)
+
+ENCODINGS = {
+  "CP932" => { postgres: "SJIS" },
+  "UTF-8" => { postgres: "UTF8" },
+}
 
 def print_sql(filename)
   pathname = Pathname.new(filename)
@@ -30,6 +38,7 @@ def print_sql(filename)
   row = nil
   File.open(filename) do |f|
     first_line = f.gets.chomp
+    first_line = NKF.nkf("--oc=UTF-8", first_line)
     row = first_line.split($opt[:delimiter])
     column_count = row.length
   end
@@ -49,7 +58,7 @@ CREATE TABLE #{table_name} (
 }
 );
 
-\\copy #{table_name} (#{column_names.join(', ')}) FROM '#{pathname.realpath}' WITH CSV DELIMITER '#{$opt[:delimiter]}' #{$opt[:header] ? 'HEADER' : ''};
+\\copy #{table_name} (#{column_names.join(', ')}) FROM '#{pathname.realpath}' WITH ENCODING '#{ENCODINGS[$opt[:encoding]][:postgres]}' CSV DELIMITER '#{$opt[:delimiter]}' #{$opt[:header] ? 'HEADER' : ''};
 EOF
 end
 
