@@ -43,7 +43,7 @@ def print_sql(filename)
   puts <<EOF
 DROP TABLE IF EXISTS #{table_name};
 CREATE TABLE #{table_name} (
-  id SERIAL,
+  _id SERIAL,
 #{
   column_names.map {|x| "  #{x} TEXT"}.join(",\n")
 }
