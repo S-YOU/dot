@@ -13,6 +13,14 @@ Example:
     # 1行目をヘッダとして扱う場合
     pgimportcsv -H sample.csv | psql
 
+    # 1行目もデータの場合
+    pgimportcsv sample.csv
+
+既知の問題点:
+    - RubyのCSVモジュールが出力するCSVならほぼパースできるが、フィールド内に
+      改行（\n）が含まれているとパースできない（postgresのcopyコマンドの制約
+      による）。
+
 EOF
 opt.on("-d DELIMITER", "区切り文字 (default: ,)") {|v| $opt[:delimiter] = v}
 opt.on("-e ENCODING", "UTF-8 | CP932 (default: UTF-8)") {|v| $opt[:encoding] = v}
