@@ -35,7 +35,7 @@ ls_abbrev() {
 
     if [ $ls_lines -gt 10 ]; then
         echo "$ls_result" | head -n 5
-        echo "\x1b[1;36m... Many files ...\x1b[0m"
+        echo "\x1b[0;32m--- More files ---\x1b[0m"
     else
         echo "$ls_result"
     fi
