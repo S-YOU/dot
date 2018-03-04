@@ -4,6 +4,7 @@ require "optparse"
 require "pathname"
 require "csv"
 require "nkf"
+require "yaml"
 
 opt = OptionParser.new
 opt.banner = <<EOF
@@ -16,17 +17,21 @@ Example:
     # 1行目もデータの場合
     pgimportcsv sample.csv
 
+    # TSVの場合
+    pgimportcsv -d '\t' sample.tsv
+
 既知の問題点:
     - RubyのCSVモジュールが出力するCSVならほぼパースできるが、フィールド内に
       改行（\n）が含まれているとパースできない（postgresのcopyコマンドの制約
       による）。
+    - a, b, cのようにカンマの後にスペースが入っているとスペースもデータと
+    　みなされてしまう。対策としてはインポート後にltrim()でUPDATEする。
 
 EOF
-opt.on("-d DELIMITER", "区切り文字 (default: ,)") {|v| $opt[:delimiter] = v}
+opt.on("-d DELIMITER", "区切り文字 (default: ,)") {|v| $opt[:delimiter] = unescape(v)}
 opt.on("-e ENCODING", "UTF-8 | CP932 (default: UTF-8)") {|v| $opt[:encoding] = v}
 opt.on("-H", "1行目をヘッダとして扱う (default: false)") {|v| $opt[:header] = true}
 opt.on("-t TABLE_NAME", "テーブル名 (default: t)") {|v| $opt[:table_name] = v}
-opt.parse!(ARGV)
 
 $opt = {}
 $opt[:delimiter]  = ","
@@ -38,6 +43,12 @@ ENCODINGS = {
   "CP932" => { postgres: "SJIS" },
   "UTF-8" => { postgres: "UTF8" },
 }
+
+# \tなどのエスケープシーケンスを実際の文字に置換する
+# https://stackoverflow.com/a/18752208/5209556
+def unescape(s)
+  YAML.load(%Q(---\n"#{s}"\n))
+end
 
 def print_sql(filename)
   pathname = Pathname.new(filename)
@@ -52,7 +63,7 @@ def print_sql(filename)
   end
 
   if $opt[:header]
-    column_names = row.map {|x| x.downcase.gsub(/\s/, "_")}
+    column_names = row.map {|x| x.downcase.strip.gsub(/\s/, "_")}
   else
     column_names = (1..column_count).map {|i| "c#{i}"}
   end
@@ -69,6 +80,8 @@ CREATE TABLE #{table_name} (
 \\copy #{table_name} (#{column_names.join(', ')}) FROM '#{pathname.realpath}' WITH ENCODING '#{ENCODINGS[$opt[:encoding]][:postgres]}' CSV DELIMITER '#{$opt[:delimiter]}' #{$opt[:header] ? 'HEADER' : ''};
 EOF
 end
+
+opt.parse!(ARGV)
 
 if ARGV.empty?
   puts opt.help
