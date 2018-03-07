@@ -45,8 +45,8 @@
 	# git tag-by-date
 	# git push origin --tags
 	shallow-clone = clone --depth 1
-	# マージされているブランチをリモートから削除する
-	remove-unused-branches = !git branch -r --merged | grep -v master | sed 's/origin\\///' | xargs -n 1 git push --delete origin
+	# マージされているブランチを削除する
+	remove-unused-branches = !git branch -d $(git branch --merged | grep -v -w master)
 	vimdiff = difftool --tool=vimdiff --prompt
 	bro = browse
 	# 追跡されていないファイルを削除するには
