@@ -12,6 +12,7 @@
 #[url "https://"]
 #	insteadOf = git://
 [alias]
+    amend = commit --amend --no-edit
 	ba = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
 	ci = commit
 	co = checkout

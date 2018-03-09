@@ -3067,10 +3067,10 @@ function! _CopyToClipboard() range
 endfunction
 
 " 指定されたディレクトリが存在しないなら作成して:eする
-command! -nargs=1 -complete=file Ee call _E("<args>", "e")
-command! -nargs=1 -complete=file Esp call _E("<args>", "sp")
-command! -nargs=1 -complete=file Evs call _E("<args>", "vs")
-function! _E(path, cmd) abort
+command! -nargs=1 -complete=file Xe call _EditAndCreateDirectoryIfNotExist("<args>", "e")
+command! -nargs=1 -complete=file Xsp call _EditAndCreateDirectoryIfNotExist("<args>", "sp")
+command! -nargs=1 -complete=file Xvs call _EditAndCreateDirectoryIfNotExist("<args>", "vs")
+function! _EditAndCreateDirectoryIfNotExist(path, cmd) abort
   let dirname  = substitute(a:path, '/[^/]*$', '', '')
   let basename = substitute(a:path, '.*/', '', '')
   if !isdirectory(dirname)

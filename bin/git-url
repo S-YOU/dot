@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+def parse_remote(str)
+  if str =~ %r|https://github.com/([0-9A-z_.-]+)/([0-9A-z_.-]+)\.git|
+    user = $1
+    repo = $2
+  elsif str =~ %r|git@github.com:([0-9A-z_.-]+)/([0-9A-z_.-]+)\.git|
+    user = $1
+    repo = $2
+  else
+    return nil
+  end
+  return {
+    user: user,
+    repo: repo,
+  }
+end
+
+def to_github_url(str)
+  parsed = parse_remote(str)
+  return nil if parsed.nil?
+  return "https://github.com/#{parsed[:user]}/#{parsed[:repo]}"
+end
+
+def test
+  sample1 = "https://github.com/begriffs/postgrest.git"
+  sample2 = "git@github.com:EkispertWebService/ValAPIs.git"
+  sample3 = "hoge"
+  sample4 = "https://github.com/larsch/eclipse-linecopypaste.git"
+
+  puts to_github_url(sample1)
+  puts to_github_url(sample2)
+  puts to_github_url(sample3)
+  puts to_github_url(sample4)
+end
+
+def main
+  IO.popen("git remote -v") do |p|
+    p.each do |line|
+      if github_url = to_github_url(line)
+        puts github_url
+        system("open '#{github_url}' 2> /dev/null")
+        exit
+      end
+    end
+  end
+  warn "Not github repository."
+  exit 1
+end
+
+main
