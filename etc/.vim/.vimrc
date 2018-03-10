@@ -843,6 +843,7 @@ endfunction
 command! FB call _FunctionDescription()
 command! WhatColor call _WhatColor(line('.'), col('.'))
 command! Fixdir let g:fixdir=getcwd()
+command! Initdir exe "cd " . g:initdir
 command! Top exe "cd " . g:topdir
 command! Settop call Settop(getcwd())
 
@@ -969,6 +970,7 @@ augroup MyAutocmd
 augroup END
 
 function! _VimEnter()
+  let g:initdir = getcwd()
   let g:pjroot = expand(_GetProjectRoot())
   let g:topdir = g:pjroot
 
