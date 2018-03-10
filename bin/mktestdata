@@ -321,10 +321,8 @@ class CSVPrinter < RowPrinter
 end
 
 
-#--- main --------------------------------------------------------------------------w
+#--- main --------------------------------------------------------------------------
 if __FILE__ == $0
-
-  lib_filename = 'mktestdata_lib.rb'
   template_filename = 'generate.rb'
 
   if not File.exist?(template_filename)
