@@ -34,7 +34,7 @@ echo
 command df -h | command awk '/^\/dev/ {gsub(/.[890][0-9]%/, "\x1b[1;31m&\x1b[0m"); print;}'
 echo
 
-screen -ls
+which screen > /dev/null 2>&1 && screen -ls
 
 if [ -e ~/.profile.local ]; then
     . ~/.profile.local
