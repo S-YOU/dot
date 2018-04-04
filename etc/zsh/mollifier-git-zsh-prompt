@@ -159,7 +159,7 @@ function get_vcs_info_msg() {
     local -a messages
     local prompt
 
-    LANG=en_US.UTF-8 vcs_info
+    LANG=C vcs_info
 
     if [[ -z ${vcs_info_msg_0_} ]]; then
         # vcs_info で何も取得していない場合はプロンプトを表示しない
