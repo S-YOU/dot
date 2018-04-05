@@ -36,6 +36,7 @@ autoload -Uz colors && colors
 #-----------------------------------------------------------------------------
 setopt auto_cd				# ディレクトリ名だけで cd
 setopt auto_pushd			# cd で pushd
+setopt pushd_ignore_dups    # pushdで重複したディレクトリを入れないようにする
 setopt complete_aliases     # alias v=vim としたとき、vに対してvについての補完をする（vimではなく）
 #setopt noclobber			# リダイレクトで既存ファイルを上書きしない
 setopt extended_history		# 履歴ファイルに時刻を記録
@@ -188,7 +189,6 @@ find_file_in_project() {
 zle -N find_file_in_project
 bindkey '^S' find_file_in_project
 
-
 #-----------------------------------------------------------------------------
 #	プロンプト
 #-----------------------------------------------------------------------------
@@ -294,6 +294,15 @@ cd() {
 		builtin cd -P "$@"
 	fi
 }
+
+# ディレクトリ履歴から選択してcdする
+if [ "$SELECTOR" != "" ]; then
+    select_recent_dirs_and_cd() {
+        local d=$(dirs -p | sed -e 1d | uniq | $SELECTOR)
+        eval "cd $d"
+    }
+    alias ,='select_recent_dirs_and_cd'
+fi
 
 # screenのタイトルを手動で設定したとき、固定する
 fixtitle() {
