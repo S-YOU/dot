@@ -18,6 +18,7 @@
 #     ii. ~/.zlogin
 
 autoload -Uz is-at-least
+autoload edit-command-line; zle -N edit-command-line
 
 # Emacs(bash)と同じキーバインド
 bindkey -e
@@ -25,11 +26,11 @@ bindkey "^I" menu-expand-or-complete
 bindkey "^O" accept-and-hold
 bindkey '^]'   vi-find-next-char
 bindkey '^[^]' vi-find-prev-char
+bindkey "^[v" edit-command-line 
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
 
 autoload -Uz colors && colors
-
 
 #-----------------------------------------------------------------------------
 #	オプション

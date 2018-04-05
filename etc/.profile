@@ -14,7 +14,7 @@ pathmunge "$HOME/bin"
 pathmunge "$HOME/go/bin"
 pathmunge . after
 
-export EDITOR="vim --cmd 'set noswapfile'"
+export EDITOR='vim'
 export IGNORED_DIRS='.git:.svn:CVS:bundle:node_modules'
 export LANG=ja_JP.UTF-8
 export LC_COLLATE=C
