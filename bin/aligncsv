@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+#=============================================================================
+#   CSVファイルを桁揃えして見やすく出力するスクリプト
+#=============================================================================
+
+require "csv"
+require "nkf"
+require "optparse"
+require_relative "./unicode-display_width/lib/unicode/display_width/string_ext.rb"
+
+$opt = {}
+$opt[:col_sep] = ","
+$opt[:max_lines_to_calc_width] = 10000
+
+opt = OptionParser.new
+opt.on("-a", "--all", "最後の行まで読んでから最大幅を計算する（デフォルトでは10000行目まで）") {|v| $opt[:max_lines_to_calc_width] = 10e12 }
+opt.on("-t", "--tsv", "入力をtsvファイルとして扱う") {|v| $opt[:col_sep] = "\t" }
+opt.parse!(ARGV)
+
+OUTPUT_COL_SEP          = " | "   # 出力の区切り文字
+AMBIGUOUS_DEFAULT       = 2       # 文字幅があいまいな文字はこの幅とする
+
+Signal.trap("PIPE", "EXIT")
+
+@max_widths = []
+@widths_cache = {}
+@processed_lineno = 0
+
+csv = CSV.new(NKF.nkf("-w", ARGF.read), col_sep: $opt[:col_sep])
+csv.each.with_index(1) do |row, lineno|
+  if row.length > @max_widths.length
+    @max_widths += [0] * (row.length - @max_widths.length)
+  end
+
+  row.each_with_index do |field, i|
+    field = field.to_s
+    w = field.display_width(AMBIGUOUS_DEFAULT)
+    if w > @max_widths[i]
+      @max_widths[i] = w
+    end
+    @widths_cache["#{lineno}:#{i}"] = w
+  end
+
+  break if lineno >= $opt[:max_lines_to_calc_width]
+
+  @processed_lineno = lineno
+end
+
+csv.rewind
+csv.each.with_index(1) do |row, lineno|
+  puts row.map.with_index {|field, i|
+    field.to_s + " " * (@max_widths[i] - (@widths_cache["#{lineno}:#{i}"] || @max_widths[i]))
+  }.join(OUTPUT_COL_SEP)
+end
