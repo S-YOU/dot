@@ -296,6 +296,7 @@ cd() {
 }
 
 # ディレクトリ履歴から選択してcdする
+# cd -<Tab> でも同様のことができる
 if [ "$SELECTOR" != "" ]; then
     select_recent_dirs_and_cd() {
         local d=$(dirs -p | sed -e 1d | uniq | $SELECTOR)
