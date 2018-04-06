@@ -17,8 +17,8 @@ get_color256() {
     fi
 }
 
-attr=${1:-normal}
-fgbg=${2:-fg}
+fgbg=${1:-fg}
+attr=${2:-normal}
 msg=${3:-'Hello world'}
 
 for i in {0..255} ; do
@@ -32,4 +32,4 @@ for i in {0..255} ; do
 done
 
 echo
-echo "Usage: $0 [normal|bold] [fg|bg] [message]"
+echo "Usage: $0 [fg|bg] [normal|bold] [message]"
