@@ -287,3 +287,20 @@ bm() {
 gip() {
     curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}'
 }
+
+get_color256() {
+    local colornum="$1"
+    local attr="${2:-normal}"
+    local fgbg="${3:-fg}"
+    if [ "$fgbg" = "fg" ]; then
+        a=38
+    else
+        a=48
+    fi
+
+    if [ "$attr" = "normal" ]; then
+        printf "\x1b[$a;5;%sm" $colornum
+    else
+        printf "\x1b[1;$a;5;%sm" $colornum
+    fi
+}

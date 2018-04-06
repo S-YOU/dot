@@ -218,11 +218,13 @@ exit_status_text() {
 }
 
 get_prompt_gip() {
-    echo "$GIP"
+    if [ "$PROMPT_NO_GIP" = "" ]; then
+        if [ "$GIP" = "" ]; then
+            GIP=$(curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}')
+        fi
+        echo "$GIP"
+    fi
 }
-if [ "$PROMPT_NO_GIP" = "" ]; then
-    GIP=$(curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}')
-fi
 
 source $DOT/etc/zsh/mollifier-git-zsh-prompt
 source $DOT/etc/zsh/safe-paste.plugin.zsh
