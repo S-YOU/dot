@@ -201,7 +201,7 @@ bindkey '^S' find_file_in_project
 #	プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
-PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)$(elapsed_time_text)       $(get_vcs_info_msg)
+PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg)
 [%~:%j]# '
 RPROMPT=''
 
@@ -215,12 +215,6 @@ get_prompt_hostname() {
 
 exit_status_text() {
 	echo "%(?.. <%?>)"
-}
-
-elapsed_time_text() {
-    if [ "$ELAPSED_SECONDS" -gt 5 ]; then
-        echo " ${ELAPSED_SECONDS}s"
-    fi
 }
 
 get_prompt_gip() {
