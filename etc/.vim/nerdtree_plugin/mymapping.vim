@@ -20,3 +20,16 @@ function! NERDTreeMyDeleteHandler(node)
   call a:node.parent.removeChild(a:node)
   call NERDTreeRender()
 endfunction
+
+
+call NERDTreeAddKeyMap({
+        \ 'key': 'yy',
+        \ 'callback': 'NERDTreeMyCopyPath',
+        \ 'quickhelpText': 'パスをレジスタにヤンクする',
+        \ 'scope': 'Node' })
+
+function! NERDTreeMyCopyPath(node)
+  let path = a:node.path.str()
+  call setreg('"', path, 'v')
+  echomsg "ヤンクしました: " . path
+endfunction

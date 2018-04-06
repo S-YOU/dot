@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "yaml"
+
+content = ARGF.read
+
+hash = YAML.load(content)
+puts JSON.pretty_generate(hash)

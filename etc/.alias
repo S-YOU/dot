@@ -42,7 +42,7 @@ alias lsdotl='CLICOLOR_FORCE=1 lsdot | grep -e "->"'
 alias pt='pt --follow'
 alias pyg='pygmentize -g -f console256'
 alias r='$DOT/bin/r'
-alias rm='$DOT/bin/rma.sh'
+alias rm='gomi'
 alias sc='screen -X eval "chdir $PWD"; screen'
 alias st='git st'
 alias tf='tail -f -n 500'
@@ -211,7 +211,10 @@ svn() {
 
 tt() {
     if [ -t 1 ]; then
-        cd $(pjroot)
+        local root=$(pjroot)
+        if [ "$root" != "not exist" -a "$root" != "$PWD" ]; then
+            cd $(pjroot)
+        fi
     else
         pjroot
     fi
@@ -283,4 +286,21 @@ bm() {
 
 gip() {
     curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}'
+}
+
+get_color256() {
+    local colornum="$1"
+    local attr="${2:-normal}"
+    local fgbg="${3:-fg}"
+    if [ "$fgbg" = "fg" ]; then
+        a=38
+    else
+        a=48
+    fi
+
+    if [ "$attr" = "normal" ]; then
+        printf "\x1b[$a;5;%sm" $colornum
+    else
+        printf "\x1b[1;$a;5;%sm" $colornum
+    fi
 }

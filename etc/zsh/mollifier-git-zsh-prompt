@@ -31,7 +31,8 @@ if is-at-least 4.3.10; then
     zstyle ':vcs_info:git:*' actionformats '[%b]' '%c%u %m' '<!%a>'
     zstyle ':vcs_info:git:*' check-for-changes true
     zstyle ':vcs_info:git:*' stagedstr "%F{blue}staged"   # %c で表示する文字列
-    zstyle ':vcs_info:git:*' unstagedstr "%F{red}changed"    # %u で表示する文字列
+    #zstyle ':vcs_info:git:*' unstagedstr "%F{red}changed"    # %u で表示する文字列
+    zstyle ':vcs_info:git:*' unstagedstr "%fchanged"    # %u で表示する文字列
 fi
 
 # hooks 設定
@@ -159,7 +160,7 @@ function get_vcs_info_msg() {
     local -a messages
     local prompt
 
-    LANG=en_US.UTF-8 vcs_info
+    LANG=C vcs_info
 
     if [[ -z ${vcs_info_msg_0_} ]]; then
         # vcs_info で何も取得していない場合はプロンプトを表示しない

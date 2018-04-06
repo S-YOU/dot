@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+TABLE = <<EOF
+16進    10進     KMG表記    2**x
+10      16                  2**4
+100     256                 2**8
+1000    4096     4K         2**12
+10000   65536    64K        2**16
+100000  1048576  1M         2**20
+
+400     1024     1K         2**10
+4000    16384    16K        2**14
+
+80      128                 2**7
+800     2048     2K         2**11
+8000    32767    32K        2**15
+EOF
+
+print TABLE
+
+UNITS = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"]
+
+def num_to_units(num)
+  if (num + 1) % 16 == 0
+    return num_to_units(num + 1) + " - 1"
+  end
+  rs = []
+  q = num
+  while q != 0
+    r = q % 1024
+    q = q / 1024
+    rs << r
+  end
+  return rs.map.with_index {|r, i| r == 0 ? "" : "#{r}#{UNITS[i]}"}.select {|s| s != ""}.reverse.join(" + ")
+end
+
+loop do
+  print "> "
+  $stdout.flush
+  if line = gets
+    line.chomp!
+    num = line.to_i
+    puts num_to_units(num)
+  else
+    exit(0)
+  end
+end

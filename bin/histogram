@@ -17,6 +17,7 @@ opt = OptionParser.new(usage=usage)
 opt.on("--include-last-line", "入力の最後の行を含める（デフォルトはオフ）") {|v| $opt[:include_last_line] = true}
 opt.on("--asc", "昇順でソートする")         {|v| $opt[:sort] = :asc}
 opt.on("--desc", "降順でソートする")        {|v| $opt[:sort] = :desc}
+opt.on("--no-sort", "ソートしない")         {|v| $opt[:sort] = :no_sort}
 opt.on("--max=LENGTH", "最大行の「*」の数") {|v| $opt[:max]  = v.to_i}
 opt.parse!(ARGV)
 
@@ -48,7 +49,7 @@ lines.each do |line|
 end
 
 case $opt[:sort]
-when :asc
+when :asc, nil
   splited.sort! {|x, y| x[0] <=> y[0]}
 when :desc
   splited.sort! {|x, y| y[0] <=> x[0]}
@@ -60,6 +61,8 @@ for s in splited
   n    = s[0]
   name = s[1]
 
-  printf("%#{$opt[:max]}s %6d  %s\n", "*" * ($opt[:max] * (n / n_max.to_f)).ceil, n, name)
+  ratio = n / n_max.to_f
+  percent = (n / total.to_f * 100).round
+  printf("%#{$opt[:max]}s %6d (%3d%%) %s\n", "*" * ($opt[:max] * ratio).ceil, n, percent, name)
 end
 printf("%#{$opt[:max]}s %6d  %s\n", " " * $opt[:max], total, "合計")

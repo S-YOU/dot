@@ -33,8 +33,10 @@ class TestDataGenerator
 load '#{$0}'
 
 count = (ARGV[0] ? ARGV[0].to_i : 5)
+table_name = (ARGV[1] || 't')
+filename = (ARGV[2] || "\#{table_name}.sql")
 
-a = TestDataGenerator.new(table_name: 'table_name')
+a = TestDataGenerator.new(table_name: table_name)
 a.add('id') {|t| t.id }
 a.add('sei') {|t| t.name1 }
 a.add('mei') {|t| t.name2 }
@@ -51,7 +53,7 @@ a.add('sex') {|t| t.enum( ['男', '女'])}
 a.add('bool') {|t| t.enum( [1, 0])}
 a.add('memo') {|t| t.ref('sei') + t.ref('mei') + 'さんの合言葉：' + t.string(10) }
 
-a.out('output.sql', count)
+a.out(filename, count)
 EOF
   end
 
@@ -90,7 +92,7 @@ EOF
         printer = CSVPrinter.new
         printer.separator = "\t"
       else
-        STDERR.puts "Error: 不明な拡張子です"
+        STDERR.puts "Error: 出力ファイル名の拡張子は.sql .json .csv .tsvのいずれかで指定してください（#{filename}） "
         exit(1)
       end
     else
@@ -104,7 +106,7 @@ EOF
     count.times do |i|
       row = make_array
       print printer.print_row(row, i, count)
-      STDERR.write "\r#{i}/#{count}"
+      STDERR.write "\r#{i}/#{count} (#{(i.to_f / count * 100).round}%)" if i % 100 == 1
     end
     print printer.print_footer
 
@@ -319,10 +321,8 @@ class CSVPrinter < RowPrinter
 end
 
 
-#--- main --------------------------------------------------------------------------w
+#--- main --------------------------------------------------------------------------
 if __FILE__ == $0
-
-  lib_filename = 'mktestdata_lib.rb'
   template_filename = 'generate.rb'
 
   if not File.exist?(template_filename)

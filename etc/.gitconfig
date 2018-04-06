@@ -12,6 +12,7 @@
 #[url "https://"]
 #	insteadOf = git://
 [alias]
+    amend = commit --amend --no-edit
 	ba = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
 	ci = commit
 	co = checkout
@@ -22,6 +23,7 @@
 	cancel-previous-commit = reset HEAD~1
 	# カレントブランチをoriginにプッシュする
 	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`
+	pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
 	unstage = reset HEAD
 	modify-history = rebase -i HEAD~6
 	# masterからの分岐点以降のコミットを表示する
@@ -31,7 +33,7 @@
 	assume-unchanged = update-index --assume-unchanged 
 	no-assume-unchanged = update-index --no-assume-unchanged 
 	alias = !git config --get-regexp ^alias\\. | sort
-	tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %s'
+	tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %Cgreen%s%Creset'
 	# mergeやreset --hardのとき、変更を破棄しない
 	skip-worktree = update-index --skip-worktree
 	no-skip-worktree = update-index --no-skip-worktree
@@ -44,8 +46,8 @@
 	# git tag-by-date
 	# git push origin --tags
 	shallow-clone = clone --depth 1
-	# マージされているブランチをリモートから削除する
-	remove-unused-branches = !git branch -r --merged | grep -v master | sed 's/origin\\///' | xargs -n 1 git push --delete origin
+	# マージされているブランチを削除する
+	remove-unused-branches = !git branch -d $(git branch --merged | grep -v -w master)
 	vimdiff = difftool --tool=vimdiff --prompt
 	bro = browse
 	# 追跡されていないファイルを削除するには

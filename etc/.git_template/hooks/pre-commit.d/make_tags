@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+tags_path = "tags"
+
+unless File.exist?(tags_path)
+  exit
+end
+
+secs = Time.now - File.mtime(tags_path)
+
+if secs > 60 * 30
+  system("git ctags")
+end

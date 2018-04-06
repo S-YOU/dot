@@ -18,6 +18,7 @@
 #     ii. ~/.zlogin
 
 autoload -Uz is-at-least
+autoload edit-command-line; zle -N edit-command-line
 
 # Emacs(bash)と同じキーバインド
 bindkey -e
@@ -25,17 +26,18 @@ bindkey "^I" menu-expand-or-complete
 bindkey "^O" accept-and-hold
 bindkey '^]'   vi-find-next-char
 bindkey '^[^]' vi-find-prev-char
+bindkey "^X^E" edit-command-line 
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
 
 autoload -Uz colors && colors
-
 
 #-----------------------------------------------------------------------------
 #	オプション
 #-----------------------------------------------------------------------------
 setopt auto_cd				# ディレクトリ名だけで cd
 setopt auto_pushd			# cd で pushd
+setopt pushd_ignore_dups    # pushdで重複したディレクトリを入れないようにする
 setopt complete_aliases     # alias v=vim としたとき、vに対してvについての補完をする（vimではなく）
 #setopt noclobber			# リダイレクトで既存ファイルを上書きしない
 setopt extended_history		# 履歴ファイルに時刻を記録
@@ -99,6 +101,7 @@ zstyle ':completion:*' group-name ''
 compdef _files r
 compdef '_files -g "*.hs"' runghc
 compdef _bm bm
+compdef gti='git'
 
 _bm() {
     _files -W ~/bm && return 0
@@ -135,6 +138,47 @@ quote-word() {
 zle -N quote-word
 bindkey "^[q" quote-word
 
+repeat_last_command() {
+    zle _up-line-or-history-ignoring
+    zle accept-line
+}
+zle -N repeat_last_command
+bindkey "^[k" repeat_last_command
+
+# 単語展開に対応したタブ補完
+_complete-or-expand() {
+    case "$BUFFER" in
+        b)
+            BUFFER="bundle exec "
+            CURSOR=$#BUFFER
+            ;;
+        rs)
+            BUFFER="bin/rspec "
+            CURSOR=$#BUFFER
+            ;;
+        ff)
+            BUFFER="bin/rspec --fail-fast "
+            CURSOR=$#BUFFER
+            ;;
+        nf)
+            BUFFER="bin/rspec --next-failure "
+            CURSOR=$#BUFFER
+            ;;
+        of)
+            BUFFER="bin/rspec --only-failures "
+            CURSOR=$#BUFFER
+            ;;
+        *)
+            zle menu-expand-or-complete
+            ;;
+    esac
+}
+ff="--fail-fast"
+nf="--next-failure"
+of="--only-failures"
+zle -N _complete-or-expand
+bindkey '^I' _complete-or-expand
+
 # ディレクトリ移動履歴をfzfしてcd
 if is-at-least 4.3.11; then
   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
@@ -145,16 +189,21 @@ if is-at-least 4.3.11; then
 fi
 
 source $DOT/etc/zsh/key-bindings.zsh
-bindkey '^S' fzf-file-widget
 
+find_file_in_project() {
+    tt
+    zle fzf-file-widget
+}
+zle -N find_file_in_project
+bindkey '^S' find_file_in_project
 
 #-----------------------------------------------------------------------------
 #	プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
-PROMPT='$(exit_status_text)%{$PROMPT_COLOR%}$(get_prompt_hostname)$(get_prompt_gip)%{${reset_color}%}
+PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)$(elapsed_time_text)        $(get_vcs_info_msg)
 [%~:%j]# '
-RPROMPT='$(get_vcs_info_msg)'
+RPROMPT=''
 
 get_prompt_hostname() {
 	if [ "$PROMPT_HOSTNAME" = "" ]; then
@@ -165,17 +214,27 @@ get_prompt_hostname() {
 }
 
 exit_status_text() {
-	echo "%(?..<%?> )"
+	echo "%(?.. <%?>)"
+}
+
+elapsed_time_text() {
+    if [ "$ELAPSED_SECONDS" -gt 5 ]; then
+        echo " ${ELAPSED_SECONDS}s"
+    fi
 }
 
 get_prompt_gip() {
     if [ "$PROMPT_NO_GIP" = "" ]; then
-        echo " $(gip)"
+        if [ "$GIP" = "" ]; then
+            GIP=$(curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}')
+        fi
+        echo "$GIP"
     fi
 }
 
 source $DOT/etc/zsh/mollifier-git-zsh-prompt
 source $DOT/etc/zsh/safe-paste.plugin.zsh
+source $DOT/etc/zsh/auto-ls.zsh
 
 
 #-----------------------------------------------------------------------------
@@ -251,6 +310,16 @@ cd() {
 		builtin cd -P "$@"
 	fi
 }
+
+# ディレクトリ履歴から選択してcdする
+# cd -<Tab> でも同様のことができる
+if [ "$SELECTOR" != "" ]; then
+    select_recent_dirs_and_cd() {
+        local d=$(dirs -p | sed -e 1d | uniq | $SELECTOR)
+        eval "cd $d"
+    }
+    alias ,='select_recent_dirs_and_cd'
+fi
 
 # screenのタイトルを手動で設定したとき、固定する
 fixtitle() {

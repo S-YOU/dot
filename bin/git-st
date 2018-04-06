@@ -2,7 +2,15 @@
 
 set -e
 
-git log -1
-echo
-git status --short --branch
-git skipped
+if [ "$1" = "" ]; then
+    git log -1 || true
+    if [ $? = 0 ]; then
+        echo
+        git status --short --branch
+        git skipped
+    else
+        git status
+    fi
+else
+    git status --short | grep "^$1" | sed -e 's@^..@@'
+fi

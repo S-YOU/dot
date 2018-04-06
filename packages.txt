@@ -1,0 +1,9 @@
+vim
+zsh
+screen
+ruby
+the_platinum_searcher
+fzf
+universal-ctags
+jq
+nkf

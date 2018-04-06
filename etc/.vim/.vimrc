@@ -29,11 +29,21 @@ filetype indent on
 set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
-set runtimepath^=~/.vim/bundle/ctrlp
-set runtimepath^=~/.vim/bundle/nerdtree
-set runtimepath^=~/.vim/bundle/vim-go
-set runtimepath^=~/.vim/bundle/editorconfig-vim-master
-set runtimepath^=~/.vim/bundle/vim-indexed-search
+function! _UpdateBundle() abort
+  try
+    let dirs = glob("~/.vim/bundle/*", 1, 1)
+    for d in dirs
+      exe "set runtimepath^=" . d
+      let docdir = d . "/doc"
+      if isdirectory(docdir) && !filereadable(docdir . "/tags")
+        exe "helptags" docdir
+        echomsg "Created tags in " . docdir
+      endif
+    endfor
+  finally
+  endtry
+endfunction
+call _UpdateBundle()
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
@@ -86,6 +96,9 @@ endif
 
 " 編集 ------------------------------------------------------------ 
 set autoindent nosmartindent
+set cinoptions=t0,g0,(0
+set cinkeys-=0#
+set indentkeys-=0#
 set smarttab
 " タブの設定について
 "    1. 基本は4
@@ -94,7 +107,6 @@ set smarttab
 " 設定もこの順番で行われる
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set shiftround
-set cinoptions=t0,g0,(0
 set backspace=indent,eol,start
 set formatoptions=tcqnmM
 set virtualedit=block
@@ -268,6 +280,8 @@ noremap <silent> ( /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
 inoremap <silent><C-a> <Esc>I
 inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
+inoremap <silent> <C-l> <Esc>g~awgi
+vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
 nnoremap <silent> <C-x><C-o> <C-i>
@@ -309,7 +323,6 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
-inoremap # X<BS>#
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
@@ -373,7 +386,6 @@ xnoremap <silent> <space>J <Esc>:InsertSpaceBetweenHankakuZenkaku<CR>
 nnoremap <C-x>p :<C-u>r ~/tmp/screen-hardcopy.txt<CR>
 
 "iabbrev /// <Esc>j:FB<CR><BS>
-vnoremap p "0p
 " 関数を範囲選択
 nnoremap vf ][v[[?^s*$<CR>
 " for などのブロックを選択。カーソル位置を for の行におく必要がある。
@@ -492,7 +504,7 @@ function! _GetLastSearchedWord()
 endfunction
 cnoremap <expr> <C-r>/ _GetLastSearchedWord()
 inoremap <expr> <C-r>/ _GetLastSearchedWord()
-cnoremap <C-v> <C-r>"
+cnoremap <C-z> <C-r>=substitute(getreg('"'), '\n', '', 'g')<CR>
 
 " コマンドラインへパスなどを挿入
 cnoremap <expr> <C-t>  _GetProjectRoot() . "/\<C-d>"
@@ -831,6 +843,7 @@ endfunction
 command! FB call _FunctionDescription()
 command! WhatColor call _WhatColor(line('.'), col('.'))
 command! Fixdir let g:fixdir=getcwd()
+command! Initdir exe "cd " . g:initdir
 command! Top exe "cd " . g:topdir
 command! Settop call Settop(getcwd())
 
@@ -948,6 +961,7 @@ augroup MyAutocmd
   au FileType *           call _SetDict()
   au InsertLeave * set nopaste
   au Syntax c,cpp,ruby,java,python,javascript,php,cs call _MySyntax() 
+  au Syntax go call _GoSyntax() 
   au Syntax markdown call _MarkdownSyntax() 
   au Syntax * call _HighlightMixedIndent()
   au VimEnter * call _VimEnter()
@@ -956,6 +970,7 @@ augroup MyAutocmd
 augroup END
 
 function! _VimEnter()
+  let g:initdir = getcwd()
   let g:pjroot = expand(_GetProjectRoot())
   let g:topdir = g:pjroot
 
@@ -1044,6 +1059,8 @@ function! C_Setting()
   setlocal nosmartindent
   setlocal fo-=o
   setlocal omnifunc=_MyCComplete
+  set cinkeys+=0#
+  set indentkeys+=0#
   " インデントレベルを合わせて貼り付け
   nnoremap <buffer> p p=`]`]
   "nnoremap <buffer> n n:redraw<CR>:echo WhatFunction()<CR>
@@ -1162,10 +1179,35 @@ function! _CloseTagByCtrlP()
   endif
 endfunction
 
-function! Go_Setting()
-  let b:commentSymbol = '//'
+" カーソル下の単語を取得する。単語の境界はa:iskeywordにより定義される
+function! _GetWordUnderCursor(iskeyword) abort
+  let iskeyword_old = &iskeyword
+  try
+    if a:iskeyword != ""
+      let &iskeyword = a:iskeyword
+    endif
+    return expand("<cword>")
+  finally
+    let &iskeyword = iskeyword_old
+  endtry
 endfunction
 
+function! Go_Setting()
+  let b:commentSymbol = '//'
+  if executable("goimports")
+    let g:go_fmt_command = "goimports"
+  else
+    call _Echo("WarningMsg", "goimportsをインストールするには: go get golang.org/x/tools/cmd/goimports")
+  endif
+  inoreab <buffer> ife if err != nil {<Enter>log.Fatal(err)<Enter>}<Esc><Up>w<C-r>=Eatchar('\s')<CR>
+  nnoremap <buffer> [[ ?^\w.*{$<CR>:noh<CR>
+endfunction
+let g:go_highlight_trailing_whitespace_error = 0
+let g:go_template_autocreate = 0
+
+function! _GoSyntax()
+  syn match FunctionName /\w\+(\@=/
+endfunction
 
 function! JavaScript_Setting()
   let b:commentSymbol = "//"
@@ -1272,13 +1314,18 @@ endfunction
 
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
+  nnoremap <silent> <C-x><C-b> :call _YankPath("bundle exec rspec ", 1)<CR>
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
-  call DefineAbbrev('bb', 'byebug', '', '')
+  "call DefineAbbrev('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
-    let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    if expand("%") =~ '_spec\.rb'
+      let b:_exec_system_last_cmd = "0r!rspec " . expand("%:p")
+    else
+      let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+    endif
   endif
 endfunction 
 
@@ -1390,15 +1437,35 @@ function! _ToggleCommentSelection() range
     let deleteComment = 0
   endif 
 
-  while (cl <= a:lastline) 
-    if deleteComment
-      silent exe deleteCommentCommand
+  if deleteComment
+    while (cl <= a:lastline) 
+        silent exe deleteCommentCommand
+      normal! j
+      let cl = cl + 1
+    endwhile
+  else
+    let min = 999999
+    let j_count = a:lastline - a:firstline
+    for i in range(a:firstline, a:lastline)
+      exe "normal! " . i . "G"
+      normal! ^
+      if getline(".") != ""
+        let vc = virtcol(".")
+        if vc < min
+          let min = vc
+        endif
+      endif
+    endfor
+    if j_count != 0
+      exe "normal! " . a:firstline . "G"
+      exe "normal! " . min . "|"
+      exe "normal! \<C-v>" . j_count . "jI" . cs
     else
-      execute "normal! I" . cs
+      exe "normal! " . a:firstline . "G"
+      exe "normal! I" . cs
     endif
-    normal! j
-    let cl = cl + 1
-  endwhile
+  endif
+  exe "normal! " . (a:lastline + 1) . "G"
 endfunction
 
 function! _FunctionDescription()
@@ -2092,15 +2159,17 @@ endfunction
 " Christian J. Robinson <infynity@onewest.net>
 " http://www.vim.org/scripts/script.php?script_id=1928
 command! -nargs=* -complete=file -bang Rename :call Rename("<args>", "<bang>")
-function! Rename(name, bang)
+function! Rename(name, bang) abort
   if stridx(a:name, '/') == -1
     let dir = expand("%:p:h") . '/'
   else
     let dir = ''
   endif
   let l:curfile = expand("%:p")
+  let perm = getfperm(l:curfile)
   let v:errmsg = ""
   silent! exe "saveas" . a:bang . " " . fnameescape(dir . a:name)
+  call setfperm(dir . a:name, perm)
   if v:errmsg =~# '^$\|^E329'
     if expand("%:p") !=# l:curfile && filewritable(expand("%:p"))
       silent exe "bwipe! " . l:curfile
@@ -2508,7 +2577,7 @@ let g:miniBufExplShowBufNumbers = 0
 
 " vim-indexed-search
 let g:indexed_search_colors = 0
-let g:indexed_search_numbered_only = 0
+let g:indexed_search_numbered_only = 1
 let g:indexed_search_n_always_searches_forward = 0
 
 
@@ -2688,7 +2757,14 @@ vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
 " 現在のレジスタを~/.yankに保存し、screenで<C-t><C-v>で貼り付けられるようにする
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
-nnoremap <silent> <C-x><C-b> :let @0 = "b " . expand("%").":".line(".")<CR>:call _YankToFile('0', 1)<CR>
+nnoremap <silent> <C-x><C-b> :call _YankPath("", 1)<CR>
+
+function! _YankPath(prefix, full) abort
+  let path = a:full ? expand("%:p") : expand("%")
+  let @0 = a:prefix .path .":".line(".")
+  call _YankToFile('0', 1)
+endfunction
+
 command! PutFromFile r ~/.yank
 function! _YankToFile(reg, show_message)
   let yankfile = "~/.yank"
@@ -2973,6 +3049,37 @@ function! EvalSelection()
   else
     call ExecSystem("selection")
   endif
+endfunction
+
+nnoremap <silent> <C-c> :<C-u>Copy<CR>
+vnoremap <silent> <C-c> :Copy<CR>
+command! -range=% Copy <line1>,<line2>call _CopyToClipboard()
+function! _CopyToClipboard() range
+  let save_cursor = getcurpos()
+  let start = a:firstline
+  let end = a:lastline
+  if executable('pbcopy')
+    exe start . "," . end . "w !pbcopy"
+  else
+    call _Echo("ErrorMsg", "利用可能なコピーコマンドがありません")
+    return
+  endif
+  call setpos('.', save_cursor)
+  call _Echo("Normal", "Copied " . (end - start + 1) . " lines.")
+endfunction
+
+" 指定されたディレクトリが存在しないなら作成して:eする
+command! -nargs=1 -complete=file Xe call _EditAndCreateDirectoryIfNotExist("<args>", "e")
+command! -nargs=1 -complete=file Xsp call _EditAndCreateDirectoryIfNotExist("<args>", "sp")
+command! -nargs=1 -complete=file Xvs call _EditAndCreateDirectoryIfNotExist("<args>", "vs")
+function! _EditAndCreateDirectoryIfNotExist(path, cmd) abort
+  let dirname  = substitute(a:path, '/[^/]*$', '', '')
+  let basename = substitute(a:path, '.*/', '', '')
+  if !isdirectory(dirname)
+    call mkdir(dirname, "p")
+  endif
+  exe "cd" dirname
+  exe a:cmd  basename
 endfunction
 
 "=============================================================================

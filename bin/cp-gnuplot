@@ -1,0 +1,5 @@
+#!/bin/sh
+
+target=${1:-.}
+
+cp -v ~/dot/template/gnuplot/dot.gnp "$target"

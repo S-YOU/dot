@@ -21,10 +21,10 @@ file_count=$(ls -A "$tmp" | wc -l)
 if [ "$file_count" = 1 ]; then
     mv -i "$tmp"/* .
     rmdir "$tmp"
-    echo "カレントディレクトリに展開しました。行儀のいいzipでした。"
+    echo "\x1b[1;32mカレントディレクトリに展開しました。行儀のいいzipでした。\x1b[0m"
 else
     mv -iv "$tmp" "$dir"
-    echo "$dir に展開しました。行儀の悪いzipでした。"
+    echo -e "\x1b[1;32m$dir に展開しました。行儀の悪いzipでした。\x1b[0m"
 fi
 
 rm -rf "$tmp"

@@ -11,9 +11,10 @@ export DOT=${DOT:-$HOME/dot}
 
 pathmunge "$DOT/bin"
 pathmunge "$HOME/bin"
+pathmunge "$HOME/go/bin"
 pathmunge . after
 
-export EDITOR="vim --cmd 'set noswapfile'"
+export EDITOR='vim'
 export IGNORED_DIRS='.git:.svn:CVS:bundle:node_modules'
 export LANG=ja_JP.UTF-8
 export LC_COLLATE=C
@@ -33,7 +34,7 @@ echo
 command df -h | command awk '/^\/dev/ {gsub(/.[890][0-9]%/, "\x1b[1;31m&\x1b[0m"); print;}'
 echo
 
-screen -ls
+which screen > /dev/null 2>&1 && screen -ls
 
 if [ -e ~/.profile.local ]; then
     . ~/.profile.local
