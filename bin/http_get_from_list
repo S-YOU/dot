@@ -95,8 +95,6 @@ def download(list, thread_id, thread_count)
         percent = ((i / list.length.to_f) * 100).to_i
         now = Time.now
         puts "#{color}total_time:#{now - started_at}\ti:#{i}\tpercent:#{percent}\telapsed:#{now - request_started_at}\tstatus:#{res.code}\texpected:#{target_url.expected}\turl:#{target_url.uri}#{COLOR_RESET}\n"
-
-        i += thread_count
       rescue
         print COLOR_FAILURE
         puts target_url.uri
@@ -104,6 +102,7 @@ def download(list, thread_id, thread_count)
         puts $!.backtrace.join("\n")
         puts COLOR_RESET
       end
+      i += thread_count
     end
     Thread.current[:result] = count_by_code
   end
