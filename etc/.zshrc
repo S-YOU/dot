@@ -138,6 +138,13 @@ quote-word() {
 zle -N quote-word
 bindkey "^[q" quote-word
 
+repeat_last_command() {
+    zle _up-line-or-history-ignoring
+    zle accept-line
+}
+zle -N repeat_last_command
+bindkey "^[k" repeat_last_command
+
 # 単語展開に対応したタブ補完
 _complete-or-expand() {
     case "$BUFFER" in
