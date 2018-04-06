@@ -202,8 +202,7 @@ bindkey '^S' find_file_in_project
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
 PROMPT_DIR_COLOR="\e[38;5;114m"
-PROMPT_DIR_COLOR="\e[0;31m"
-PROMPT='${PROMPT_DIR_COLOR}[%~:%j]${reset_color} $(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)$(elapsed_time_text) $(get_vcs_info_msg)
+PROMPT='$(echo $PROMPT_COLOR)[%~:%j] ${reset_color}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)$(elapsed_time_text) $(get_vcs_info_msg)
 $ '
 RPROMPT=''
 
