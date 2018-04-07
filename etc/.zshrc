@@ -53,6 +53,7 @@ setopt sh_word_split		# クォートされていない変数の値の中の空�
 setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイルに入れない
 setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
 setopt hist_ignore_all_dups # 新しいエントリが重複なら古いエントリを削除する
+setopt nobanghist           # ! によるヒストリ展開を無効化する
 setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 is-at-least 5.2 && setopt glob_star_short  # **.c で **/*.c と同じ展開をする
