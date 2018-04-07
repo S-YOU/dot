@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+#
+# 標準入力から読み込んで、行の先頭の数値をstrftimeして出力する
+#
+# $ ruby -e 'p Time.at(1472262992)'
+# という感じでもできる。
+
+require "optparse"
+
+DEFAULT_FORMAT = "%Y-%m-%d %H:%M:%S %z"
+
+def format_string(timestamp_str)
+  timestamp_str.strip!
+  if timestamp_str.length > 10
+    float_value = timestamp_str.to_f / 1000.0
+  else
+    float_value = timestamp_str.to_f
+  end
+  return Time.at(float_value).strftime(@format)
+end
+
+def main
+  @format = DEFAULT_FORMAT
+
+  opt = OptionParser.new
+  opt.on("-f", "--format", "出力フォーマット（デフォルト：#{DEFAULT_FORMAT}）") {|v| @format = DEFAULT_FORMAT }
+  opt.parse!(ARGV)
+
+  if ARGV.length == 0
+    timestamps = STDIN
+  else
+    timestamps = ARGV
+  end
+
+  timestamps.each do |ts|
+    puts format_string(ts)
+  end
+end
+
+main
