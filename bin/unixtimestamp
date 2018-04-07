@@ -10,7 +10,7 @@ require "optparse"
 DEFAULT_FORMAT = "%Y-%m-%d %H:%M:%S %z"
 
 def format_string(timestamp_str)
-  timestamp_str.strip!
+  timestamp_str = timestamp_str.strip
   if timestamp_str.length > 10
     float_value = timestamp_str.to_f / 1000.0
   else
@@ -23,7 +23,7 @@ def main
   @format = DEFAULT_FORMAT
 
   opt = OptionParser.new
-  opt.on("-f", "--format", "出力フォーマット（デフォルト：#{DEFAULT_FORMAT}）") {|v| @format = DEFAULT_FORMAT }
+  opt.on("-f", "--format=FORMAT", "出力フォーマット（デフォルト：#{DEFAULT_FORMAT}）") {|v| @format = v }
   opt.parse!(ARGV)
 
   if ARGV.length == 0
