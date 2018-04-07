@@ -24,9 +24,11 @@ autoload edit-command-line; zle -N edit-command-line
 bindkey -e
 bindkey "^I" menu-expand-or-complete
 bindkey "^O" accept-and-hold
-bindkey '^]'   vi-find-next-char
-bindkey '^[^]' vi-find-prev-char
 bindkey "^X^E" edit-command-line 
+
+bindkey "^[^[" vi-cmd-mode
+bindkey -M vicmd "b" backward-word
+bindkey -M vicmd "w" forward-word
 # 2015-05-26 C-zでfg。実験的に導入
 #bindkey -s "^Z" "^Ufg^M"
 
