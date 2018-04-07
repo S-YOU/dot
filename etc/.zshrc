@@ -340,3 +340,7 @@ alias help=run-help
 if [ -e ~/.zshrc.local ]; then
     . ~/.zshrc.local
 fi
+
+fcl() {
+    fc -l | sed -e 's@^[0-9]\+\s\+@$ @'
+}
