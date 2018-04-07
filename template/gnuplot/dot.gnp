@@ -1,8 +1,10 @@
 #!/usr/bin/env gnuplot
 
+# 入力ファイル
 IN          = "hoge.csv"
 SEPARATOR   = ","
 
+# 出力ファイル
 OUT         = "out.png"
 TITLE       = "Graph 1"
 XLABEL      = "x"
