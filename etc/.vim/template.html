@@ -6,22 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?vim expand("%") ?></title>
 
-  <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/locale/ja.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js" async></script>
 
   <!-- Bootstrap-->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" async></script>
 
   <style>
     html, body  { height: 100%; }
-    div.sidebar { float: left; width: 200px; height: 100%; background: #eee; }
+    div.sidebar { float: left; width: 200px; height: 100%; background: #f8f8f8; }
     div.sidebar_inside { margin: 6px 12px; }
-    div.main    { height: 100%; padding-left: 200px; }
+    div.content_wrapper { height: 100%; padding-left: 200px; }
+    div.content { padding-top: 6px; }
     div.under_navbar { padding-top: 50px; height: 100%; }
     h1          { font-size: 24px; margin: 6px 0px; }
-    div.container { height: 100%; padding: 0; }
   </style>
 
   <script>
@@ -41,9 +39,9 @@
         サイドバー
       </div>
     </div>
-    <div class="main">
-      <div class="container-fluid">
-        ボディ
+    <div class="content_wrapper">
+      <div class="content container-fluid">
+        コンテント
       </div>
     </div>
   </div>
