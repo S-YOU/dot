@@ -148,6 +148,18 @@ repeat_last_command() {
 zle -N repeat_last_command
 bindkey "^[k" repeat_last_command
 
+_list_dirstack() {
+    local buffer_save="$BUFFER"
+    local cursor_save="$CURSOR"
+    BUFFER="cd -"
+    CURSOR=4
+    zle list-choices
+    BUFFER="$buffer_save"
+    CURSOR="$cursor_save"
+}
+zle -N _list_dirstack
+bindkey "^[d" _list_dirstack
+
 # 単語展開に対応したタブ補完
 _complete-or-expand() {
     case "$BUFFER" in
