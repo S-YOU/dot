@@ -74,6 +74,7 @@ autoload -Uz compinit && compinit -u
 # 補完候補をメニューで選択
 zstyle ':completion:*' menu select
 zmodload zsh/complist
+bindkey -M menuselect '^M' .accept-line
 bindkey -M menuselect '^D' accept
 bindkey -M menuselect '^O' accept-and-infer-next-history
 bindkey -M menuselect '^F' forward-char
