@@ -373,5 +373,9 @@ if [ -e ~/.zshrc.local ]; then
 fi
 
 fcl() {
-    fc -l | sed -e 's@^[0-9]\+\s\+@$ @'
+    if [ "$1" = "-n" ]; then    # 行頭の $ を削除する
+        fc -l | sed -e 's@^[0-9]\+\s\+@@'
+    else
+        fc -l | sed -e 's@^[0-9]\+\s\+@$ @'
+    fi
 }
