@@ -148,22 +148,34 @@ repeat_last_command() {
 zle -N repeat_last_command
 bindkey "^[k" repeat_last_command
 
-# dirs -vの結果をコマンドプロンプトの下に表示する
-_showdirstack() {
-    _values $(dirs -v | while read -r num dirname; do echo "${num}[${dirname}]"; done)
-}
-compdef _showdirstack showdirstack
-_list_dirstack() {
-    local buffer_save="$BUFFER"
-    local cursor_save="$CURSOR"
-    BUFFER="showdirstack "
-    CURSOR=$#BUFFER
-    zle list-choices
-    BUFFER="$buffer_save"
-    CURSOR="$cursor_save"
-}
-zle -N _list_dirstack
-bindkey "^[d" _list_dirstack
+if [ "$SELECTOR" != "" ]; then
+    _dirstack_widget() {
+        LBUFFER="${LBUFFER}$(dirs -p | sed -e '1d' -e 's@$@/@' | $SELECTOR --height 40% --reverse)"
+        local ret=$?
+        zle redisplay
+        typeset -f zle-line-init >/dev/null && zle zle-line-init
+        return $ret
+    }
+    zle     -N   _dirstack_widget
+    bindkey '^[d' _dirstack_widget
+else
+    # dirs -vの結果をコマンドプロンプトの下に表示する
+    _showdirstack() {
+        _values $(dirs -v | while read -r num dirname; do echo "${dirname}[${num}]"; done)
+    }
+    compdef _showdirstack showdirstack
+    _list_dirstack() {
+        local buffer_save="$BUFFER"
+        local cursor_save="$CURSOR"
+        BUFFER="showdirstack "
+        CURSOR=$#BUFFER
+        zle list-choices
+        BUFFER="$buffer_save"
+        CURSOR="$cursor_save"
+    }
+    zle -N _list_dirstack
+    bindkey "^[d" _list_dirstack
+fi
 
 # 単語展開に対応したタブ補完
 _complete-or-expand() {
