@@ -132,7 +132,7 @@ set nowrap
 set nolist listchars=tab:^\ 
 "set ruler
 "set ruf=%45(%12f%=\ %m%{'['.(&fenc!=''?&fenc:&enc).']'}\ %l-%v\ %p%%\ [%02B]%)
-set statusline=%n:\ %F\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%l,%v\ (%p%%)\ %{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}
+set statusline=%n:\ %F\ %m%{&buftype=='nofile'?'[NOFILE]':''}%{index(['i','R','Rv'],mode())!=-1?'\ \ --INSERT--\ ':''}%{&paste==1?'[PASTE]':''}%{WhatFunction()}%=%l,%v\ (%p%%)\ %{&ft}\ %{(&et?'space':'tab').':'.(&sw)}\ %{(&fenc!=''?&fenc:&enc).(&bomb?'bom':'').':'.strpart(&ff,0,1)}
 set tabline=%!_MyTabLine()
 set showcmd
 set report=0
