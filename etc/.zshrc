@@ -148,11 +148,16 @@ repeat_last_command() {
 zle -N repeat_last_command
 bindkey "^[k" repeat_last_command
 
+# dirs -vの結果をコマンドプロンプトの下に表示する
+_showdirstack() {
+    _values $(dirs -v | while read -r num dirname; do echo "${num}[${dirname}]"; done)
+}
+compdef _showdirstack showdirstack
 _list_dirstack() {
     local buffer_save="$BUFFER"
     local cursor_save="$CURSOR"
-    BUFFER="cd -"
-    CURSOR=4
+    BUFFER="showdirstack "
+    CURSOR=$#BUFFER
     zle list-choices
     BUFFER="$buffer_save"
     CURSOR="$cursor_save"
