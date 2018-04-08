@@ -951,7 +951,7 @@ augroup MyAutocmd
   au FileType python      call Python_Setting()
   au FileType qf call AdjustWindowHeight(1)
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
-  au FileType qf setlocal nobuflisted
+  au FileType qf setlocal nobuflisted nonumber
   au FileType qf syn match qfError "warning" contained
   au FileType ruby        call Ruby_Setting() 
   au FileType eruby        call Ruby_Setting() 
@@ -3080,6 +3080,28 @@ function! _EditAndCreateDirectoryIfNotExist(path, cmd) abort
   endif
   exe "cd" dirname
   exe a:cmd  basename
+endfunction
+
+command! -nargs=? Toc call _Toc(<f-args>)
+function! _Toc(...) abort
+  if a:0 == 0
+    if &ft == 'c' || &ft == 'cpp'
+      let regexp = '^\w\+'
+    elseif &ft == 'ruby' || &ft == 'python'
+      let regexp = '\<\(def\|class\|module\) \w\+'
+    else
+      let regexp = '^#'
+    endif
+  else
+    let regexp = a:1
+  endif
+  lclose
+  exe 'sil! lvimgrep /' . regexp . '/ %'
+  vert lw
+  20wincmd |
+  syn match FilenameAndPosition /^.*| / conceal
+  setlocal conceallevel=3
+  setlocal concealcursor=nvic
 endfunction
 
 "=============================================================================
