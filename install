@@ -48,6 +48,7 @@ link .irb_pry_common
 link .my.cnf
 link .profile
 link .screenrc
+link .screenrc.layouts
 link .sqliterc
 link .pryrc
 link .vim

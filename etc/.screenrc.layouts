@@ -1,0 +1,27 @@
+# レイアウトの定義
+
+# create window
+screen
+
+# create layout
+layout new 0:dummy
+layout new 1:layout1:single
+layout new 2:layout2:vertical
+
+# setup layout2
+layout select 2
+select 0
+split -v
+resize 66%
+focus next
+select 1
+focus next
+
+# setup layout1
+layout select 1
+select 0
+only
+
+# select initial layout
+layout select 2
+layout show
