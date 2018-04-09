@@ -338,10 +338,10 @@ cd() {
 }
 
 # ディレクトリ履歴から選択してcdする
-# cd -<Tab> でも同様のことができる
+# cd +<Tab> でも同様のことができる
 if [ "$SELECTOR" != "" ]; then
     select_recent_dirs_and_cd() {
-        local d=$(dirs -p | sed -e 1d | uniq | $SELECTOR)
+        local d=$(dirs -p | sed -e 1d | uniq | $SELECTOR --height 6 --reverse)
         eval "cd $d"
     }
     alias ,='select_recent_dirs_and_cd'
