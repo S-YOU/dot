@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+tmpfile=$(mktemp ~/tmp/vicl.XXXXXXXX)
+
+trap 'rm -f "$tmpfile" "$tmpfile.old"' EXIT
+
+pbpaste | tee "$tmpfile" > "$tmpfile.old"
+
+vim -n "$tmpfile"
+
+if cmp "$tmpfile" "$tmpfile.old" > /dev/null 2>&1; then
+    echo "No change"
+else
+    echo "Edited clipboard"
+    pbcopy < "$tmpfile"
+fi
