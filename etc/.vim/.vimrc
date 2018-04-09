@@ -2471,6 +2471,7 @@ endfunction
 "   プラグイン設定  Plugsin settings
 "=============================================================================
 let g:ruby_indent_access_modifier_style = "outdent"
+let g:go_version_warning = 0
 
 runtime macros/matchit.vim
 
