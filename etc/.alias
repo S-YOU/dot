@@ -13,12 +13,6 @@ alias ag='ag --follow'
 alias bg=' bg'
 alias com='command'
 alias cp='cp -i'
-case "$OSTYPE" in
-    *darwin*)
-        alias cop='pbcopy'
-        alias pas='pbpaste'
-        ;;
-esac
 alias fg=' fg'
 alias gdb='gdb --quiet -ex start'
 alias gti='git'
@@ -37,14 +31,11 @@ case "$OSTYPE" in
         ;;
 esac
 alias ll='ls -lrth'
-alias lsdot='ls -ld ~/.*'
-alias lsdotl='CLICOLOR_FORCE=1 lsdot | grep -e "->"'
 alias pt='pt --follow'
 alias pyg='pygmentize -g -f console256'
 alias r='$DOT/bin/r'
 alias rm='gomi'
 alias sc='screen -X eval "chdir $PWD"; screen'
-alias st='git st'
 alias tf='tail -f -n 500'
 alias vi='vim'
 alias vil='vim --cmd "set t_ti= t_te=" -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -c "nunmap <C-p>"  -'
@@ -117,20 +108,6 @@ man() {
 
 md() {
     mkdir -p "$1" && cd "$1"
-}
-
-mv() {
-    for last; do true; done
-    dir=$(dirname "$last")
-    if [ ! -d "$dir" ]; then
-        echo "$dir not exist."
-        echo -n "Create directory? [y/N]"
-        read answer
-        if [ "$answer" = "y" ]; then
-            mkdir -pv "$dir"
-        fi
-    fi
-    command mv -iv "$@"
 }
 
 l() {
@@ -302,5 +279,14 @@ get_color256() {
         printf "\x1b[$a;5;%sm" $colornum
     else
         printf "\x1b[1;$a;5;%sm" $colornum
+    fi
+} 
+
+# 手順書等にコピペしやすい形式でコマンド履歴を表示する
+fcl() {
+    if [ "$1" = "-n" ]; then    # 行頭の $ を削除する
+        fc -ln -30 | sed -e $'s@^[0-9]*[ \t]*@@'
+    else
+        fc -ln -30 | sed -e $'s@^[0-9]*[ \t]*@$ @'
     fi
 }

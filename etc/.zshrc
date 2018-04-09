@@ -371,11 +371,3 @@ alias help=run-help
 if [ -e ~/.zshrc.local ]; then
     . ~/.zshrc.local
 fi
-
-fcl() {
-    if [ "$1" = "-n" ]; then    # 行頭の $ を削除する
-        fc -l -30 | sed -E 's@^[0-9]+[ \t]+@@'
-    else
-        fc -l -30 | sed -E 's@^[0-9]+[ \t]+@$ @'
-    fi
-}
