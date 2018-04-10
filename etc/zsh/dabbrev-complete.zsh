@@ -9,7 +9,9 @@ touch $HARDCOPYFILE
 dabbrev-complete() {
     local reply
     screen -X hardcopy $HARDCOPYFILE
-    reply=($(sed '/^$/d' $HARDCOPYFILE | sed '$ d'))
+    local lang_save="$LANG"
+    LANG=C reply=($(sed '/^$/d' $HARDCOPYFILE | sed '$ d' 2> /dev/null))
+    LANG="$lang_save"
     compadd - "${reply[@]%[*/=@|]}"
 }
 
