@@ -1516,9 +1516,9 @@ endfunction
 
 
 " ウィンドウを閉じることなくバッファをデリート;
-command! Bclose call _BufcloseCloseIt()
+command! -bang Bclose call _BufcloseCloseIt("<bang>")
 
-function! _BufcloseCloseIt()
+function! _BufcloseCloseIt(bang)
   let l:currentBufNum = bufnr("%")
   let l:alternateBufNum = bufnr("#")
 
@@ -1535,7 +1535,7 @@ function! _BufcloseCloseIt()
   if buflisted(l:currentBufNum)
     " 開き直したとき、新しいバッファ番号が振られるように、bwipeを使う
     "execute("bdelete" . l:currentBufNum)
-    execute("bwipe" . l:currentBufNum)
+    execute("bwipe" . a:bang . " " . l:currentBufNum)
   endif
 endfunction
 
