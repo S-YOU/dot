@@ -12,9 +12,10 @@ dabbrev-complete() {
     local lang_save="$LANG"
     LANG=C reply=($(sed '/^$/d' $HARDCOPYFILE | sed '$ d' 2> /dev/null))
     LANG="$lang_save"
-    compadd - "${reply[@]%[*/=@|]}"
+    compadd -- "${reply[@]%[*/=@|]}"
 }
 
+# zle -C <ウィジェット名> <挙動> <関数名>
 zle -C dabbrev-complete menu-complete dabbrev-complete
 bindkey '^o' dabbrev-complete
 #bindkey '^o^_' reverse-menu-complete
