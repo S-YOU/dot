@@ -157,7 +157,7 @@ if [ "$SELECTOR" != "" ]; then
         return $ret
     }
     zle     -N   _dirstack_widget
-    bindkey '^[d' _dirstack_widget
+    bindkey '^[g' _dirstack_widget
 else
     # dirs -vの結果をコマンドプロンプトの下に表示する
     _showdirstack() {
@@ -174,7 +174,7 @@ else
         CURSOR="$cursor_save"
     }
     zle -N _list_dirstack
-    bindkey "^[d" _list_dirstack
+    bindkey "^[g" _list_dirstack
 fi
 
 # 単語展開に対応したタブ補完
