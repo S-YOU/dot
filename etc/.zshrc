@@ -19,6 +19,7 @@
 
 autoload -Uz is-at-least
 autoload edit-command-line; zle -N edit-command-line
+autoload -U zed     # zed -f 関数名　でシェル関数を編集できるようになる
 
 # Emacs(bash)と同じキーバインド
 bindkey -e
@@ -235,7 +236,7 @@ bindkey '^S' find_file_in_project
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
 PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg)
-[%~:%j]# '
+[%~:%j]$ '
 RPROMPT=''
 
 get_prompt_hostname() {
