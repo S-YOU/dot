@@ -2,14 +2,15 @@ require "uri"
 require "open3"
 
 class CurlBuilder
-  def build(base_path, method: "GET", params: {}, headers: {}, body_filename: nil, verbose: true, silent: true)
-    url = base_path
+  def build(base_url:, method: "GET", params: {}, headers: {}, body_filename: nil, verbose: true, silent: true, options: "")
+    url = base_url
     url += "?" + URI.encode_www_form(params) unless params.empty?
     cmd = "curl -X #{method} '#{url}'"
     cmd += " -d '@#{body_filename}'" if body_filename
     cmd += " " + headers.map {|k, v| "-H '#{k}: #{v}'"}.join(" ") + " " unless headers.empty?
     cmd += " -v " if verbose
     cmd += " -s " if silent
+    cmd += options
     return cmd
   end
 
@@ -32,6 +33,6 @@ class CurlBuilder
 end
 
 c = CurlBuilder.new
-#puts c.build("http://httpbin.org/get", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader"})
-#puts c.build("http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
-c.exec("http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
+#puts c.build(base_url: "http://httpbin.org/get", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader"})
+#puts c.build(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
+c.exec(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
