@@ -31,7 +31,7 @@ case "$OSTYPE" in
         ;;
 esac
 alias ll='ls -lrth'
-alias pt='pt --follow'
+alias pt='pt --color-match="1;31" --follow'
 alias pyg='pygmentize -g -f console256'
 alias r='$DOT/bin/r'
 alias rm='gomi'
@@ -116,7 +116,7 @@ l() {
         less "$@"
     elif [ -d "$1" ]; then
         ls -lrt "$@"
-    elif [ -f "$1" ]; then
+    elif [ -f "$1" -o $# -ge 2 ]; then
         less "$@"
     else
         ls -lrt
