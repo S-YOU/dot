@@ -187,26 +187,26 @@ last_wday = 0
   case status
   when 'weekend'
     if cal.today?(d)
-      printf('%s%2d%s', "\x1b[1;34m", d, "\x1b[m")
+      printf('%s%2d%s', "\x1b[7;34m", d, "\x1b[m")
     else
       printf('%s%2d%s', "\x1b[0;34m", d, "\x1b[m")
     end
   when 'sunday'
     if cal.today?(d)
-      printf('%s%2d%s', "\x1b[1;31m", d, "\x1b[m")
+      printf('%s%2d%s', "\x1b[7;31m", d, "\x1b[m")
     else
       printf('%s%2d%s', "\x1b[0;31m", d, "\x1b[m")
     end
   when 'holiday'
     holiday_name.push(d.to_s + ':' + (cal.holiday_name[d] || '振り替え休日'))
     if cal.today?(d)
-      printf('%s%2d%s', "\x1b[1;31m", d, "\x1b[m")
+      printf('%s%2d%s', "\x1b[7;31m", d, "\x1b[m")
     else
       printf('%s%2d%s', "\x1b[0;31m", d, "\x1b[m")
     end
   when 'workday'
     if cal.today?(d)
-      printf('%s%2d%s', "\x1b[1;30m", d, "\x1b[m")
+      printf('%s%2d%s', "\x1b[7;30m", d, "\x1b[m")
     else
       printf('%2d', d)
     end
