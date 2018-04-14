@@ -1543,25 +1543,6 @@ function! InsertSpaceBetweenHankakuZenkaku() range
   '<,'>s/\%(\([^\t -~。、]\)\%([!"#$%&'*+_\-./0-9<=>?A-Za-z~]\)\@=\|\([!"#$%&'*+_\-./0-9<=>?A-Za-z~]\)\%([^\t -~。、]\)\@=\)/\1\2 /ge
 endfunction
 
-
-" 選択範囲内から検索;
-" ちゃんと n や N もその範囲内だけになる;
-function! RangeSearch(direction)
-    call inputsave()
-    let g:srchstr = input(a:direction)
-    call inputrestore()
-    if strlen(g:srchstr) > 0
-        let g:srchstr = g:srchstr.
-                    \ '\%>'.(line("'<")-1).'l'.
-                    \ '\%<'.(line("'>")+1).'l'
-    else
-        let g:srchstr = ''
-    endif
-    set hls
-endfunction
-command! -nargs=0 -range RangeSearch call RangeSearch('/')|if strlen(g:srchstr) > 0|exe '/'.g:srchstr|endif
-command! -nargs=0 -range RangeSearchBackward call RangeSearch('?')|if strlen(g:srchstr) > 0|exe '?'.g:srchstr|endif
-
 " 数値を増加させながら行複製
 nnoremap & :<C-U>call IncrementingCopy(v:count ? v:count : 1,"[", "]")<CR> 
 function! IncrementingCopy(n, open, close)
