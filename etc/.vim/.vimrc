@@ -1544,31 +1544,6 @@ function! InsertSpaceBetweenHankakuZenkaku() range
 endfunction
 
 
-nnoremap <silent> H :<C-U>call HContext()<CR>
-nnoremap <silent> L :<C-U>call LContext()<CR>
-vnoremap <silent> H <Esc>:<C-U>call HContext()<CR>mzgv`z
-vnoremap <silent> L <Esc>:<C-U>call LContext()<CR>mzgv`z
-func! HContext()
-  let c = col(".")
-  let l = line(".")
-  let w = winline()
-  exe "normal! " . v:count1 . "H"
-  if c == col(".") && l == line(".") && w == winline()
-    exe "normal! \<C-f>"
-  endif
-endfunc
-
-func! LContext()
-  let c = col(".")
-  let l = line(".")
-  let w = winline()
-  exe "normal! " . v:count1 . "L"
-  if c == col(".") && l == line(".") && w == winline()
-    exe "normal! \<C-b>"
-  endif
-endfunc
-
-
 " 選択範囲内から検索;
 " ちゃんと n や N もその範囲内だけになる;
 function! RangeSearch(direction)
