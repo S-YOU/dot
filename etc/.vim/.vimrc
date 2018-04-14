@@ -1314,7 +1314,6 @@ endfunction
 
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
-  nnoremap <silent> <C-x><C-b> :call _YankPath("bundle exec rspec ", 1)<CR>
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
@@ -2569,13 +2568,6 @@ function! _CtrlpPreview()
   noautocmd wincmd p
 endfunction
 
-" MiniBufExpl
-let g:miniBufExplBRSplit = 1   " Put new window below
-let g:miniBufExplVSplit = 31   " column width in chars
-let g:miniBufExplorerAutoStart = 0
-let g:miniBufExplSplitToEdge = 0
-let g:miniBufExplShowBufNumbers = 0
-
 " vim-indexed-search
 let g:indexed_search_colors = 0
 let g:indexed_search_numbered_only = 1
@@ -2752,21 +2744,22 @@ nmap p pv`]v
 
 " ビジュアルモードでヤンクするたびに~/.yankに保存する
 " screenで<C-t><C-v>で貼り付けられる
-" ~/svn/bin/yankコマンドで取得できる
-" もしyにマップするのがまずいようだったらYとか<C-y>に変える
 vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
-" 現在のレジスタを~/.yankに保存し、screenで<C-t><C-v>で貼り付けられるようにする
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
-nnoremap <silent> <C-x><C-b> :call _YankPath("", 1)<CR>
 
-function! _YankPath(prefix, full) abort
-  let path = a:full ? expand("%:p") : expand("%")
-  let @0 = a:prefix .path .":".line(".")
+command! CopyPath call _CopyPath("", 1, 0)
+command! CopyPathWithLineNumber call _CopyPath("", 1, 1)
+function! _CopyPath(prefix, full, with_line_number) abort
+  let path = a:prefix
+  let path .= a:full ? expand("%:p") : expand("%")
+  if a:with_line_number
+    let path .= ":" . line(".")
+  endif
+  let @0 = path
   call _YankToFile('0', 1)
 endfunction
 
-command! PutFromFile r ~/.yank
 function! _YankToFile(reg, show_message)
   let yankfile = "~/.yank"
   let lines = split(getreg(a:reg), "\n")
@@ -3050,23 +3043,6 @@ function! EvalSelection()
   else
     call ExecSystem("selection")
   endif
-endfunction
-
-nnoremap <silent> <C-c> :<C-u>Copy<CR>
-vnoremap <silent> <C-c> :Copy<CR>
-command! -range=% Copy <line1>,<line2>call _CopyToClipboard()
-function! _CopyToClipboard() range
-  let save_cursor = getcurpos()
-  let start = a:firstline
-  let end = a:lastline
-  if executable('pbcopy')
-    exe start . "," . end . "w !pbcopy"
-  else
-    call _Echo("ErrorMsg", "利用可能なコピーコマンドがありません")
-    return
-  endif
-  call setpos('.', save_cursor)
-  call _Echo("Normal", "Copied " . (end - start + 1) . " lines.")
 endfunction
 
 " 指定されたディレクトリが存在しないなら作成して:eする
