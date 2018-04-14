@@ -2712,8 +2712,8 @@ function! _CopyPath(prefix, full, with_line_number) abort
   if a:with_line_number
     let path .= ":" . line(".")
   endif
-  let @0 = path
-  call _YankToFile('0', 1)
+  let @" = path
+  call _YankToFile('"', 1)
 endfunction
 
 function! _YankToFile(reg, show_message)
