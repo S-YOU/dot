@@ -44,6 +44,9 @@ alias vil='vim --cmd "set t_ti= t_te=" -c "nnoremap q :q!<CR>" -c "set buftype=n
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
 
+# 環境変数を表示する
+p() { env | sort | grep -v $'^[ \t]' | grep -i "^$1" | less }
+
 awsenv() {
     local rbpath="$DOT/bin/awsenv.rb"
     if [ "$1" = "" ]; then
