@@ -17,6 +17,7 @@ alias fg=' fg'
 alias gdb='gdb --quiet -ex start'
 alias gti='git'
 alias gosh='rlwrap --histsize 10000 -q "\"" --break-chars "(){}[].,#@;|\`\"" -f . -f ~/.vim/dict/schemedict.txt --complete-filenames gosh'
+alias j='jobs -l'
 alias la='ls -a'
 # ls
 case "$OSTYPE" in
@@ -291,3 +292,13 @@ fcl() {
         fc -ln -30 | sed -e $'s@^[0-9]*[ \t]*@$ @'
     fi
 }
+
+# cheat <コマンド名> でコマンドの典型的な使用例を表示する
+cheat() {
+    local keyword=${1:-:list}
+    curl -s "cheat.sh/$keyword?style=xcode" | less
+}
+_cheat() {
+    _values $(cheat :list)
+}
+compdef _cheat cheat
