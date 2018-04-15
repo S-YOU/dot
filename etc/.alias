@@ -45,7 +45,9 @@ alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
 
 # 環境変数を表示する
-p() { env | sort | grep -v $'^[ \t]' | grep -i "^$1" | less }
+p() {
+    env | sort | grep -v $'^[ \t]' | grep -i "^$1" | less
+}
 
 awsenv() {
     local rbpath="$DOT/bin/awsenv.rb"
@@ -301,7 +303,3 @@ cheat() {
     local keyword=${1:-:list}
     curl -s "cheat.sh/$keyword?style=xcode" | less
 }
-_cheat() {
-    _values $(cheat :list)
-}
-compdef _cheat cheat
