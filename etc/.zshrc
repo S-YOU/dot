@@ -365,6 +365,11 @@ type() {
     fi
 }
 
+_cheat() {
+    _values $(cheat :list)
+}
+compdef _cheat cheat
+
 # bashライクなhelp
 unalias run-help > /dev/null 2>&1
 autoload run-help
