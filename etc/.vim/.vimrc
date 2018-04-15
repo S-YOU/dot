@@ -2704,8 +2704,8 @@ vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
 
-command! CopyPath call _CopyPath("", 1, 0)
-command! CopyPathWithLineNumber call _CopyPath("", 1, 1)
+command! CopyPath silent call _CopyPath("", 1, 0)
+command! CopyPathWithLineNumber silent call _CopyPath("", 1, 1)
 function! _CopyPath(prefix, full, with_line_number) abort
   let path = a:prefix
   let path .= a:full ? expand("%:p") : expand("%")
