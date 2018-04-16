@@ -43,8 +43,14 @@ alias vi='vim'
 alias vil='vim --cmd "set t_ti= t_te=" -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -c "nunmap <C-p>"  -'
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
-alias z='apack'
 alias uz='aunpack'
+z() {
+    if [ $# -eq 1 ]; then
+        apack "$1.zip" "$1"
+    else
+        apack "$@"
+    fi
+}
 
 # 環境変数を表示する
 p() {
