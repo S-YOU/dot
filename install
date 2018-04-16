@@ -57,6 +57,13 @@ link .zshenv
 link .zshrc
 link .vimrc "$ETC/.vim/.vimrc"
 
+ln -sfv "$DOT/bin/atool" "$DOT/bin/acat"
+ln -sfv "$DOT/bin/atool" "$DOT/bin/adiff"
+ln -sfv "$DOT/bin/atool" "$DOT/bin/als"
+ln -sfv "$DOT/bin/atool" "$DOT/bin/apack"
+ln -sfv "$DOT/bin/atool" "$DOT/bin/arepack"
+ln -sfv "$DOT/bin/atool" "$DOT/bin/aunpack"
+
 if [ "$DRY" != "" ]; then
     echo "Dry run ================================================"
 fi
