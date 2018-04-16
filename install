@@ -6,7 +6,17 @@ ETC="$DOT/etc"
 BACKUP_DIR="$HOME/dot_backup"
 TIME=$(date +%Y%m%d_%H%M%S)
 
-. "$DOT/bin/_dryrun.sh"
+echodry() {
+    echo '   ' "$@"
+}
+
+if [ "$DRY" != "" ]; then
+    DRY=1
+    echo "Dry run ================================================"
+    EVAL="echodry"
+else
+    EVAL=eval
+fi
 
 cd "$DOT"
 git submodule init
@@ -38,7 +48,6 @@ link .bashrc
 link .bash_profile
 link .ctags
 link .gdbinit
-link .gdbinit.d
 link .ghci
 link .gitignore
 link .gitconfig
