@@ -35,7 +35,7 @@ link() {
         $EVAL mv -v "$HOME/$1" "$BACKUP_DIR/$1.$TIME"
     fi
     if [ -L ~/$1 ]; then
-        rm ~/$1
+        $EVAL rm ~/$1
     fi
     # シンボリックリンク作成
     $EVAL ln -sfv ${2:-$ETC/$1} ~/$1
@@ -66,12 +66,12 @@ link .zshenv
 link .zshrc
 link .vimrc "$ETC/.vim/.vimrc"
 
-ln -sfv "$DOT/bin/atool" "$DOT/bin/acat"
-ln -sfv "$DOT/bin/atool" "$DOT/bin/adiff"
-ln -sfv "$DOT/bin/atool" "$DOT/bin/als"
-ln -sfv "$DOT/bin/atool" "$DOT/bin/apack"
-ln -sfv "$DOT/bin/atool" "$DOT/bin/arepack"
-ln -sfv "$DOT/bin/atool" "$DOT/bin/aunpack"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/acat"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/adiff"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/als"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/apack"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/arepack"
+$EVAL ln -sfv "$DOT/bin/atool" "$DOT/bin/aunpack"
 
 if [ "$DRY" != "" ]; then
     echo "Dry run ================================================"
