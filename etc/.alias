@@ -39,6 +39,7 @@ alias rm='gomi'
 alias rst='exec $SHELL -l'
 alias sc='screen -X eval "chdir $PWD"; screen'
 alias tf='tail -f -n 500'
+alias tree='tree -C | less'
 alias vi='vim'
 alias vil='vim --cmd "set t_ti= t_te=" -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -c "nunmap <C-p>"  -'
 alias vissh='vi ~/.ssh/config'
@@ -164,7 +165,6 @@ pagerize() {
 pagerize find
 pagerize locate
 pagerize readelf
-pagerize tree
 pagerize xxd
 
 . $DOT/bin/pathmunge
