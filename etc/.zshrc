@@ -36,28 +36,28 @@ bindkey -M vicmd "w" forward-word
 autoload -Uz colors && colors
 
 #-----------------------------------------------------------------------------
-#	オプション
+#   オプション
 #-----------------------------------------------------------------------------
-setopt auto_cd				# ディレクトリ名だけで cd
-setopt auto_pushd			# cd で pushd
+setopt auto_cd              # ディレクトリ名だけで cd
+setopt auto_pushd           # cd で pushd
 setopt pushd_ignore_dups    # pushdで重複したディレクトリを入れないようにする
 setopt complete_aliases     # alias v=vim としたとき、vに対してvについての補完をする（vimではなく）
-#setopt noclobber			# リダイレクトで既存ファイルを上書きしない
-setopt extended_history		# 履歴ファイルに時刻を記録
-#setopt share_history		# 複数シェル間で履歴を共有
-setopt append_history		# 複数の zsh を同時に使う時など history ファイルに上書きせず追加
-setopt inc_append_history	# コマンドが入力されるとすぐに追加
-setopt interactive_comments	# 対話モードでもコメントを使えるように
-setopt extendedglob			# ~ ^ ** () などを使えるようにする
-setopt notify				# rm * を実行する前に確認する
-setopt hist_ignore_space	# スペースで始まるコマンドを履歴に残さない
-setopt glob_complete		# *<Tab>の挙動を bash 風に
-setopt sh_word_split		# クォートされていない変数の値の中の空白の扱い
-setopt hist_ignore_dups		# 連続した同じコマンドを履歴ファイルに入れない
-setopt hist_find_no_dups	# Ctrl-rで同じコマンドを2回以上表示させない
+#setopt noclobber           # リダイレクトで既存ファイルを上書きしない
+setopt extended_history     # 履歴ファイルに時刻を記録
+#setopt share_history       # 複数シェル間で履歴を共有
+setopt append_history       # 複数の zsh を同時に使う時など history ファイルに上書きせず追加
+setopt inc_append_history   # コマンドが入力されるとすぐに追加
+setopt interactive_comments # 対話モードでもコメントを使えるように
+setopt extendedglob         # ~ ^ ** () などを使えるようにする
+setopt notify               # rm * を実行する前に確認する
+setopt hist_ignore_space    # スペースで始まるコマンドを履歴に残さない
+setopt glob_complete        # *<Tab>の挙動を bash 風に
+setopt sh_word_split        # クォートされていない変数の値の中の空白の扱い
+setopt hist_ignore_dups     # 連続した同じコマンドを履歴ファイルに入れない
+setopt hist_find_no_dups    # Ctrl-rで同じコマンドを2回以上表示させない
 setopt hist_ignore_all_dups # 新しいエントリが重複なら古いエントリを削除する
 setopt nobanghist           # ! によるヒストリ展開を無効化する
-setopt prompt_subst			# プロンプトでコマンド置換等を展開するようにする
+setopt prompt_subst         # プロンプトでコマンド置換等を展開するようにする
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 is-at-least 5.2 && setopt glob_star_short  # **.c で **/*.c と同じ展開をする
 
@@ -68,7 +68,7 @@ SAVEHIST=100000
 
 
 #-----------------------------------------------------------------------------
-#	補完
+#   補完
 #-----------------------------------------------------------------------------
 autoload -Uz compinit && compinit -u
 
@@ -85,16 +85,16 @@ bindkey -M menuselect '^N' down-line-or-history
 bindkey -M menuselect '^J' up-line-or-history
 bindkey -M menuselect '^K' down-line-or-history
 
-#compctl -M 'm:{a-z}={A-Z}'	# 大文字小文字を区別しない
+#compctl -M 'm:{a-z}={A-Z}' # 大文字小文字を区別しない
 # 大文字小文字を区別しない。
 # ハイフンとアンダースコアで相互にマッチするようにする
 case "$OSTYPE" in
-	"darwin*")
-		zstyle ':completion:*' matcher-list 'm:{-_}={_-}'
-		;;
-	*)
-		zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}'
-		;;
+    "darwin*")
+        zstyle ':completion:*' matcher-list 'm:{-_}={_-}'
+        ;;
+    *)
+        zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}'
+        ;;
 esac
 
 # カレントに候補がないときだけCDPATHを候補にする
@@ -114,7 +114,7 @@ _bm() {
 
 
 #-----------------------------------------------------------------------------
-#	ウィジェット
+#   ウィジェット
 #-----------------------------------------------------------------------------
 
 if type fzf > /dev/null 2>&1; then
@@ -232,7 +232,7 @@ zle -N find_file_in_project
 bindkey '^S' find_file_in_project
 
 #-----------------------------------------------------------------------------
-#	プロンプト
+#   プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
 PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg)
@@ -240,15 +240,15 @@ PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_t
 RPROMPT=''
 
 get_prompt_hostname() {
-	if [ "$PROMPT_HOSTNAME" = "" ]; then
-		echo '@%m'
-	else
-		echo "@$PROMPT_HOSTNAME"
-	fi
+    if [ "$PROMPT_HOSTNAME" = "" ]; then
+        echo '@%m'
+    else
+        echo "@$PROMPT_HOSTNAME"
+    fi
 }
 
 exit_status_text() {
-	echo "%(?.. <%?>)"
+    echo "%(?.. <%?>)"
 }
 
 get_prompt_gip() {
@@ -266,47 +266,47 @@ source $DOT/etc/zsh/auto-ls.zsh
 
 
 #-----------------------------------------------------------------------------
-#	precmd & preexec
+#   precmd & preexec
 #-----------------------------------------------------------------------------
 
 # プロンプト表示直前に呼び出される
 precmd() {
-	# コマンドの実行にかかった時間を記憶しておく
-	ELAPSED_SECONDS=$(( $SECONDS - ${START_SECONDS:-0} ))
-	if is_screen; then
-		if [ "$fixtitle" = "" ]; then
-			# タイトルを元に戻す
-			echo -ne "\ekzsh\e\\"
-		fi
-	fi
+    # コマンドの実行にかかった時間を記憶しておく
+    ELAPSED_SECONDS=$(( $SECONDS - ${START_SECONDS:-0} ))
+    if is_screen; then
+        if [ "$fixtitle" = "" ]; then
+            # タイトルを元に戻す
+            echo -ne "\ekzsh\e\\"
+        fi
+    fi
 }
 
 # コマンド実行直前に呼び出される
 preexec() {
-	START_SECONDS=$SECONDS
-	if is_screen; then
-		if [ "$fixtitle" = "" ]; then
-			# タイトルを変える
-			local a
-			local args
-			a="$1"
-			args=("${(@s/ /)a}")
-			local cmd=${args[1]}
-			exclude_commands=(ls ll cd rm .. pwd fixtitle)
-			if [ "$cmd" = fg ]; then
+    START_SECONDS=$SECONDS
+    if is_screen; then
+        if [ "$fixtitle" = "" ]; then
+            # タイトルを変える
+            local a
+            local args
+            a="$1"
+            args=("${(@s/ /)a}")
+            local cmd=${args[1]}
+            exclude_commands=(ls ll cd rm .. pwd fixtitle)
+            if [ "$cmd" = fg ]; then
                 cmd=$(jobs | awk '$2 == "+" {if ($4 == "(signal)") print $5; else print $4;}')
                 if [ "$cmd" = "" ]; then
                     cmd="fg"
                 fi
                 echo -ne "\ek${cmd}\e\\"
-			elif  [[ ${exclude_commands[(r)$cmd]} == "$cmd" ]]; then
-				:;
-			else
-				echo -ne "\ek${cmd}\e\\"
-				last_cmd="$cmd"
-			fi
-		fi
-	fi
+            elif  [[ ${exclude_commands[(r)$cmd]} == "$cmd" ]]; then
+                :;
+            else
+                echo -ne "\ek${cmd}\e\\"
+                last_cmd="$cmd"
+            fi
+        fi
+    fi
 }
 
 # cd: skipping directories that contain only a single sub-directory
@@ -325,7 +325,7 @@ preexec() {
 #}
 
 #-----------------------------------------------------------------------------
-#	エイリアス
+#   エイリアス
 #-----------------------------------------------------------------------------
 
 # bashと共通のalias
@@ -334,11 +334,11 @@ source ~/.alias
 # zsh固有のalias
 
 cd() {
-	if [ -f "$1" ]; then
-		builtin cd -P $(dirname "$1")
-	else
-		builtin cd -P "$@"
-	fi
+    if [ -f "$1" ]; then
+        builtin cd -P $(dirname "$1")
+    else
+        builtin cd -P "$@"
+    fi
 }
 
 # ディレクトリ履歴から選択してcdする
@@ -353,7 +353,7 @@ fi
 
 # screenのタイトルを手動で設定したとき、固定する
 fixtitle() {
-	fixtitle=true
+    fixtitle=true
 }
 
 type() {
