@@ -284,7 +284,6 @@ precmd() {
 # コマンド実行直前に呼び出される
 preexec() {
 	START_SECONDS=$SECONDS
-	## 2017-07-24 手動で設定したタイトルも上書きされてしまうのでやめた
 	if is_screen; then
 		if [ "$fixtitle" = "" ]; then
 			# タイトルを変える
@@ -295,8 +294,11 @@ preexec() {
 			local cmd=${args[1]}
 			exclude_commands=(ls ll cd rm .. pwd fixtitle)
 			if [ "$cmd" = fg ]; then
-				cmd="$last_cmd"
-				echo -ne "\ek${cmd}\e\\"
+                cmd=$(jobs | awk '$2 == "+" {if ($4 == "(signal)") print $5; else print $4;}')
+                if [ "$cmd" = "" ]; then
+                    cmd="fg"
+                fi
+                echo -ne "\ek${cmd}\e\\"
 			elif  [[ ${exclude_commands[(r)$cmd]} == "$cmd" ]]; then
 				:;
 			else
