@@ -59,13 +59,12 @@ bind h eval "hardcopy -h $HOME/hardcopy.txt"
 bind ^k eval "focus up"
 bind ^j eval "focus down"
 bind ^b eval copy "stuff H"        # C-bだけでコピーモードに入れるようにする
-bind ^u eval copy "stuff M"
+bind ? eval copy "stuff ?"
 bind ^v eval readbuf "paste ."      # Vimでヤンクしたテキストを貼り付ける
 bind . source $HOME/.screenrc
 bind + resize +5
 bind - resize -5
 bind = resize =
-bind N colon 'number '
 bind w remove                       # ブラウザと同じC-w
 bind ^w remove                      # ブラウザと同じC-w
 bind q remove                       # ブラウザと同じC-w
