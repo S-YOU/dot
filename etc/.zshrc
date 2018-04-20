@@ -27,6 +27,7 @@ bindkey "^I" menu-expand-or-complete
 bindkey "^O" accept-and-hold
 bindkey "^X^E" edit-command-line 
 
+bindkey "^[w" copy-prev-shell-word
 bindkey "^[^[" vi-cmd-mode
 bindkey -M vicmd "b" backward-word
 bindkey -M vicmd "w" forward-word

@@ -2703,6 +2703,8 @@ nmap p pv`]v
 vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
 nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
 nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
+" ビジュアルモードでプットしたときレジスタを置き換えないようにする
+vnoremap p "_dP
 
 command! CopyPath silent call _CopyPath("", 1, 0)
 command! CopyPathWithLineNumber silent call _CopyPath("", 1, 1)
