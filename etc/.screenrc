@@ -107,8 +107,8 @@ bufferfile "$BUFFERFILE"
 # レイアウト
 # C-t Y でレイアウトモードを開始する
 bind Y source $HOME/.screenrc.layouts
-# C-t C-y C-m で右のリージョンで前回のコマンドを再実行する
-bind -c layout ^M eval focus "stuff ^P^M" focus
+# C-t C-y C-u で右のリージョンで前回のコマンドを再実行する
+bind -c layout ^U eval focus "stuff ^P^M" focus
 # C-t C-y C-v で右のリージョンにVimのレジスタ内容を貼り付ける
 bind -c layout ^V eval readbuf focus "paste ." "stuff ^M" focus
 
