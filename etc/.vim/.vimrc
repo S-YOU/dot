@@ -2999,7 +2999,9 @@ function! EvalSelection()
     exe "@x\<CR>"
     call _Echo("Question", "Sourced " . len(lines) . " lines.")
   else
+    let cmd = b:_exec_system_last_cmd
     call ExecSystem("selection")
+    let b:_exec_system_last_cmd = cmd
   endif
 endfunction
 
