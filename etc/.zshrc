@@ -354,6 +354,9 @@ fi
 
 # screenのタイトルを手動で設定したとき、固定する
 fixtitle() {
+    if [ "$1" != "" ]; then
+        echo -ne "\ek${1}\e\\"
+    fi
     fixtitle=true
 }
 
