@@ -61,27 +61,28 @@ z() {
 }
 
 uz() {
+    if [ "$1" = -d ]; then
+        local delete_archive=1
+        shift
+    fi
     if [ $# -ne 1 ]; then
-        echo "Usage: $0 <archive>"
+        echo "Usage: $0 [-d] <archive>"
         return 1
     fi
     archive="$1"
 
     local tmp=$(mktemp)
     LANG=C aunpack "$@" 2>&1 | tee "$tmp"
+    [[ ${pipestatus[1]} != 0 && ${PIPESTATUS[0]} != 0 ]] && return 1
     local dirname=$(tail -n 1 "$tmp" | perl -ne "/extracted to \`(.*)'/ && print \$1")
 
-    echo -ne "\e[1;33mRemove $archive ?\e[0m "
-    read_n_char 1 ans
-    if [ "$ans" = y ]; then
+    if [ "$delete_archive" = 1 ]; then
         command rm -f "$archive"
+        echo "Removed $archive"
     fi
 
-    echo
     command rm -f "$tmp"
     chpwd_functions= builtin cd "$dirname"
-
-    echo -e "\e[1;34m${dirname}\e[0m"
 }
 
 # 環境変数を表示する
