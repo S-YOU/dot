@@ -1,8 +1,3 @@
-chpwd() {
-    #if [ $PWD != $HOME ]; then
-        ls_abbrev
-    #fi
-}
 ls_abbrev() {
     # -a : Do not ignore entries starting with ..
     # -C : Force multi-column output.
@@ -40,3 +35,6 @@ ls_abbrev() {
         echo "$ls_result"
     fi
 }
+
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd ls_abbrev

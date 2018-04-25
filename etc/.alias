@@ -43,13 +43,45 @@ alias vi='vim'
 alias vil='vim --cmd "set t_ti= t_te=" -c "nnoremap q :q!<CR>" -c "set buftype=nofile nonumber wrap laststatus=1" -c "nunmap <C-p>"  -'
 alias vissh='vi ~/.ssh/config'
 alias wget='wget --no-check-certificate --content-disposition'
-alias uz='aunpack'
+
+read_n_char() {
+    if [ -n "$ZSH_VERSION" ]; then
+        read -k "$@"
+    elif [ -n "$BASH_VERSION" ]; then
+        read -n "$@"
+    fi
+}
+
 z() {
     if [ $# -eq 1 ]; then
         apack "$1.zip" "$1"
     else
         apack "$@"
     fi
+}
+
+uz() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: $0 <archive>"
+        return 1
+    fi
+    archive="$1"
+
+    local tmp=$(mktemp)
+    LANG=C aunpack "$@" 2>&1 | tee "$tmp"
+    local dirname=$(tail -n 1 "$tmp" | perl -ne "/extracted to \`(.*)'/ && print \$1")
+
+    echo -ne "\e[1;33mRemove $archive ?\e[0m "
+    read_n_char 1 ans
+    if [ "$ans" = y ]; then
+        command rm -f "$archive"
+    fi
+
+    echo
+    command rm -f "$tmp"
+    chpwd_functions= builtin cd "$dirname"
+
+    echo -e "\e[1;34m${dirname}\e[0m"
 }
 
 # 環境変数を表示する
