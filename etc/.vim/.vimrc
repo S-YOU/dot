@@ -956,6 +956,7 @@ augroup MyAutocmd
   au FileType ruby        call Ruby_Setting() 
   au FileType eruby        call Ruby_Setting() 
   au FileType scheme      call Scheme_Setting()
+  au FileType sh,bash,zsh call Sh_Setting()
   au FileType vb          call VB_Setting()
   au FileType vim         call Vim_Setting()
   au FileType *           call _SetDict()
@@ -1370,6 +1371,10 @@ function! Scheme_Setting()
   setlocal includeexpr=substitute(substitute(v:fname,'\\./','','g'),'\\.','/','g')
   setlocal path+=/usr/share/gauche/0.8.12/lib
   syn match Error /^Error.*/
+endfunction
+
+function! Sh_Setting()
+  setlocal isk+=-
 endfunction
 
 function! VB_Setting()
