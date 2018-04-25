@@ -49,13 +49,40 @@ defnonblock 5
 #
 # %? A  %?    条件Aが真ならAを表示
 # %? B %: C %?    条件Bが真ならBを、偽ならCを表示
+#
+# 属性モディファイヤ
+#       +      add the specified set to the current attributes
+#       -      remove the set from the current attributes
+#       !      invert the set in the current attributes
+#       =      change the current attributes to the specified set
+#
+# 属性
+#       d      dim
+#       u      underline
+#       b      bold
+#       r      reverse
+#       s      standout
+#       B      blinking
+#
+# 色。大文字にすると少し明るい色になる。
+#       k      black
+#       r      red
+#       g      green
+#       y      yellow
+#       b      blue
+#       m      magenta
+#       c      cyan
+#       w      white
+#       d      default color
+#       .      leave color unchanged
+
 hardstatus alwayslastline "[%H] %-w%{.b}%n %t%{-}%+w %=%?%E%{.b} C-t %{-}%?"
 caption splitonly "%?%F%{.b}%?%n %t"
 
 bind H
 # hardcopyは文字化けするのでこの方法で
 # bind h eval "readreg t" "msgminwait 0" "copy" "stuff \"H L$ \"" "writebuf $HOME/hardcopy.txt" "paste t ."
-bind h eval "hardcopy -h $HOME/hardcopy.txt"
+bind h help
 bind ^k eval "focus up"
 bind ^j eval "focus down"
 bind ^b eval copy "stuff H"        # C-bだけでコピーモードに入れるようにする
