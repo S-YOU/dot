@@ -86,7 +86,6 @@ bind h help
 bind ^k eval "focus up"
 bind ^j eval "focus down"
 bind ^b eval copy "stuff H"        # C-bだけでコピーモードに入れるようにする
-bind ? eval copy "stuff ?"
 bind ^v eval readbuf "paste ."      # Vimでヤンクしたテキストを貼り付ける
 bind . source $HOME/.screenrc
 bind + resize +5
@@ -109,6 +108,7 @@ bindkey "^[n" next
 bindkey "^[[" copy
 bindkey "^[]" paste .
 bindkey "^[K" eval focus "stuff ^[k" focus
+bindkey "^[?" eval copy "stuff ?"
 
 # F11 F12. vim起動中も有効にするためには、-aつきでも定義しないといけない
 #bindkey -k -a F1 prev
