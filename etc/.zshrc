@@ -66,7 +66,7 @@ CDPATH=$HOME/bm:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
-
+WORDCHARS='_-.'             # デフォルトは *?_-.[]~=/&;!#$%^(){}<>
 
 #-----------------------------------------------------------------------------
 #   補完
@@ -264,6 +264,7 @@ get_prompt_gip() {
 source $DOT/etc/zsh/mollifier-git-zsh-prompt
 source $DOT/etc/zsh/safe-paste.plugin.zsh
 source $DOT/etc/zsh/auto-ls.zsh
+source $DOT/etc/zsh/zsh-vi-search.zsh
 
 
 #-----------------------------------------------------------------------------
