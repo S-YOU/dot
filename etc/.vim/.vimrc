@@ -965,10 +965,19 @@ augroup MyAutocmd
   au Syntax go call _GoSyntax() 
   au Syntax markdown call _MarkdownSyntax() 
   au Syntax * call _HighlightMixedIndent()
+  if exists("##TextYankPost")
+    au TextYankPost * call _TextYankPost()
+  else
+    source ~/.vim/macros/yanktofile.vim
+  endif
   au VimEnter * call _VimEnter()
   au CursorHold * silent! checktime
   au WinEnter * checktime
 augroup END
+
+function! _TextYankPost()
+  call _YankToFile('0', 0)
+endfunction
 
 function! _VimEnter()
   let g:initdir = getcwd()
@@ -2703,11 +2712,6 @@ command! -range=% Ret42 <line1>,<line2> call retab#Retab(4, 2)
 " ペーストしたときカーソルを末尾へ移動。さらにgvで範囲選択できるように
 nmap p pv`]v
 
-" ビジュアルモードでヤンクするたびに~/.yankに保存する
-" screenで<C-t><C-v>で貼り付けられる
-vnoremap <silent> y y:call _YankToFile('0', 0)<CR>`]
-nnoremap <silent> yy yy:call _YankToFile('0', 0)<CR>
-nnoremap <silent> <C-x><C-y> :call _YankToFile('0', 1)<CR>
 " ビジュアルモードでプットしたときレジスタを置き換えないようにする
 vnoremap p "_dP
 
