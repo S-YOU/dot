@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+#
+# クエリ文字列をパースして見やすく表示する
+#
+# Example:
+# $ pq 'http://aosho235.com/?a=123&b=%E3%81%82'
+# =>
+#
+#
+
+require "uri"
+require "cgi"
+
+def parse_url(url)
+  if url !~ /^http(s)?:/
+    return
+  end
+
+  u = URI.parse(url)
+
+  if u.query
+    parsed_query = CGI.parse(u.query)
+    parsed_query.each do |k, ary|
+      ary.each do |v|
+        puts "\e[0;34m#{k}\e[0m=\e[0;35m#{v}\e[0m"
+      end
+    end
+  end
+  #puts "HOST   = " + u.host
+  #puts "PATH   = " + u.path
+  #puts "QUERY  = " + u.query
+end
+
+ARGV.each do |arg|
+  parse_url(arg)
+end
