@@ -72,6 +72,7 @@ SAVEHIST=100000
 #   補完
 #-----------------------------------------------------------------------------
 autoload -Uz compinit && compinit -u
+zstyle ':completion:*' use-cache yes
 
 # 補完候補をメニューで選択
 zstyle ':completion:*' menu select
