@@ -2,10 +2,38 @@
 
 set -e
 
-cat > skeleton.json <<EOF
+ami_name="$1"
+
+tmpdir="/tmp/study-run-instance.$$"
+mkdir "$tmpdir"
+
+# OSごとのオフィシャルなAMIをまとめてみた
+# https://moomindani.wordpress.com/2014/08/06/ec2-official-ami/
+case "$ami_name" in
+    ubuntu)
+        ami_id=ami-80ca47e6     # 17.04  20171208
+        username=ubuntu
+        ;;
+    centos6)
+        ami_id=ami-88b923ee     # 1801_01   2018-Jan-14
+        username=centos
+        ;;
+    centos7)
+        ami_id=ami-25bd2743     # 1801_01   2018-Jan-14
+        username=centos
+        ;;
+    *)
+        # Amazon Linux
+        ami_id=ami-28ddc154     # 2018-04
+        username=ec2-user
+        ;;
+esac
+
+
+cat > "$tmpdir/skeleton.json" <<EOF
 {
     "DryRun": false,
-    "ImageId": "ami-923d12f5", 
+    "ImageId": "$ami_id",
     "KeyName": "val00362_keypair",
     "SecurityGroupIds": [
         "sg-0ef6d56b"
@@ -48,16 +76,22 @@ cat > skeleton.json <<EOF
 }
 EOF
 
-cp -v ~/dot/bin/user_data.sh .
+cp -v ~/dot/bin/user_data.sh "$tmpdir" || true
+
+# インスタンス作成
+aws ec2 run-instances --cli-input-json file://"$tmpdir/skeleton.json" --user-data file://"$tmpdir/user_data.sh" | tee "$tmpdir/run-instances.log"
+
+sleep 3
+
+# インスタンスID取得
+instance_id=$(grep 'InstanceId' "$tmpdir/run-instances.log" | sed -e 's@.*: "@@' -e 's@".*@@')
+# IPアドレス表示
+aws ec2 describe-instances --instance-ids $instance_id | egrep 'PublicIpAddress' | sed -e 's@^ *@@'
 
 cat <<EOF
-skeleton.jsonを生成しました。
-user_data.shを生成しました。
 
-実際にインスタンスを作成するには、下記を実行：
-aws ec2 run-instances --cli-input-json file://./skeleton.json --user-data file://./user_data.sh | less
-aws ec2 describe-instances --instance-ids {instance_id}
-
-ログインには
-ssh ec2-user@{public_ip} -i ~/.ssh/val00362_keypair.pem
+ログインには:
+ssh ${username}@${public_ip} -i ~/.ssh/val00362_keypair.pem
 EOF
+
+rm -rf "$tmpdir"
