@@ -3,91 +3,90 @@
 # に書くこと
 
 [user]
-	name = Aoyama, Shotaro
-	email = aosho235@gmail.com
+    name = Aoyama, Shotaro
+    email = aosho235@gmail.com
 #[http]
-#	proxy = http://example.co.jp:8080
+#   proxy = http://example.co.jp:8080
 #[https]
-#	proxy = http://example.co.jp:8080
+#   proxy = http://example.co.jp:8080
 #[url "https://"]
-#	insteadOf = git://
+#   insteadOf = git://
 [alias]
     amend = commit --amend --no-edit
-	ba = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
-	ci = commit
-	co = checkout
-	exec = !sh -c 'exec "$@"' $(which sh)
-	sta = status --short --branch --ignored
-	ls = ls-files
-	logv = log --name-status
-	cancel-previous-commit = reset HEAD~1
-	# カレントブランチをoriginにプッシュする
-	push-origin = !git push --set-upstream origin `git symbolic-ref --short HEAD`
-	pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
-	unstage = reset HEAD
-	modify-history = rebase -i HEAD~6
-	# masterからの分岐点以降のコミットを表示する
-	new-commits-from-master = log --oneline --graph master..HEAD
-	zip = !git archive --format=zip --prefix=$(basename $(git exec pwd))/ HEAD > $(basename $(git exec pwd))-$(git symbolic-ref --short HEAD).zip
-	# mergeやreset --hardのとき、変更を破棄する
-	assume-unchanged = update-index --assume-unchanged 
-	no-assume-unchanged = update-index --no-assume-unchanged 
-	alias = !git config --get-regexp ^alias\\. | sort
-	tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %Cgreen%s%Creset'
-	# mergeやreset --hardのとき、変更を破棄しない
-	skip-worktree = update-index --skip-worktree
-	no-skip-worktree = update-index --no-skip-worktree
-	skipped = !git ls-files -v | grep --color '^[Shs]'
-	# git rmせずに普通にrmしちゃったファイルたちを一括でgit rmする
-	rm-files = !git rm `git ls-files --deleted`
-	commit-count = shortlog -sn
-	# タグをつけるには
-	# git tag v1.0
-	# git tag-by-date
-	# git push origin --tags
-	shallow-clone = clone --depth 1
-	# マージされているブランチを削除する
-	remove-unused-branches = !git branch -d $(git branch --merged | grep -v -w master)
-	vimdiff = difftool --tool=vimdiff --prompt
-	bro = browse
-	# 追跡されていないファイルを削除するには
-	# git clean -n    # dry run  .gitignoreされているファイルは含めない
-	# git clean -f    # execute  
-	# git clean -dn   # dry run  .gitignoreされているファイルを含める
-	# git clean -df   # execute
+    ba = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+    ci = commit
+    co = checkout
+    exec = !sh -c 'exec "$@"' $(which sh)
+    sta = status --short --branch --ignored
+    ls = ls-files
+    logv = log --name-status
+    cancel-previous-commit = reset HEAD~1
+    # カレントブランチをoriginにプッシュする
+    pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
+    unstage = reset HEAD
+    modify-history = rebase -i HEAD~6
+    # masterからの分岐点以降のコミットを表示する
+    new-commits-from-master = log --oneline --graph master..HEAD
+    zip = !git archive --format=zip --prefix=$(basename $(git exec pwd))/ HEAD > $(basename $(git exec pwd))-$(git symbolic-ref --short HEAD).zip
+    # mergeやreset --hardのとき、変更を破棄する
+    assume-unchanged = update-index --assume-unchanged
+    no-assume-unchanged = update-index --no-assume-unchanged
+    alias = !git config --get-regexp ^alias\\. | sort
+    tag-by-date = log --tags --simplify-by-decoration --pretty='format:%ai %Cred%h%Creset %d %Cgreen%s%Creset'
+    # mergeやreset --hardのとき、変更を破棄しない
+    skip-worktree = update-index --skip-worktree
+    no-skip-worktree = update-index --no-skip-worktree
+    skipped = !git ls-files -v | grep --color '^[Shs]'
+    # git rmせずに普通にrmしちゃったファイルたちを一括でgit rmする
+    rm-files = !git rm `git ls-files --deleted`
+    commit-count = shortlog -sn
+    stashlist = stash list --format='%gd (%cr):     %Cgreen%gs%Creset'
+    # タグをつけるには
+    # git tag v1.0
+    # git tag-by-date
+    # git push origin --tags
+    shallow-clone = clone --depth 1
+    # マージされているブランチを削除する
+    remove-unused-branches = !git branch -d $(git branch --merged | grep -v -w master)
+    vimdiff = difftool --tool=vimdiff --prompt
+    # 追跡されていないファイルを削除するには
+    # git clean -n    # dry run  .gitignoreされているファイルは含めない
+    # git clean -f    # execute
+    # git clean -dn   # dry run  .gitignoreされているファイルを含める
+    # git clean -df   # execute
 [merge]
-	tool = vimdiff
+    tool = vimdiff
 [credential]
-	# https://でパスワード入力を一定時間キャッシュする
-	helper = cache --timeout=86400
+    # https://でパスワード入力を一定時間キャッシュする
+    helper = cache --timeout=86400
 [push]
-	default = simple
+    default = simple
 [core]
-	# 自分だけのgitignore
-	excludesfile = ~/.gitignore
+    # 自分だけのgitignore
+    excludesfile = ~/.gitignore
 [log]
-	#date = relative
+    #date = relative
 #[format]
-	#pretty = format:"%ai (%ar) %Cred%H%Creset %an%n%N%n    %s%n"
+    #pretty = format:"%ai (%ar) %Cred%H%Creset %an%n%N%n    %s%n"
 [color]
-	# 標準出力がパイプされていてもカラー表示する
-	ui = auto
+    # 標準出力がパイプされていてもカラー表示する
+    ui = auto
 [fetch]
-	prune = true
+    prune = true
 [color "diff"]
-	meta = blue bold
+    meta = blue bold
 [diff]
-	tool = vimdiff
+    tool = vimdiff
 [difftool]
-	prompt = false
+    prompt = false
 [mergetool]
-	prompt = false
+    prompt = false
 [init]
-	templatedir = ~/.git_template
+    templatedir = ~/.git_template
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 [include]
-	path = .gitconfig.local
+    path = .gitconfig.local
