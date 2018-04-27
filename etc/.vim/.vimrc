@@ -966,7 +966,7 @@ augroup MyAutocmd
   au Syntax markdown call _MarkdownSyntax() 
   au Syntax * call _HighlightMixedIndent()
   if exists("##TextYankPost")
-    au TextYankPost * call _TextYankPost()
+    au TextYankPost * call _TextYankPost(v:event)
   else
     source ~/.vim/macros/yanktofile.vim
   endif
@@ -975,17 +975,19 @@ augroup MyAutocmd
   au WinEnter * checktime
 augroup END
 
-function! _TextYankPost()
-  call _YankToFile('0', 0)
-  let @9 = @8
-  let @8 = @7
-  let @7 = @6
-  let @6 = @5
-  let @5 = @4
-  let @4 = @3
-  let @3 = @2
-  let @2 = @1
-  let @1 = @0
+function! _TextYankPost(event)
+  if a:event["operator"] == "y"
+    call _YankToFile('0', 0)
+    let @9 = @8
+    let @8 = @7
+    let @7 = @6
+    let @6 = @5
+    let @5 = @4
+    let @4 = @3
+    let @3 = @2
+    let @2 = @1
+    let @1 = @0
+  endif
 endfunction
 
 function! _VimEnter()
