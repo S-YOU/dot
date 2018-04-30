@@ -238,7 +238,7 @@ bindkey '^S' find_file_in_project
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
 PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg)
-[%~:%j]$ '
+[%~:%j]# '
 RPROMPT=''
 
 get_prompt_hostname() {
