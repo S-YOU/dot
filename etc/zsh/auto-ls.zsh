@@ -26,7 +26,7 @@ ls_abbrev() {
     local ls_result
     ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command $cmd_timeout $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
 
-    local ls_lines=$(echo "$ls_result" | wc -l)
+    local ls_lines=$(print -- "$ls_result" | wc -l)
 
     if [ $ls_lines -gt 10 ]; then
         echo "$ls_result" | head -n 5

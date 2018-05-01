@@ -225,6 +225,7 @@ fi
 
 source $DOT/etc/zsh/key-bindings.zsh
 source $DOT/etc/zsh/dabbrev-complete.zsh
+source $DOT/etc/zsh/format-line.zsh
 
 find_file_in_project() {
     tt

@@ -25,6 +25,7 @@ export LS_COLORS='rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=01;
 export PAGER=less
 export PYTHONDONTWRITEBYTECODE=true
 export FZF_TMUX_HEIGHT="95%"
+export FZF_DEFAULT_OPTS='--preview-window=right:70%'
 
 umask 002
 
