@@ -223,7 +223,9 @@ if is-at-least 4.3.11; then
   zstyle ':completion:*' recent-dirs-insert both
 fi
 
-source $DOT/etc/zsh/key-bindings.zsh
+if [[ "$SELECTOR" = fzf* ]]; then
+    source $DOT/etc/zsh/key-bindings.zsh
+fi
 source $DOT/etc/zsh/dabbrev-complete.zsh
 source $DOT/etc/zsh/format-line.zsh
 
