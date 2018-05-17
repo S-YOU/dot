@@ -22,10 +22,14 @@ case "$ami_name" in
         ami_id=ami-25bd2743     # 1801_01   2018-Jan-14
         username=centos
         ;;
-    *)
+    amazon)
         # Amazon Linux
         ami_id=ami-28ddc154     # 2018-04
         username=ec2-user
+        ;;
+    *)
+        echo "Usage: ${0##*/} [ubuntu|centos|centos7|amazon]"
+        exit 1
         ;;
 esac
 
@@ -68,7 +72,7 @@ cat > "$tmpdir/skeleton.json" <<EOF
             "Tags": [
                 {
                     "Key": "Name", 
-                    "Value": "aoyama-study-created"
+                    "Value": "aoyama-study-$ami_name"
                 }
             ]
         }
@@ -86,7 +90,7 @@ sleep 3
 # インスタンスID取得
 instance_id=$(grep 'InstanceId' "$tmpdir/run-instances.log" | sed -e 's@.*: "@@' -e 's@".*@@')
 # IPアドレス表示
-aws ec2 describe-instances --instance-ids $instance_id | egrep 'PublicIpAddress' | sed -e 's@^ *@@'
+public_ip=$(aws ec2 describe-instances --instance-ids $instance_id | egrep 'PublicIpAddress' | sed -e 's@",.*@@' -e 's@.*"@@'
 
 cat <<EOF
 
