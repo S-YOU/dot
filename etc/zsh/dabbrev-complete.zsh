@@ -19,3 +19,15 @@ dabbrev-complete() {
 zle -C dabbrev-complete menu-complete dabbrev-complete
 bindkey '^o' dabbrev-complete
 #bindkey '^o^_' reverse-menu-complete
+
+dabbrev-complete-WORD() {
+    local reply
+    screen -X hardcopy $HARDCOPYFILE
+    local lang_save="$LANG"
+    LANG=C reply=($(sed -E -e '/^$/d' $HARDCOPYFILE | sed '$ d' 2> /dev/null))
+    LANG="$lang_save"
+    compadd -- "${reply[@]%[*/=@|]}"
+}
+
+zle -C dabbrev-complete-WORD menu-complete dabbrev-complete-WORD
+bindkey '^x^o' dabbrev-complete-WORD
