@@ -98,7 +98,9 @@ awsenv() {
         local commands=$(ruby "$rbpath" "$@")
         if [ "$commands" != "" ]; then
             eval "$commands"
-            ruby "$rbpath"
+            if [ -t 1 ]; then
+                ruby "$rbpath"
+            fi
         fi
     fi
 }

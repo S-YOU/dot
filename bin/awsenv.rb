@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require "pp"
-
 credentials_path = ENV["HOME"] + "/.aws/credentials"
 
 profiles = {}
@@ -19,7 +17,6 @@ open(credentials_path, "r").each do |line|
     profiles[profile_name][key] = value
   end
 end
-
 
 if arg_profile_name = ARGV[0]
   if profiles.key?(arg_profile_name)
