@@ -90,7 +90,7 @@ sleep 3
 # インスタンスID取得
 instance_id=$(grep 'InstanceId' "$tmpdir/run-instances.log" | sed -e 's@.*: "@@' -e 's@".*@@')
 # IPアドレス表示
-public_ip=$(aws ec2 describe-instances --instance-ids $instance_id | egrep 'PublicIpAddress' | sed -e 's@",.*@@' -e 's@.*"@@'
+public_ip=$(aws ec2 describe-instances --instance-ids $instance_id | egrep 'PublicIpAddress' | sed -e 's@",.*@@' -e 's@.*"@@')
 
 cat <<EOF
 

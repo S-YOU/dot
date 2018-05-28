@@ -60,7 +60,9 @@
     # https://でパスワード入力を一定時間キャッシュする
     helper = cache --timeout=86400
 [push]
-    default = simple
+    # matching, simple, currentの違い
+    # https://qiita.com/awakia/items/6aaea1ffecba725be601#simple
+    default = current
 [core]
     # 自分だけのgitignore
     excludesfile = ~/.gitignore
