@@ -2174,7 +2174,7 @@ function! _GetExecSystemDefault(...)
   elseif &ft ==? "c" || &ft ==? "cpp"
     let ret = "0r!gcc " . filename . " && ./a.out"
   elseif &ft ==? "javascript"
-    let ret = "0r!js " . filename
+    let ret = "0r!node " . filename
   elseif &ft ==? "perl"
     let ret = "0r!perl " . filename
   elseif &ft ==? "php"
