@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+#=============================================================================
+#   = などで桁揃えするコマンド
+#
+#   Usage:
+#     align < file
+#     align = < file
+#     align : 2 < file
+#=============================================================================
+
+class String
+  def display_width
+    width = 0
+    self.each_char do |c|
+      if (0..255).include?(c.ord)
+        width += 1
+      else
+        width += 2
+      end
+    end
+    return width
+  end
+
+  def substr_before_marker(marker, nth)
+    search_start_pos = 0
+    while nth > 0
+      pos = self.index(marker, search_start_pos)
+      if pos.nil?
+        break
+      else
+        search_start_pos = pos + 1
+      end
+      nth -= 1
+    end
+    return self[0...(search_start_pos - 1)]
+  end
+
+  def display_width_before_marker(marker, nth)
+    return substr_before_marker(marker, nth).display_width
+  end
+end
+
+
+@marker = ARGV[0] || "="
+@nth    = (ARGV[1] || "1").to_i
+marker_positions = []
+
+lines = STDIN.readlines
+
+marker_positions = lines.map {|line| line.display_width_before_marker(@marker, @nth) }
+max_pos = marker_positions.max
+
+lines.each_with_index do |line, i|
+  pos = marker_positions[i]
+  puts line[0...pos] + (" " * (max_pos - pos)) + line[pos..-1]
+end
