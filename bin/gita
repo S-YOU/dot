@@ -48,7 +48,10 @@ if [ $TMP -nt $TMP.orig ]; then
 
     HOME=$OLD_HOME
     # git commit -vでdiffを表示することもできる
-    git commit
+
+    if [ "$1" = "ci" ]; then
+        git commit
+    fi
 
     # 質問してgit pushする機能。無効にしておく
     #echoquestion "git push? (y/N)"
