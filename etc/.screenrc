@@ -109,6 +109,17 @@ bindkey "^[[" copy
 bindkey "^[]" paste .
 bindkey "^[K" eval focus "stuff ^[k" focus
 bindkey "^[?" eval copy "stuff ?"
+bindkey "^[-" eval "select -"
+bindkey "^[0" eval "select 0"
+bindkey "^[1" eval "select 1"
+bindkey "^[2" eval "select 2"
+bindkey "^[3" eval "select 3"
+bindkey "^[4" eval "select 4"
+bindkey "^[5" eval "select 5"
+bindkey "^[6" eval "select 6"
+bindkey "^[7" eval "select 7"
+bindkey "^[8" eval "select 8"
+bindkey "^[9" eval "select 9"
 
 # F11 F12. vim起動中も有効にするためには、-aつきでも定義しないといけない
 #bindkey -k -a F1 prev
