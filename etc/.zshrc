@@ -236,6 +236,15 @@ find_file_in_project() {
 zle -N find_file_in_project
 bindkey '^S' find_file_in_project
 
+insert-project-root() {
+    local root=$(tt)
+    root=${root/$HOME/\~}
+    BUFFER="${LBUFFER}${root}/${RBUFFER}"
+    CURSOR=$(($#LBUFFER + $#root + 1))
+}
+zle -N insert-project-root
+bindkey '^T' insert-project-root
+
 #-----------------------------------------------------------------------------
 #   プロンプト
 #-----------------------------------------------------------------------------
