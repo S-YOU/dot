@@ -236,6 +236,18 @@ find_file_in_project() {
 zle -N find_file_in_project
 bindkey '^S' find_file_in_project
 
+cd-with-fzf() {
+    tt
+    zle fzf-cd-widget
+}
+zle -N cd-with-fzf
+bindkey '^[c' cd-with-fzf
+
+if which fd > /dev/null 2>&1; then
+    FZF_CTRL_T_COMMAND="fd -t f --color never"
+    FZF_ALT_C_COMMAND="fd -t d --color never"
+fi
+
 insert-project-root() {
     local root=$(tt)
     root=${root/$HOME/\~}
