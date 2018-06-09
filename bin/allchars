@@ -3,17 +3,18 @@
 # CP932.TXTに文字そのものを追加して出力するスクリプト
 
 if ARGV.length == 0
-  puts "Usage:   #{$0} <file>"
-  puts "Example:"
-  puts "    wget ftp://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT"
-  puts "    #{$0} CP932.txt"
+  cp932_path = "#{ENV['HOME']}/tmp/CP932.TXT"
+  unless File.exist?(cp932_path)
+    system("wget ftp://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT -O '#{cp932_path}'")
+  end
+  filename = cp932_path
+else
+  filename = ARGV[0]
 end
 
 def warn(str)
   STDERR.puts "\x1b[0;31m#{str}\x1b[0m"
 end
-
-filename = ARGV[0]
 
 File.open(filename) do |f|
   f.each do |line|
@@ -22,13 +23,15 @@ File.open(filename) do |f|
       line.chomp!
       a = line.split("\t")
       code_point = a[1].to_i(16)
-      a << code_point.chr(Encoding::UTF_8)
+      char = code_point.chr(Encoding::UTF_8)
+      a << char
+      a << char.bytes.map {|x| "%02X" % x}.join(" ")
       puts a.join("\t")
     rescue
       warn "#{$.}行目を処理中にエラーが発生しました。"
       warn line
       warn $!.message
-      warn $!.backtrace
+      warn $!.backtrace.join("\n")
     end
   end
 end
