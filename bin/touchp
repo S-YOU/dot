@@ -1,0 +1,9 @@
+#!/bin/sh
+
+path="$1"
+
+dirname=$(dirname "$path")
+
+mkdir -p "$dirname"
+
+touch "$path"
