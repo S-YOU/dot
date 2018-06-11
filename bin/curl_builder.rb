@@ -1,6 +1,7 @@
 require "uri"
 require "open3"
 
+# curlのコマンドラインを組み立てるクラス
 class CurlBuilder
   def build(base_url:, method: "GET", params: {}, headers: {}, body_filename: nil, verbose: true, silent: true, options: "")
     url = base_url
@@ -32,7 +33,9 @@ class CurlBuilder
   end
 end
 
-c = CurlBuilder.new
-#puts c.build(base_url: "http://httpbin.org/get", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader"})
-#puts c.build(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
-c.exec(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
+if $0 == __FILE__
+  c = CurlBuilder.new
+  puts c.build(base_url: "http://httpbin.org/get", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader"})
+  puts c.build(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
+  c.exec(base_url: "http://httpbin.org/post", method: "POST", params: {a: 123, b: "hoge"}, headers: {"X-Hoge": "myheader", "Content-Type": "application/json"}, body_filename: "body.json")
+end
