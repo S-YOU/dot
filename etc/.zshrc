@@ -244,8 +244,8 @@ zle -N cd-with-fzf
 bindkey '^[c' cd-with-fzf
 
 if which fd > /dev/null 2>&1; then
-    FZF_CTRL_T_COMMAND="fd -t f --color never"
-    FZF_ALT_C_COMMAND="fd -t d --color never"
+    FZF_CTRL_T_COMMAND="fd -t f"
+    FZF_ALT_C_COMMAND="fd -t d"
 fi
 
 insert-project-root() {
