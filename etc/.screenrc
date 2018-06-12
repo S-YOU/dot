@@ -22,6 +22,8 @@ termcapinfo xterm* 'k4=\E[14~'
 termcapinfo xterm* 'hs@'
 # xtermの初期化文字列（端末エミュレータのウィンドウサイズが変わらないようにしておく）
 termcapinfo xterm* 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
+# マウスでスクロールできるようにする
+termcapinfo xterm* 'ti@:te@'
 
 # erase/insert/scroll/clear 操作でクリアされるすべての文字は、現在の背景色で表示されることになる
 defbce on
