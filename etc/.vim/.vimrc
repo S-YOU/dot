@@ -1002,7 +1002,14 @@ endfunction
 
 command! EnableSyntaxCheck let b:enable_syntax_check = 1
 command! DisableSyntaxCheck let b:enable_syntax_check = 0
-let g:syntaxCheckFunctions = { 'php' : 'PHP_SyntaxCheck', 'javascript' : 'JS_SyntaxCheck', 'ruby' : 'Ruby_SyntaxCheck', 'python' : 'Python_SyntaxCheck', 'haskell' : 'Haskell_SyntaxCheck' }
+let g:syntaxCheckFunctions = {
+      \ 'haskell' : 'Haskell_SyntaxCheck',
+      \ 'javascript' : 'JS_SyntaxCheck',
+      \ 'php' : 'PHP_SyntaxCheck',
+      \ 'python' : 'Python_SyntaxCheck',
+      \ 'ruby' : 'Ruby_SyntaxCheck',
+      \ 'yaml' : 'YAML_SyntaxCheck',
+      \ }
 function! GUSyntaxCheck(ft)
   if has_key(g:syntaxCheckFunctions, a:ft)
     let Func = function(g:syntaxCheckFunctions[a:ft])
@@ -1356,6 +1363,18 @@ function! Ruby_SyntaxCheck()
   endif
   let result = system("ruby -c ".expand("%"))
   if result !~? "Syntax OK"
+    echo result
+    return 0
+  endif
+  return 1
+endfunction
+
+function! YAML_SyntaxCheck()
+  if !executable("ruby")
+    return -1
+  endif
+  let result = system("ruby -ryaml -e 'YAML.parse(STDIN.read)' < " . shellescape(expand("%")))
+  if result != ""
     echo result
     return 0
   endif
