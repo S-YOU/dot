@@ -27,6 +27,10 @@ case "$ami_name" in
         ami_id=ami-28ddc154     # 2018-04
         username=ec2-user
         ;;
+    freebsd)
+        ami_id=ami-0a50b66c     # FreeBSD 11.1-RELEASE
+        username=root
+        ;;
     *)
         echo "Usage: ${0##*/} [ubuntu|centos|centos7|amazon]"
         exit 1
@@ -95,7 +99,7 @@ public_ip=$(aws ec2 describe-instances --instance-ids $instance_id | egrep 'Publ
 cat <<EOF
 
 ログインには:
-ssh ${username}@${public_ip} -i ~/.ssh/val00362_keypair.pem
+ssh -i ~/.ssh/val00362_keypair.pem ${username}@${public_ip}
 EOF
 
 rm -rf "$tmpdir"

@@ -257,6 +257,12 @@ insert-project-root() {
 zle -N insert-project-root
 bindkey '^T' insert-project-root
 
+backward-delete-word-or-region() {
+    [[ $REGION_ACTIVE -eq 1 ]] && zle kill-region || zle backward-kill-word
+}
+zle -N backward-delete-word-or-region
+bindkey '^W' backward-delete-word-or-region
+
 #-----------------------------------------------------------------------------
 #   プロンプト
 #-----------------------------------------------------------------------------
