@@ -650,7 +650,9 @@ function! _Bufgrep(...) abort
 endfunction
 
 " 全バッファに対して置換する
-" 使い方: Replace s@hoge@moge@
+" 検索文字列：@/
+" 置換文字列：第1引数
+" 使い方: Replace hoge
 " bufdo s@hoge@moge@gce との違いは、unlistedなバッファも対象にすること
 command! -nargs=1 Replace call _ReplaceAll("<args>")
 
@@ -666,14 +668,15 @@ function! _LoadAllFilesInQuickfixList()
   exe "b" orig_bufnr
 endfunction
 
-function! _ReplaceAll(s_cmd)
+function! _ReplaceAll(replaced_str)
   " QuickFixウィンドウで実行するとなぜかエラーが出るので、カーソルを別ウィンドウに移動する
   if &ft == "qf"
     wincmd w
   endif
   let orig_bufnr = bufnr("%")
   call _LoadAllFilesInQuickfixList()
-  let cmd = "%" . a:s_cmd . "gce"
+  let separator = "\x01"
+  let cmd = "%s" . separator . separator . a:replaced_str . separator . "gce"
   bufdo exe cmd
   exe "b" orig_bufnr
 endfunction
