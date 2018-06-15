@@ -600,7 +600,12 @@ endfunction
 
 command! MRU CtrlPMRU
 
-command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif
+command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
+function! _SetSearchRegister(...) abort
+  let len = len(a:000)
+  let @/ = a:000[len - 1]
+endfunction
+
 " 読み込まれているバッファを対象にgrepする
 nnoremap <Space>B :<C-u>Brep<Space><C-r><C-w>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
@@ -662,6 +667,10 @@ function! _LoadAllFilesInQuickfixList()
 endfunction
 
 function! _ReplaceAll(s_cmd)
+  " QuickFixウィンドウで実行するとなぜかエラーが出るので、カーソルを別ウィンドウに移動する
+  if &ft == "qf"
+    wincmd w
+  endif
   let orig_bufnr = bufnr("%")
   call _LoadAllFilesInQuickfixList()
   let cmd = "%" . a:s_cmd . "gce"
