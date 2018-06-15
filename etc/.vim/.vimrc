@@ -656,6 +656,19 @@ endfunction
 " bufdo s@hoge@moge@gce との違いは、unlistedなバッファも対象にすること
 command! -nargs=1 Replace call _ReplaceAll("<args>")
 
+function! _ReplaceAll(replaced_str)
+  " QuickFixウィンドウで実行するとなぜかエラーが出るので、カーソルを別ウィンドウに移動する
+  if &ft == "qf"
+    wincmd w
+  endif
+  let orig_bufnr = bufnr("%")
+  call _LoadAllFilesInQuickfixList()
+  let separator = "\x01"
+  let cmd = "%s" . separator . separator . a:replaced_str . separator . "ge | sil update"
+  bufdo exe cmd
+  exe "b" orig_bufnr
+endfunction
+
 function! _LoadAllFilesInQuickfixList()
   let orig_bufnr = bufnr("%")
   let bufnrs = uniq(map(getqflist(), 'v:val["bufnr"]'))
@@ -667,20 +680,6 @@ function! _LoadAllFilesInQuickfixList()
   endfor
   exe "b" orig_bufnr
 endfunction
-
-function! _ReplaceAll(replaced_str)
-  " QuickFixウィンドウで実行するとなぜかエラーが出るので、カーソルを別ウィンドウに移動する
-  if &ft == "qf"
-    wincmd w
-  endif
-  let orig_bufnr = bufnr("%")
-  call _LoadAllFilesInQuickfixList()
-  let separator = "\x01"
-  let cmd = "%s" . separator . separator . a:replaced_str . separator . "gce"
-  bufdo exe cmd
-  exe "b" orig_bufnr
-endfunction
-
 
 "=============================================================================
 "   短縮入力  Abbreviation
