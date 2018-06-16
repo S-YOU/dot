@@ -14,7 +14,7 @@ EOF
 
 def rpl(filename, from, to)
   unless File.ftype(filename) == "file"
-    puts "Skip #{file}    (not regular file)"
+    puts "Ignore #{filename}    (not regular file)"
     return [false, 0]
   end
 
@@ -23,7 +23,7 @@ def rpl(filename, from, to)
   content.gsub!(from) { count += 1; to }
   if count > 0
     File.write(filename, content)
-    puts "Processing #{filename}    (#{count} matches)"
+    puts "Replacing #{filename}    (#{count} matches)"
   end
 
   return [true, count]
@@ -68,8 +68,9 @@ def main
                 ARGV[2..-1]
               end
 
-  processed_count = 0
-  skipped_count = 0
+  replaced_count = 0
+  no_change_count = 0
+  ignored_count = 0
   total_match_count = 0
 
   from_re = build_regexp(from)
@@ -80,15 +81,19 @@ def main
   filenames.each do |filename|
     is_processed, match_count = rpl(filename, from_re, to)
     if is_processed
-      processed_count += 1
+      if match_count > 0
+        replaced_count += 1
+      else
+        no_change_count += 1
+      end
     else
-      skipped_count += 1
+      ignored_count += 1
     end
     total_match_count += match_count
   end
 
   puts
-  puts "#{filenames.length} files (processed: #{processed_count} / skipped: #{skipped_count}) Total #{total_match_count} matches"
+  puts "#{filenames.length} files (replaced: #{replaced_count} / no change: #{no_change_count} / ignored: #{ignored_count}) Total #{total_match_count} matches"
 end
 
 main
