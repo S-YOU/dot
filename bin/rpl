@@ -18,7 +18,7 @@ end
 
 def rpl(filename, from, to)
   unless File.ftype(filename) == "file"
-    message("Ignore", filename, "not regular file", "1;33")
+    message("Ignore", filename, "(not a regular file)", "1;33")
     return [false, 0]
   end
 
@@ -28,7 +28,7 @@ def rpl(filename, from, to)
     content.gsub!(from) { count += 1; to }
   rescue
     if $!.message == "invalid byte sequence in UTF-8"
-      message("Ignore", filename, "not UTF-8", "1;33")
+      message("Ignore", filename, "(not UTF-8)", "1;33")
       return [false, 0]
     end
     $stderr.print "\x1b[0;31m"
