@@ -11,6 +11,7 @@ EOF
 # - ファイル名が指定されなかった場合はgit ls-filesを対象とする
 # - 通常ファイルでなければスキップする
 # - 変更がないファイルはタイムスタンプを変えない
+# - -rで正規表現を有効にした場合は、\1, \2, ..., \9はn番目のグループに置き換えられる
 
 def message(process, filename, detail, color)
   puts "\x1b[#{color}m#{'%-10s' % process}\x1b[0m #{filename}    #{detail}"
@@ -25,14 +26,31 @@ def rpl(filename, from, to)
   count = 0
   content = File.read(filename)
   begin
-    content.gsub!(from) { count += 1; to }
+    content.gsub!(from) {
+      count += 1
+      if @opts[:regexp]
+        to.gsub(/\\[1-9]/, {
+          '\1' => $1,
+          '\2' => $2,
+          '\3' => $3,
+          '\4' => $4,
+          '\5' => $5,
+          '\6' => $6,
+          '\7' => $7,
+          '\8' => $8,
+          '\9' => $9,
+        })
+      else
+        to
+      end
+    }
   rescue
     if $!.message == "invalid byte sequence in UTF-8"
       message("Ignore", filename, "(not UTF-8)", "1;33")
       return [false, 0]
     end
     $stderr.print "\x1b[0;31m"
-    $stderr.puts "Error when processing [#{filename}]"
+    $stderr.puts "Error while processing [#{filename}]"
     $stderr.puts $!.message
     $stderr.puts $!.backtrace
     $stderr.print "\x1b[0m"
