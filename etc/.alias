@@ -33,6 +33,8 @@ case "$OSTYPE" in
         ;;
 esac
 alias ll='ls -lrth'
+alias mdpreview='grip'
+alias markdownpreview='grip'
 alias pt='pt --color-match="1;31" --follow'
 alias colorcat='pygmentize -g -f console256 -O style=emacs'
 alias r='$DOT/bin/r'
@@ -104,6 +106,11 @@ awsenv() {
             fi
         fi
     fi
+}
+
+diff() {
+    command diff --color=always "$@" | less
+    return $pipestatus[1]
 }
 
 ghc() {
