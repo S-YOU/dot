@@ -111,7 +111,8 @@ def main
 
   from_re = build_regexp(from)
 
-  puts "Search: #{from_re.inspect}"
+  puts "From: #{from_re.inspect}"
+  puts "To  : #{to}" + (@opts[:regexp] ? '   (\1 \2 ... \\9 will be replaced to each submatch)' : '')
   puts
 
   filenames.each do |filename|
