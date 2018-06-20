@@ -77,6 +77,7 @@ set fencs=ucs-bom,utf-8,iso-2022-jp-3,eucjp-ms,cp932,latin1
 set ambiwidth=double
 
 " ファイル --------------------------------------------------------
+set nofixendofline
 set nobackup
 set backupskip=/tmp/*,/private/tmp/*
 if isdirectory(expand("~/tmp"))
@@ -657,14 +658,20 @@ endfunction
 command! -nargs=1 Replace call _ReplaceAll("<args>")
 
 function! _ReplaceAll(replaced_str)
+  let separator = "\x01"
+  let cmd = "%s" . separator . separator . a:replaced_str . separator . "ge | sil update"
+
+  if exists(":cfdo")
+    exe "cfdo " . cmd
+    return
+  endif
+
   " QuickFixウィンドウで実行するとなぜかエラーが出るので、カーソルを別ウィンドウに移動する
   if &ft == "qf"
     wincmd w
   endif
   let orig_bufnr = bufnr("%")
   call _LoadAllFilesInQuickfixList()
-  let separator = "\x01"
-  let cmd = "%s" . separator . separator . a:replaced_str . separator . "ge | sil update"
   bufdo exe cmd
   exe "b" orig_bufnr
 endfunction
