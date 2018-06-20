@@ -61,7 +61,7 @@ cat > "$tmpdir/skeleton.json" <<EOF
     "InstanceType": "t2.micro",
     "BlockDeviceMappings": [
         {
-            "DeviceName": "#{device_name}",
+            "DeviceName": "${device_name}",
             "Ebs": {
                 "VolumeSize": 8,
                 "DeleteOnTermination": true,
