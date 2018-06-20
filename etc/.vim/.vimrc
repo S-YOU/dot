@@ -324,6 +324,7 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
+nnoremap S :<C-u>%s;\<<C-r><C-w>\>;;g<Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
@@ -1360,6 +1361,7 @@ endfunction
 
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
+  setlocal isk+=!,?,@-@
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
