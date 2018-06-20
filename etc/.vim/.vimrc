@@ -524,6 +524,8 @@ function! _GetProjectRoot()
   return a
 endfunction
 
+command! CDPjRoot exe "cd " . _GetProjectRoot() | pwd
+
 inoremap <C-x><C-f> <C-o>:set completefunc=CompleteFiles<CR><C-x><C-u>
 
 fun! CompleteFiles(findstart, base)
@@ -737,8 +739,7 @@ endfunction
 call DefineCommandAbbrev('brep', 'Brep')
 call DefineCommandAbbrev('mru', 'MRU')
 call DefineCommandAbbrev('bd', 'Bclose')
-
-
+call DefineCommandAbbrev('tt', 'CDPjRoot')
 
 "=============================================================================
 "   コマンド  Commands
