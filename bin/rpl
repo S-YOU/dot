@@ -18,7 +18,8 @@ def message(process, filename, detail, color)
 end
 
 def rpl(filename, from, to)
-  unless File.ftype(filename) == "file"
+  ftype = File.ftype(filename)
+  unless ftype == "file" || (ftype == "link" && File.ftype(File.realpath(filename)) == "file")
     message("Ignore", filename, "(not a regular file)", "1;33")
     return [false, 0]
   end
