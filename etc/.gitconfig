@@ -36,6 +36,7 @@
     # mergeやreset --hardのとき、変更を破棄しない
     skip-worktree = update-index --skip-worktree
     no-skip-worktree = update-index --no-skip-worktree
+    pr = pull-request
     skipped = !git ls-files -v | grep --color '^[Shs]'
     # git rmせずに普通にrmしちゃったファイルたちを一括でgit rmする
     rm-files = !git rm `git ls-files --deleted`
