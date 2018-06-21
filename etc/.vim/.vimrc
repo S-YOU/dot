@@ -1494,14 +1494,21 @@ function! _ToggleCommentSelection() range
   "let deleteCommentCommand = "normal! ^" . strlen(cs) . "x"
   let deleteCommentCommand = "s@" . cs . "@@e"
 
+  let commentLineCount = 0
+  let uncommentLineCount = 0
   let cl = a:firstline 
-  let line = getline(cl)
-  if strpart(line, match(line, "[^ \t]"), strlen(cs)) == cs
-    let deleteComment = 1
-  else
-    let deleteComment = 0
-  endif 
+  while cl <= a:lastline
+    let line = getline(cl)
+    if strpart(line, match(line, "[^ \t]"), strlen(cs)) == cs
+      let commentLineCount += 1
+    else
+      let uncommentLineCount += 1
+    endif
+    let cl += 1
+  endwhile
+  let deleteComment = (commentLineCount >= uncommentLineCount)
 
+  let cl = a:firstline
   if deleteComment
     while (cl <= a:lastline) 
         silent exe deleteCommentCommand
