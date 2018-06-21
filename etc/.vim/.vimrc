@@ -1506,7 +1506,7 @@ function! _ToggleCommentSelection() range
     endif
     let cl += 1
   endwhile
-  let deleteComment = (commentLineCount >= uncommentLineCount)
+  let deleteComment = (commentLineCount > uncommentLineCount)
 
   let cl = a:firstline
   if deleteComment
