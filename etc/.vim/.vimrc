@@ -324,7 +324,7 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
-nnoremap S :<C-u>%s;\<<C-r><C-w>\>;;g<Left><Left>
+nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;;g<Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
