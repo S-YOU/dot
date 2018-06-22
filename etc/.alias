@@ -109,8 +109,12 @@ awsenv() {
 }
 
 diff() {
-    command diff --color=always "$@" | less
-    return $pipestatus[1]
+    if [ -t 1 ]; then
+        command diff --color=always "$@" | less
+        return $pipestatus[1]
+    else
+        command diff "$@"
+    fi
 }
 
 ghc() {
