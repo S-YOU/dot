@@ -6,7 +6,6 @@
 " + で同じインデントの次の行へ移動
 " V+ で同じインデントの範囲を選択。同様にd+で削除。
 " <Space>ff でsyntaxにより折り畳む
-" d, で大文字まで削除。c, で大文字まで修正（キャメルケースを編集するのに便利）
 "
 " まだマッピングに使っていないキー
 " <C-_>
@@ -1745,12 +1744,6 @@ function! _BufInfo()
   echo "\nタイムスタンプを戻すには："
   call _EchoModifiedTime(fullpath)
 endfunction
-
-onoremap <silent> , :<C-u>call _UntilCapitalLetter()<CR>
-function! _UntilCapitalLetter()
-  call search('[A-Z_]', '', line('.'))
-endfunction
-
 
 function! ForwardWord(no_move_line)
   "call search('\(\W\|^\)\w', 'e')
