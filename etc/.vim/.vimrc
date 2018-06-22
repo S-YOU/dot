@@ -1362,7 +1362,6 @@ endfunction
 
 function! Ruby_Setting()
   setlocal ts=2 sts=2 sw=2 et
-  setlocal isk+=!,?,@-@
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
