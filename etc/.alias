@@ -371,5 +371,5 @@ transfer() {
     else
         curl --progress-bar --upload-file "-" "https://transfer.sh/$1" >> $tmpfile
     fi
-    cat $tmpfile; command rm -f $tmpfile;
+    cat $tmpfile; echo; command rm -f $tmpfile;
 }
