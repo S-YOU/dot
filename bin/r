@@ -12,7 +12,7 @@ if [ $# -gt 0 ]; then
 			;;
 		*.cpp|*.cc)
 			OUTFILE=a.out
-			g++ -std=c99 -g3 -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
+			g++ -g3 -W -Wall -Wno-unused-parameter "$1" -o "$OUTFILE" && print_line && ( shift; "$OUTFILE" "$@" )
 			;;
 		*.hs)
 			if which stack > /dev/null; then
