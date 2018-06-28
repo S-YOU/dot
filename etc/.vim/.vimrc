@@ -274,6 +274,7 @@ xnoremap <silent> } <Esc>:<C-u>call ForwardParagraph()<CR>mzgv`z
 nnoremap <silent> [[ :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>[[:let &scrolloff = scrolloff_old<CR>
 nnoremap <silent> ]] :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>]]:let &scrolloff = scrolloff_old<CR>
 vnoremap <Esc> <Esc>`<
+vnoremap <CR> G
 xnoremap <silent> y y`>
 noremap <silent> ) /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
 noremap <silent> ( /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
