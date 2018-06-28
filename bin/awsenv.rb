@@ -8,7 +8,7 @@ open(credentials_path, "r").each do |line|
   if line =~ /^#/
     next
   end
-  if line.match(/\[(\w+)\]/)
+  if line.match(/\[(.*)\]/)
     profile_name = $1
     profiles[profile_name] = {}
   elsif line.match(/(.*)=(.*)/)
@@ -25,6 +25,9 @@ if arg_profile_name = ARGV[0]
     puts "export AWS_SECRET_ACCESS_KEY='#{prof["aws_secret_access_key"]}';"
   else
     STDERR.puts "\x1b[0;31mError: key '#{arg_profile_name}' not found.\x1b[0m"
+    profiles.each_key do |key|
+      STDERR.puts key
+    end
     exit 1
   end
 else
