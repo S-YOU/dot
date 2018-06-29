@@ -2970,8 +2970,8 @@ nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
 nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
 nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
-nnoremap <silent> <Space>l :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
-nnoremap <silent> <Space>h :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
+nnoremap <silent> <Space>l :<C-u>call BufRing_Back()<CR>
+nnoremap <silent> <Space>h :<C-u>call BufRing_Forward()<CR>
 " tabline }}} --------------------------------------------------------------------------
 
 " バッファの順番を入れ替える
