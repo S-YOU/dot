@@ -113,8 +113,6 @@ set virtualedit=block
 if has("xterm_clipboard")
   set clipboard=unnamed
 endif
-nnoremap <Space>o :<C-u>call append(".", "")<CR>j:set paste<CR>I
-nnoremap <Space>O :<C-u>call append(line(".") - 1, "")<CR>k:set paste<CR>I
 
 " カーソル移動 -----------------------------------------------------
 set showmatch matchtime=1
@@ -393,6 +391,21 @@ nnoremap vb /{<CR>%v%0
 nnoremap vaa ?\(,\\|(\)<CR>lv/\(,\\|)\)<CR>
 nmap caa vaac
 
+nnoremap <Space>o :<C-u>call _EnterPasteMode(1)<CR>I
+nnoremap <Space>O :<C-u>call _EnterPasteMode(0)<CR>I
+
+function! _EnterPasteMode(is_below)
+  if getline(".") != ""
+    if a:is_below
+      call append(line("."), "")
+      normal! j
+    else
+      call append(line(".") - 1, "")
+      normal! k
+    endif
+  endif
+  set paste
+endfunction
 
 " バッファ・ウィンドウ ----------------------------------------------
 nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
