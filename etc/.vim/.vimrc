@@ -461,7 +461,7 @@ nnoremap <C-@><C-@> :noh<CR>:redraw!<CR>
 " コマンドライン
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
-cnoremap <expr> <C-d> (getcmdpos() == 1 ? "b \<C-d>"  : (getcmdpos()==strlen(getcmdline())+1 ? "\<C-d>" : "\<Del>"))
+cnoremap <expr> <C-d> (getcmdtype() == ":" && getcmdpos() == 1 ? "b \<C-d>"  : (getcmdpos()==strlen(getcmdline())+1 ? "\<C-d>" : "\<Del>"))
 " / で検索時、<C-j>を押すとマッチの末尾に移動
 cnoremap <expr> <C-j> (getcmdtype()=="/" \|\| getcmdtype()=="?") ? "\<C-e>/e+1\<CR>" : "\<C-e>"
 cnoremap <C-f> <Right>
@@ -1017,6 +1017,9 @@ function! _VimEnter()
   if filereadable(g:pjroot . "/Gemfile") && isdirectory(g:pjroot . "/public")
     let &path = &path . "," . g:pjroot . "/public"
   endif
+
+  " * では大文字小文字を区別しないようにする。vim-indexed-searchのマッピングを上書きしたいので、VimEnterの中でマッピングする。
+  nmap * /\C\<<C-r><C-w>\><CR>
 endfunction
 
 command! EnableSyntaxCheck let b:enable_syntax_check = 1
