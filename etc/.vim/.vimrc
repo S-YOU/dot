@@ -113,10 +113,8 @@ set virtualedit=block
 if has("xterm_clipboard")
   set clipboard=unnamed
 endif
-set pastetoggle=<F10>
-nnoremap <F10> :<C-u>exe "normal" (getline(".")==""?"I":"o")<CR>i<C-o>:set paste<CR>
-nmap <Space>o <F10>
-nmap <Space>O O<F10>
+nnoremap <Space>o :<C-u>call append(".", "")<CR>j:set paste<CR>I
+nnoremap <Space>O :<C-u>call append(line(".") - 1, "")<CR>k:set paste<CR>I
 
 " カーソル移動 -----------------------------------------------------
 set showmatch matchtime=1
@@ -323,7 +321,7 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
-nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;;g<Left><Left>
+nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;<C-r><C-w>;gc<Left><Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
