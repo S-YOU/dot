@@ -382,7 +382,6 @@ nnoremap <silent> <space>J V:InsertSpaceBetweenHankakuZenkaku<CR>
 xnoremap <silent> <space>J <Esc>:InsertSpaceBetweenHankakuZenkaku<CR>
 nnoremap <C-x>p :<C-u>r ~/tmp/screen-hardcopy.txt<CR>
 
-"iabbrev /// <Esc>j:FB<CR><BS>
 " 関数を範囲選択
 nnoremap vf ][v[[?^s*$<CR>
 " for などのブロックを選択。カーソル位置を for の行におく必要がある。
@@ -779,7 +778,8 @@ command! ShowIsKeyword let ft_save=&ft|new|set bt=nofile bh=delete|let &ft=ft_sa
 command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis | wincmd p | diffthis
 command! TestKeys runtime macros/testkeys.vim
 
-iab //- <Esc>:call _CommentCaption2('-')<CR>
+iab /// <Esc>:call _CommentCaption(strpart(_GetCommentSymbol(), 0, 1))<CR>
+iab //- <Esc>:call _CommentCaption('-')<CR>
 iab //= <Esc>:call _CommentCaption('=')<CR>
 
 function! _GetCommentSymbol()
