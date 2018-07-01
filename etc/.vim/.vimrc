@@ -3056,6 +3056,16 @@ function! _SwitchBufferTab(delta) abort
   "endif
 endfunction
 
+" バッファを最近使用した順で並べ替える
+function! _ReorderBufferTabs() abort
+  let not_found = 999999
+  call sort(g:tabline_all_buffers, {a, b -> BufRing_IndexOf(b["num"], not_found) - BufRing_IndexOf(a["num"], not_found)})
+  let g:tabline_visible_buffers = []    " 今表示しているバッファのリストをクリアする
+  call _UpdateShowTabline()
+endfunction
+command! REO call _ReorderBufferTabs()
+nnoremap <C-u> :<C-u>REO<CR>
+
 function! _SaveSelectionToFile(filename) abort
   silent normal! gv"xy
   let reg = getreg('x')

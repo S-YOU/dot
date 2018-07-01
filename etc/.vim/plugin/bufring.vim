@@ -58,6 +58,14 @@ function! BufRing_Back()
   "echo s:bufferRing
 endfunction
 
+function! BufRing_IndexOf(bufnr, not_found) abort
+  let i = index(s:bufferRing, a:bufnr)
+  if i < 0
+    return a:not_found
+  endif
+  return i
+endfunction
+
 
 " Implementation ----------------------
 
