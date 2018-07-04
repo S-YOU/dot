@@ -1136,7 +1136,7 @@ function! C_Setting()
   nnoremap gh yiw:AS<CR>/<C-R>"<CR>
   " 関数プロトタイプヒント
   call InstallFunctionHint()
-  syn match FunctionName /\w\+(\@=/
+  syn match FunctionName display /\w\+(\@=/
 endfunction 
 
 function! _MyCComplete(findstart, base)
@@ -1267,7 +1267,7 @@ let g:go_highlight_trailing_whitespace_error = 0
 let g:go_template_autocreate = 0
 
 function! _GoSyntax()
-  syn match FunctionName /\w\+(\@=/
+  syn match FunctionName display /\w\+(\@=/
 endfunction
 
 function! JavaScript_Setting()
@@ -1388,6 +1388,7 @@ function! Ruby_Setting()
       let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
     endif
   endif
+  hi link rubyFunction FunctionName
 endfunction 
 
 function! Ruby_SyntaxCheck()
