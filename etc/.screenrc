@@ -36,7 +36,7 @@ startup_message off
 vbell off
 altscreen on
 cjkwidth on
-#multiuser on
+multiuser on
 # Enable non-blocking mode to better cope with flaky ssh connections.
 defnonblock 5
 
