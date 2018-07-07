@@ -1,4 +1,4 @@
-"===================================================================
+"==================================================================
 "   Vim Setting 
 "===================================================================
 
@@ -13,6 +13,12 @@
 
 scriptencoding utf-8
 set enc=utf-8
+
+call plug#begin('~/.vim/plugged')
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+  Plug 'henrik/vim-indexed-search'
+call plug#end()
 
 if $SHELL =~ 'bash'
   let $BASH_ENV = '~/.alias'

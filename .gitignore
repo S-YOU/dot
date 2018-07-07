@@ -4,3 +4,4 @@ bin/als
 bin/apack
 bin/arepack
 bin/aunpack
+/etc/.vim/plugged/
