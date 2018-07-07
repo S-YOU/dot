@@ -15,6 +15,7 @@ scriptencoding utf-8
 set enc=utf-8
 
 call plug#begin('~/.vim/plugged')
+  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'henrik/vim-indexed-search'
@@ -35,21 +36,6 @@ filetype indent on
 set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
-function! _UpdateBundle() abort
-  try
-    let dirs = glob("~/.vim/bundle/*", 1, 1)
-    for d in dirs
-      exe "set runtimepath^=" . d
-      let docdir = d . "/doc"
-      if isdirectory(docdir) && !filereadable(docdir . "/tags")
-        exe "helptags" docdir
-        echomsg "Created tags in " . docdir
-      endif
-    endfor
-  finally
-  endtry
-endfunction
-call _UpdateBundle()
 nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
 let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
