@@ -18,6 +18,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'editorconfig/editorconfig-vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'henrik/vim-indexed-search'
+  Plug 'scrooloose/nerdtree'
 call plug#end()
 
 if $SHELL =~ 'bash'
