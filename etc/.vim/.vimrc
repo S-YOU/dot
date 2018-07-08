@@ -1751,6 +1751,10 @@ function! _BufInfo()
   echo getfperm(fullpath)."  ".strftime("%Y-%m-%d %H:%M:%S",getftime(fullpath))."   ".NumberFormat(Bufsize())." bytes (" . FileSizeFormat(Bufsize()) . ")"
   echo "\nタイムスタンプを戻すには："
   call _EchoModifiedTime(fullpath)
+  if exists("b:editorconfig_applied")
+    echo ""
+    echo "editorconfigが適用されています。"
+  endif
 endfunction
 
 function! ForwardWord(no_move_line)
