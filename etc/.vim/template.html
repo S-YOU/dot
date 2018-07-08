@@ -5,26 +5,33 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?vim expand("%") ?></title>
-
   <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
 
-  <!-- Bootstrap-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" async></script>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   <style>
-    html, body  { height: 100%; }
+    html, body  { height: 100%; font-size: 14px; }
+    nav.navbar { background: #f8f8f8; color: #212529; border-bottom: 1px solid #e7e7e7; }
+    nav.navbar a { color: #212529; }
     div.sidebar { float: left; width: 200px; height: 100%; background: #f8f8f8; }
     div.sidebar_inside { margin: 6px 12px; }
     div.content_wrapper { height: 100%; padding-left: 200px; }
     div.content { padding-top: 6px; }
-    div.under_navbar { padding-top: 50px; height: 100%; }
+    div.under_navbar { height: 100%; }
     h1          { font-size: 24px; margin: 6px 0px; }
   </style>
 
   <script>
     $(function() {
     });
+
+    function hoge_onclick() {
+      alert("OK!");
+    }
   </script>
 </head>
 <body>
@@ -41,10 +48,11 @@
     </div>
     <div class="content_wrapper">
       <div class="content container-fluid">
-        コンテント
+        <button class="btn btn-primary" onclick="hoge_onclick()">hoge</button>
       </div>
     </div>
   </div>
 </body>
 </html>
 <!-- vim: set ts=2 sts=2 sw=2 expandtab list: -->
+
