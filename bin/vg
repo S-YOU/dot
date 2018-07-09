@@ -13,7 +13,7 @@ DEBUG="false"
 
 echomsg() {
     if [ "$FROM" = "shell" -o "$DEBUG" = "true" ]; then
-        echo "$1" 1>&2
+        echo -e "\x1b[0;33m$1\x1b[0m" 1>&2
     fi
 }
 
@@ -85,24 +85,31 @@ if [ "$FROM" = "shell" ]; then
 fi
 
 if [ "$CMD" = "ag" ]; then
-    echomsg "vimgrep: using ag"
+    echomsg "vimgrep: Using ag"
     ag --follow --vimgrep --case-sensitive $AG_OPTIONS "$@"
 elif [ "$CMD" = "git" ]; then
-    echomsg "vimgrep: using git grep"
+    echomsg "vimgrep: Using git grep"
     git grep -nH $GIT_OPTIONS "$@"
 elif [ "$CMD" = "pt" ]; then
-    echomsg "vimgrep: using pt"
+    echomsg "vimgrep: Using pt"
     pt --follow --global-gitignore --nogroup --nocolor $PT_OPTIONS "$@"
 else
-    echomsg "vimgrep: using grep"
+    echomsg "vimgrep: Using grep"
     grep --exclude-dir=.svn --exclude-dir=.git --exclude-dir=bundle --exclude-dir=node_modules -nH $GREP_OPTIONS "$@" -R .
 fi
 
 if [ "$FROM" = "shell" ]; then
     # 退避しておいた1を復元
     exec 1>&3
+
+    cat "$TMPFILE"
+
     if [ -s "$TMPFILE" ]; then
-        vim -q "$TMPFILE" -c "silent! cw"
+        echo -ne "\x1b[0;33mVimで開きますか？(Y/n)\x1b[0m"
+        read answer
+        if [ "$answer" != "n" ]; then
+            vim -q "$TMPFILE" -c "silent! cw"
+        fi
     else
         echo "No match"
     fi
