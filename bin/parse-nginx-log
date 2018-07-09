@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require "uri"
+
+while line = gets
+  line =~ %r;(\S+) - (\S*) \[(.*?)\] "(.*?)" (\d+) (\d+) "(.*?)" "(.*?)";
+  remote_addr     = $1
+  remote_user     = $2
+  time_local      = $3
+  request         = $4
+  status          = $5
+  body_bytes_sent = $6
+  http_referer    = $7
+  http_user_agent = $8
+  print line
+  puts "remote_addr      = #{remote_addr}"
+  puts "remote_user      = #{remote_user}"
+  puts "time_local       = #{time_local}"
+  puts "request          = #{URI.unescape(request)}"
+  puts "status           = #{status}"
+  puts "http_referer     = #{URI.unescape(http_referer)}"
+  puts "http_user_agent  = #{http_user_agent}"
+  puts
+end
