@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -e .editorconfig ]; then
+    echo ".editorconfig already exists."
+    exit 1
+fi
+
+cat > .editorconfig << EOF
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+EOF
