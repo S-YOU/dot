@@ -333,6 +333,8 @@ nnoremap dis :<C-u>call _SelectString('i')<CR>d
 nnoremap das :<C-u>call _SelectString('a')<CR>d
 nnoremap cis :<C-u>call _SelectString('i')<CR>c
 nnoremap cas :<C-u>call _SelectString('a')<CR>c
+nnoremap <C-x><C-u> <Esc>mz:<C-u>.!urldecode<CR>`z
+vnoremap <C-x><C-u> :!urldecode<CR>
 
 " ビジュアルモードで選択する
 function! _Visual(start, end)
@@ -511,7 +513,8 @@ inoremap <expr> <C-r>/ _GetLastSearchedWord()
 cnoremap <C-z> <C-r>=substitute(getreg('"'), '\n', '', 'g')<CR>
 
 " コマンドラインへパスなどを挿入
-cnoremap <expr> <C-t>  _GetProjectRoot() . "/\<C-d>"
+cnoremap <expr> <C-t>  "代わりに C-j を使ってください"
+cnoremap <expr> <C-j>  _GetProjectRoot() . "/\<C-d>"
 cnoremap <expr> <C-x>d expand("%:p:h")
 cnoremap <expr> <C-x>f expand("%:t")
 cnoremap <expr> <C-x>p expand("%:p")
@@ -568,8 +571,6 @@ fun! CompleteFiles(findstart, base)
     return res
   endif
 endfun
-
-nmap g* :grep<space>-w <C-r><C-w>
 
 cabbrev <expr> grep _GetGrepCommand("pjroot")
 cabbrev <expr> grepapp _GetGrepCommand("app")
@@ -819,54 +820,9 @@ function! _CommentCaption(ch)
   startinsert!
 endfunction
 
-function! _CommentCaption2(ch)
-  let line = line(".")
-  let last_line = line("$")
-  if line == 1
-  elseif line != last_line
-    d
-    -1
-  endif
-  let fo_save = &fo
-  set fo=
-  let cs = _GetCommentSymbol()
-  let virtcol = virtcol(".")
-  if virtcol < 75
-    let len = 75 - virtcol
-  else
-    let len = 10
-  endif
-  set paste
-  execute "normal! o" . cs
-  execute "normal!  a {{{ "
-  execute "normal! " . len . "a" . a:ch
-  if line == 1
-    1d
-    normal! ``
-  elseif line == last_line
-    exe line "d"
-    normal! ``
-  endif
-  set nopaste 
-  exe "normal! ==^" . (1+strlen(a:ch)) . "l"
-  let &fo = fo_save
-  augroup CommentCaption2
-    au!
-    au InsertLeave * silent yank | silent put | s@{{{@}}}@ | call _DeleteCommentCaption2AuGroup()
-  augroup END
-  startinsert
-endfunction
-
-function! _DeleteCommentCaption2AuGroup()
-  augroup CommentCaption2
-    au!
-  augroup END
-endfunction
-
 command! FB call _FunctionDescription()
 command! WhatColor call _WhatColor(line('.'), col('.'))
 command! Fixdir let g:fixdir=getcwd()
-command! Initdir exe "cd " . g:initdir
 command! Top exe "cd " . g:topdir
 command! Settop call Settop(getcwd())
 
@@ -1024,6 +980,7 @@ function! _VimEnter()
 
   " * では大文字小文字を区別しないようにする。vim-indexed-searchのマッピングを上書きしたいので、VimEnterの中でマッピングする。
   nmap * /\C\<<C-r><C-w>\><CR>
+  nmap g* :grep<space>-w <C-r><C-w>
 endfunction
 
 command! EnableSyntaxCheck let b:enable_syntax_check = 1
