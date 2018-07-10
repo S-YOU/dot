@@ -15,10 +15,11 @@ scriptencoding utf-8
 set enc=utf-8
 
 call plug#begin('~/.vim/plugged')
-  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'editorconfig/editorconfig-vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'henrik/vim-indexed-search'
+  Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+  Plug 'junegunn/fzf.vim'
   Plug 'scrooloose/nerdtree'
 call plug#end()
 
@@ -36,8 +37,6 @@ filetype indent on
 set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
-nnoremap <silent> <C-p> :<C-u>CtrlPMixed<CR>
-let g:ctrlp_root_markers = ['.svn', '.git', 'Gemfile']
 set t_Co=256
 set timeoutlen=2000
 set updatetime=500
@@ -52,7 +51,7 @@ if &term =~ 'xterm'
 endif
 
 let mapleader='\'
-" grepやCtrlPなどで無視するディレクトリ
+" grepなどで無視するディレクトリ
 let exclude_dirs = split($IGNORED_DIRS, ":")
 
 " Cygwin
@@ -402,8 +401,8 @@ function! _EnterPasteMode(is_below)
 endfunction
 
 " バッファ・ウィンドウ ----------------------------------------------
-nnoremap <space>i :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPBuffer<CR>
-nnoremap <space>I :<C-u>let g:ctrlp_default_input=''<CR>:CtrlPMRUFiles<CR>
+nnoremap <silent> <C-p> :<C-u>Files <C-r>=_GetProjectRoot()<CR><CR>
+nnoremap <space>i :<C-u>Buffers<CR>
 nnoremap <silent> <C-d> :<C-u>call _ShowNERDTree()<CR>
 nnoremap <silent> <expr> <tab> (getline(".")[col(".")-1]==' ' ? "s\<tab>\<Esc>l" : "i\<tab>\<Esc>l")
 nnoremap <silent> <space><space> i<space><Esc>l
@@ -604,8 +603,6 @@ function! _Echon(highlight, msg)
   echon a:msg
   echohl None
 endfunction
-
-command! MRU CtrlPMRU
 
 command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
 function! _SetSearchRegister(...) abort
@@ -2532,30 +2529,6 @@ endfunction
 
 " markdown で```rbの記法を有効にする
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'ruby', 'rb=ruby', 'javascript', 'js=javascript', 'php']
-
-" CtrlP
-" ctrlp_follow_symlinks
-"   0 - don't follow symbolic links.
-"   1 - follow but ignore looped internal symlinks to avoid duplicates.
-"   2 - follow all symlinks indiscriminately.
-let g:ctrlp_follow_symlinks = 2
-let g:ctrlp_switch_buffer = 0
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](' . join(map(exclude_dirs, "substitute(v:val, '\\.', '\\.', 'g')"), '|') . ')$',
-  \ 'file': '\v\.(o)$',
-  \ }
-" CtrlPのウィンドウでCtrl+Spaceを押すとプレビューするようにする
-let g:ctrlp_buffer_func = { 'enter': 'CtrlpBufferEnter' }
-func! CtrlpBufferEnter()
-  nnoremap <buffer> <silent> <C-@> :call _CtrlpPreview()<CR>
-endfunc
-function! _CtrlpPreview()
-  let bufname = substitute(substitute(strpart(getline("."), 2), '.*/', '', ''), '#$', '', '')
-  let g:bn = bufname
-  noautocmd wincmd p
-  exe "b" bufname
-  noautocmd wincmd p
-endfunction
 
 " vim-indexed-search
 let g:indexed_search_colors = 0
