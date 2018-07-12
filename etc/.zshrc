@@ -239,9 +239,11 @@ bindkey '^S' find_file_in_project
 cd-with-fzf() {
     tt
     zle fzf-cd-widget
+    BUFFER="ls_abbrev"
+    zle accept-line
 }
 zle -N cd-with-fzf
-bindkey '^[c' cd-with-fzf
+bindkey '^X^G' cd-with-fzf
 
 if which fd > /dev/null 2>&1; then
     FZF_CTRL_T_COMMAND="fd -t f"
