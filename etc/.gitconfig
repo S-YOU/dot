@@ -50,7 +50,7 @@
     # git push origin --tags
     shallow-clone = clone --depth 1
     # マージされているブランチを削除する
-    delete-merged-branches = !git branch -d $(git branch --merged | grep -v -w master)
+    delete-merged-branches = !git branch -d $(git branch --merged | grep -v -w master | grep -v '*' || echo 'マージ済みブランチが存在しません')
     vimdiff = difftool --tool=vimdiff --prompt
     # 追跡されていないファイルを削除するには
     # git clean -n    # dry run  .gitignoreされているファイルは含めない
