@@ -2154,7 +2154,7 @@ function! Rename(name, bang) abort
   let l:curfile = expand("%:p")
   let perm = getfperm(l:curfile)
   let v:errmsg = ""
-  silent! exe "saveas" . a:bang . " " . fnameescape(dir . a:name)
+  silent! exe "saveas" . a:bang . " " . fnameescape(dir . Trim(a:name))
   call setfperm(dir . a:name, perm)
   if v:errmsg =~# '^$\|^E329'
     if expand("%:p") !=# l:curfile && filewritable(expand("%:p"))
