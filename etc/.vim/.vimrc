@@ -611,6 +611,7 @@ function! _SetSearchRegister(...) abort
 endfunction
 
 " 読み込まれているバッファを対象にgrepする
+nnoremap <space>b :<C-u>Brep<space>
 nnoremap <Space>B :<C-u>Brep<Space><C-r><C-w>
 command! -nargs=+ Brep call _Bufgrep(<f-args>)
 function! _Bufgrep(...) abort
