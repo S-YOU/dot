@@ -90,12 +90,13 @@ bindkey -M menuselect '^K' down-line-or-history
 #compctl -M 'm:{a-z}={A-Z}' # 大文字小文字を区別しない
 # 大文字小文字を区別しない。
 # ハイフンとアンダースコアで相互にマッチするようにする
+# 部分一致させる
 case "$OSTYPE" in
     "darwin*")
-        zstyle ':completion:*' matcher-list 'm:{-_}={_-}'
+        zstyle ':completion:*' matcher-list 'm:{-_}={_-}' 'r:|=*' 'l:|=* r:|=*'
         ;;
     *)
-        zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}'
+        zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}' 'r:|=*' 'l:|=* r:|=*'
         ;;
 esac
 
