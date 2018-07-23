@@ -330,6 +330,7 @@ nnoremap vis :<C-u>call _SelectString('i')<CR>
 nnoremap vas :<C-u>call _SelectString('a')<CR>
 nnoremap dis :<C-u>call _SelectString('i')<CR>d
 nnoremap das :<C-u>call _SelectString('a')<CR>d
+nnoremap cs  :<C-u>call _SelectString('i')<CR>c
 nnoremap cis :<C-u>call _SelectString('i')<CR>c
 nnoremap cas :<C-u>call _SelectString('a')<CR>c
 nnoremap <C-x><C-u> <Esc>mz:<C-u>.!urldecode<CR>`z
