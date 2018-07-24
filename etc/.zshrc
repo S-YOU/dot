@@ -417,6 +417,11 @@ unalias run-help > /dev/null 2>&1
 autoload run-help
 alias help=run-help
 
+_awsenv() {
+    compadd -- $(grep '^\[' ~/.aws/credentials | tr -d '[]')
+}
+compdef _awsenv awsenv
+
 if [ -e ~/.zshrc.local ]; then
     . ~/.zshrc.local
 fi
