@@ -182,37 +182,14 @@ else
     bindkey "^[g" _list_dirstack
 fi
 
-# 単語展開に対応したタブ補完
+# タブ補完のラッパー
 _complete-or-expand() {
     case "$BUFFER" in
-        b)
-            BUFFER="bundle exec "
-            CURSOR=$#BUFFER
-            ;;
-        rs)
-            BUFFER="bin/rspec "
-            CURSOR=$#BUFFER
-            ;;
-        ff)
-            BUFFER="bin/rspec --fail-fast "
-            CURSOR=$#BUFFER
-            ;;
-        nf)
-            BUFFER="bin/rspec --next-failure "
-            CURSOR=$#BUFFER
-            ;;
-        of)
-            BUFFER="bin/rspec --only-failures "
-            CURSOR=$#BUFFER
-            ;;
         *)
             zle menu-expand-or-complete
             ;;
     esac
 }
-ff="--fail-fast"
-nf="--next-failure"
-of="--only-failures"
 zle -N _complete-or-expand
 bindkey '^I' _complete-or-expand
 
@@ -345,21 +322,6 @@ preexec() {
         fi
     fi
 }
-
-# cd: skipping directories that contain only a single sub-directory
-# https://www.reddit.com/r/zsh/comments/6omtk9/cd_skipping_directories_that_contain_only_a/
-#function chpwd() {
-#    files=$(ls -A | wc -l)
-#    if [[ $files = "1" ]]; then
-#        zmodload zsh/parameter
-#        if [[ "cd .." != $history[$HISTCMD] ]]; then
-#            f=$(ls -A)
-#            if [[ -d "$f" ]]; then
-#                cd "$f"
-#            fi
-#        fi
-#    fi
-#}
 
 #-----------------------------------------------------------------------------
 #   エイリアス
