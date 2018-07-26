@@ -1221,6 +1221,7 @@ endfunction
 
 function! JavaScript_Setting()
   let b:commentSymbol = "//"
+  setlocal cinoptions=
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
 endfunction
 
