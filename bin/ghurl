@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+# ファイル名を与えて、そのGitHub urlを表示するスクリプト
+
+require 'pathname'
+
+@current_branch = `git rev-parse --abbrev-ref HEAD`.strip
+
+def parse_remote(str)
+  if str =~ %r|https://github.com/([0-9A-z_.-]+)/([0-9A-z_.-]+)(\.git)?|
+    user = $1
+    repo = $2.gsub(/\.git\z/, '')
+  elsif str =~ %r|git@github.com:([0-9A-z_.-]+)/([0-9A-z_.-]+)(\.git)?|
+    user = $1
+    repo = $2.gsub(/\.git\z/, '')
+  else
+    return nil
+  end
+  return {
+    user: user,
+    repo: repo,
+  }
+end
+
+def to_github_url(str, current_branch, type="blob")
+  parsed = parse_remote(str)
+  return nil if parsed.nil?
+  if current_branch
+    return "https://github.com/#{parsed[:user]}/#{parsed[:repo]}/#{type}/#{current_branch}"
+  else
+    return "https://github.com/#{parsed[:user]}/#{parsed[:repo]}"
+  end
+end
+
+def get_github_url
+  IO.popen("git remote -v") do |p|
+    p.each do |line|
+      if github_url = to_github_url(line, @current_branch)
+        return github_url
+      end
+    end
+  end
+end
+
+
+
+filename = ARGV[0]
+start_linenum = ARGV[1]
+end_linenum = ARGV[2]
+dir = `git rev-parse --show-prefix`.chomp
+path = Pathname.new(File.join(dir, filename).to_s).cleanpath
+
+#https://github.com/ValLaboratory/shareppo-web/blob/staging/app/controllers/lp_controller.rb#L5
+
+url = File.join(get_github_url, path)
+url += "#L#{start_linenum}" if start_linenum
+url += "-L#{end_linenum}" if end_linenum
+
+puts url
