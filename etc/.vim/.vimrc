@@ -3055,6 +3055,12 @@ function! _Toc(...) abort
   setlocal concealcursor=nvic
 endfunction
 
+command! -range Ghurl call _Ghurl(<line1>, <line2>)
+function! _Ghurl(start_lnum, end_lnum)
+  let cmd = "ghurl " . shellescape("%:p:t") . " " . a:start_lnum . " " . a:end_lnum
+  exe "!" . cmd
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
