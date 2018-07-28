@@ -1,17 +1,14 @@
 #!/usr/bin/env ruby
 # git statusの結果から指定したステータスのファイルだけに絞り込む
 
-if ARGV.length == 0
-  system("git status --short --branch")
-  exit
-end
+@show_all = (ARGV.length == 0)
 
 # 'M ' ' M'などを入力するのは面倒くさいため、'M.' '.M'で代用できるようにする
 queries = ARGV.map {|a| a.gsub('.', ' ')}
 
-lines = `git status --short --branch`.split("\n")
+lines = `git status --short`.split("\n")
 lines.each do |line|
   status = line[0..1]
   filename = line[3..-1]
-  puts filename if queries.any? {|q| status.end_with?(q)}
+  puts filename if (@show_all || queries.any? {|q| status.end_with?(q)})
 end
