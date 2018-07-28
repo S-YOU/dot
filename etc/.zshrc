@@ -156,12 +156,18 @@ surround-doller() {
 zle -N surround-doller
 bindkey "^[$" surround-doller
 
-repeat_last_command() {
-    zle _up-line-or-history-ignoring
-    zle accept-line
+# screenのpastebufを貼り付ける
+paste-from-screen() {
+    screen -X writebuf
+    perl -pi -e 's/[\r\n]+/ /g' ~/.yank
+    local pastebuf=$(cat ~/.yank)
+    local cursor=$(( $#LBUFFER + $#pastebuf ))
+    BUFFER="${LBUFFER}${pastebuf}${RBUFFER}"
+    CURSOR=$cursor
 }
-zle -N repeat_last_command
-bindkey "^[k" repeat_last_command
+zle -N paste-from-screen
+bindkey "^]" paste-from-screen
+
 
 if [ "$SELECTOR" != "" ]; then
     _dirstack_widget() {
