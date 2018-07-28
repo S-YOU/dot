@@ -53,6 +53,7 @@ setopt extendedglob         # ~ ^ ** () などを使えるようにする
 setopt notify               # rm * を実行する前に確認する
 setopt hist_ignore_space    # スペースで始まるコマンドを履歴に残さない
 setopt glob_complete        # *<Tab>の挙動を bash 風に
+setopt nonomatch            # ?や*でグロブ展開候補がないときリテラルとして扱う
 setopt sh_word_split        # クォートされていない変数の値の中の空白の扱い
 setopt hist_ignore_dups     # 連続した同じコマンドを履歴ファイルに入れない
 setopt hist_find_no_dups    # Ctrl-rで同じコマンドを2回以上表示させない
