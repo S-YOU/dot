@@ -312,6 +312,7 @@ endfunction
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
 nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;<C-r><C-w>;gc<Left><Left><Left>
+nnoremap gS :<C-u>%s;\C\<<C-r><C-w>\>;;gc<Left><Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
@@ -1161,6 +1162,7 @@ endfunction
 function! HTML_Setting()
   setlocal noet nolist
   setlocal completefunc=HTMLComplete
+  setlocal cinoptions=
   setlocal indentkeys=
   setlocal iskeyword+=-,@
   setlocal dictionary+=~/.vim/dict/htmldict.txt

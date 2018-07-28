@@ -25,7 +25,8 @@
     graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %Cgreen%d%Creset %s\" --all --date=short
     cancel-previous-commit = reset HEAD~1
     # カレントブランチをoriginにプッシュする
-    pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
+    #pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
+    pushorigin  = !git push -u origin
     unstage = reset HEAD
     modify-history = rebase -i HEAD~6
     # masterからの分岐点以降のコミットを表示する
