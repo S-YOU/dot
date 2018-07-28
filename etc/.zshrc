@@ -147,6 +147,15 @@ quote-word() {
 zle -N quote-word
 bindkey "^[q" quote-word
 
+# 前回実行したコマンドを$()で囲む
+surround-doller() {
+    zle up-history
+    BUFFER="\$(${BUFFER})"
+    CURSOR=0
+}
+zle -N surround-doller
+bindkey "^[$" surround-doller
+
 repeat_last_command() {
     zle _up-line-or-history-ignoring
     zle accept-line
