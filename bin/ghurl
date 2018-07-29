@@ -2,6 +2,7 @@
 # ファイル名を与えて、そのGitHub urlを表示するスクリプト
 
 require 'pathname'
+require 'optparse'
 
 @current_branch = `git rev-parse --abbrev-ref HEAD`.strip
 
@@ -21,10 +22,13 @@ def parse_remote(str)
   }
 end
 
-def to_github_url(str, current_branch, type="blob")
+def to_github_url(str, current_branch)
+  type = $opt[:type]
   parsed = parse_remote(str)
-  return nil if parsed.nil?
-  if current_branch
+  if parsed.nil?
+    raise "Parse Error [#{str}]"
+  end
+  if type != :base && current_branch
     return "https://github.com/#{parsed[:user]}/#{parsed[:repo]}/#{type}/#{current_branch}"
   else
     return "https://github.com/#{parsed[:user]}/#{parsed[:repo]}"
@@ -41,13 +45,24 @@ def get_github_url
   end
 end
 
+$opt = { type: :blob }
+if ARGV.length == 0
+  $opt[:type] = :base
+end
+opt = OptionParser.new
+opt.on("-b", "--base", "ベースURL") {|v| $opt[:type] = :base }
+opt.on("-l", "--blob", "blob URL") {|v| $opt[:type] = :blob }
+opt.parse!(ARGV)
 
-
-filename = ARGV[0]
-start_linenum = ARGV[1]
-end_linenum = ARGV[2]
-dir = `git rev-parse --show-prefix`.chomp
-path = Pathname.new(File.join(dir, filename).to_s).cleanpath
+if $opt[:type] == :base
+  path = ''
+else
+  filename = ARGV[0] || ''
+  start_linenum = ARGV[1]
+  end_linenum = ARGV[2]
+  dir = `git rev-parse --show-prefix`.chomp
+  path = Pathname.new(File.join(dir, filename).to_s).cleanpath
+end
 
 #https://github.com/ValLaboratory/shareppo-web/blob/staging/app/controllers/lp_controller.rb#L5
 
