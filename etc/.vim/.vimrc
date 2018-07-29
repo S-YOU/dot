@@ -440,7 +440,6 @@ endfunction
 nnoremap <silent> <F1> :<C-u>Out call _BufInfo()<CR>
 nnoremap <silent> <F2> :<C-u>cp<CR>
 nnoremap <silent> <F3> :<C-u>cn<CR>
-nnoremap <silent> <F4> :<C-u>runtime macros/vimsh.vim<CR>
 nnoremap <silent> <Space>r :<C-u>call ExecSystem('last')<CR>
 nnoremap <silent> <Space>a :<C-u>SetAutoExec<CR>
 nnoremap <silent> <Space>R :<C-u>call ExecSystem('input')<CR>
@@ -2914,6 +2913,7 @@ augroup END
 
 nnoremap <C-@><C-l> :<C-u>call _MoveBufferTab(+1)<CR>
 nnoremap <C-@><C-h> :<C-u>call _MoveBufferTab(-1)<CR>
+nnoremap <C-@><C-d> :Bclose<CR>
 nnoremap <silent> <C-l> :<C-u>call _SwitchBufferTab(+1 * v:count1)<CR>
 nnoremap <silent> <C-h> :<C-u>call _SwitchBufferTab(-1 * v:count1)<CR>
 nnoremap <silent> <Space>l :<C-u>call BufRing_Back()<CR>
