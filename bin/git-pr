@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# GitHubのOpen a pull requestのURLを表示するスクリプト
+
 current_branch = `git rev-parse --abbrev-ref HEAD`.strip
 ghurl = `ghurl`.chomp
 puts File.join(ghurl, "compare/#{current_branch}?expand=1")
