@@ -272,7 +272,6 @@ inoremap <silent> <C-l> <Esc>g~awgi
 vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
-nnoremap <silent> <Esc>o <C-i>
 
 function! _SearchNext(dir)
   let line = line(".")
@@ -3062,6 +3061,20 @@ function! _Ghurl(start_lnum, end_lnum)
   let cmd = "ghurl " . shellescape("%:p:t") . " " . a:start_lnum . " " . a:end_lnum
   exe "!" . cmd
 endfunction
+
+" インサートモードでカーソルの色を変える
+function! _EnableChangeCursorColor()
+  let insert_mode_color = "#00ff00"
+  let normal_mode_color = "#000000"
+  if &term =~ "screen.*"
+    let &t_SI .= "\eP\e]12;" . insert_mode_color . "\x7\e\\"
+    let &t_EI .= "\eP\e]12;" . normal_mode_color . "\x7\e\\"
+  else
+    let &t_SI .= "\<Esc>]12;" . insert_mode_color . "\x7"
+    let &t_EI .= "\<Esc>]12;" . normal_mode_color . "\x7"
+  endif
+endfunction
+call _EnableChangeCursorColor()
 
 "=============================================================================
 "   ▲実験室  Experimental
