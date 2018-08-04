@@ -38,7 +38,8 @@ set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
 set t_Co=256
-set timeoutlen=2000
+set timeoutlen=2000   " マッピング待ち
+set ttimeoutlen=10    " キーコード待ち（-1にするとインサートモードからのESCでラグが生じるようになる）
 set updatetime=500
 set viminfo='600,s100,h
 set diffopt=filler,iwhite
