@@ -721,12 +721,6 @@ function! _FinishAbbreb()
   return ''
 endfunction
 
-call DefineAbbrev('vd', 'var_dump(#CURSOR#)', 'i', '')
-call DefineAbbrev('ph', '<?php  ?><left><left><left>', 'i', '')
-call DefineAbbrev('pe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbrev('phe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbrev('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '')
-call DefineAbbrev('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '')
 call DefineAbbrev('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
 call DefineAbbrev('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
 call DefineAbbrev('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
@@ -1167,6 +1161,7 @@ function! HTML_Setting()
   inoremap <buffer> <C-x><C-c> <C-o>ma</<C-x><C-o><Esc>`aa
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
   let b:commentSymbol = '//'
+  call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
 endfunction
 
@@ -1235,7 +1230,6 @@ function! Perl_Setting()
   setlocal complete-=i
 endfunction
 
-
 function! PHP_Setting()
   "setlocal iskeyword+=-
   let b:commentSymbol = "//"
@@ -1254,11 +1248,19 @@ function! PHP_Setting()
   call InstallFunctionHint()
   nnoremap <silent> vf :<C-u>call PHP_SelectFunction()<CR>
   setlocal indentkeys=0{,0},0),:,!^F,o,O,e,*<Return>,=*/
-  "call DefineAbbrev('try', 'try {<Enter>;#CURSOR#<Enter><Up><End><Left><Left><Left><Left><Left><Left><Left><Left><Bs><Down>}<Enter>catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}<Enter>', 'i', '<buffer>')
   call DefineAbbrev('catch', 'catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}', 'i', '<buffer>')
+  call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
 endfunction
 
+function! _DefinePhpAbbrev()
+  call DefineAbbrev('vd', 'var_dump(#CURSOR#)', 'i', '<buffer>')
+  call DefineAbbrev('ph', '<?php  ?><left><left><left>', 'i', '<buffer>')
+  call DefineAbbrev('pe', '<?php echo #CURSOR# ?>', 'i', '<buffer>')
+  call DefineAbbrev('phe', '<?php echo #CURSOR# ?>', 'i', '<buffer>')
+  call DefineAbbrev('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '<buffer>')
+  call DefineAbbrev('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '<buffer>')
+endfunction
 
 function! JS_SyntaxCheck()
   if executable("js")
