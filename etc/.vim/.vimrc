@@ -331,7 +331,6 @@ nnoremap vis :<C-u>call _SelectString('i')<CR>
 nnoremap vas :<C-u>call _SelectString('a')<CR>
 nnoremap dis :<C-u>call _SelectString('i')<CR>d
 nnoremap das :<C-u>call _SelectString('a')<CR>d
-nnoremap cs  :<C-u>call _SelectString('i')<CR>c
 nnoremap cis :<C-u>call _SelectString('i')<CR>c
 nnoremap cas :<C-u>call _SelectString('a')<CR>c
 nnoremap <C-x><C-u> <Esc>mz:<C-u>.!urldecode<CR>`z
@@ -3064,18 +3063,21 @@ function! _Ghurl(start_lnum, end_lnum)
 endfunction
 
 " インサートモードでカーソルの色を変える
-function! _EnableChangeCursorColor()
-  let insert_mode_color = "#00ff00"
+function! _EnableChangeCursorColor(override)
+  let insert_mode_color = "#a820a8"   " 紫
+  "let insert_mode_color = "#20a820"   " 緑
   let normal_mode_color = "#000000"
+  let t_SI = a:override ? '' : &t_SI
+  let t_EI = a:override ? '' : &t_EI
   if &term =~ "screen.*"
-    let &t_SI .= "\eP\e]12;" . insert_mode_color . "\x7\e\\"
-    let &t_EI .= "\eP\e]12;" . normal_mode_color . "\x7\e\\"
+    let &t_SI = t_SI . "\eP\e]12;" . insert_mode_color . "\x7\e\\"
+    let &t_EI = t_EI . "\eP\e]12;" . normal_mode_color . "\x7\e\\"
   else
-    let &t_SI .= "\<Esc>]12;" . insert_mode_color . "\x7"
-    let &t_EI .= "\<Esc>]12;" . normal_mode_color . "\x7"
+    let &t_SI = t_SI . "\<Esc>]12;" . insert_mode_color . "\x7"
+    let &t_EI = t_EI . "\<Esc>]12;" . normal_mode_color . "\x7"
   endif
 endfunction
-call _EnableChangeCursorColor()
+call _EnableChangeCursorColor(0)
 
 "=============================================================================
 "   ▲実験室  Experimental
