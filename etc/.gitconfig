@@ -58,7 +58,7 @@
     # git clean -f    # execute
     # git clean -dn   # dry run  .gitignoreされているファイルを含める
     # git clean -df   # execute
-    merged-pull-request = log --grep 'Merge pull request'  --pretty='format:%ai %Cred%h%Creset %d%s %b'
+    merged-pull-request = log --grep 'Merge pull request'  --pretty='format:%ai %b'
 [merge]
     tool = vimdiff
 [credential]
