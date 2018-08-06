@@ -91,12 +91,13 @@ bindkey -M menuselect '^K' down-line-or-history
 #compctl -M 'm:{a-z}={A-Z}' # 大文字小文字を区別しない
 # 大文字小文字を区別しない。
 # ハイフンとアンダースコアで相互にマッチするようにする
+# キャメルケースを補完できるようにする
 case "$OSTYPE" in
     "darwin*")
-        zstyle ':completion:*' matcher-list 'm:{-_}={_-}'
+        zstyle ':completion:*' matcher-list 'm:{-_}={_-}' 'r:[^A-Z0-9]||[A-Z0-9]=** r:|=*'
         ;;
     *)
-        zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}'
+        zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}' 'r:[^A-Z0-9]||[A-Z0-9]=** r:|=*'
         ;;
 esac
 # git co でブランチ名を部分一致させる
