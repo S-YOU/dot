@@ -4,7 +4,12 @@
 require 'pathname'
 require 'optparse'
 
-@current_branch = `git rev-parse --abbrev-ref HEAD`.strip
+#@current_branch = `git rev-parse --abbrev-ref HEAD`.strip
+@current_branch = `git rev-parse HEAD`.strip
+
+if @current_branch.strip == ""
+  exit 1
+end
 
 def parse_remote(str)
   if str =~ %r|https://github.com/([0-9A-z_.-]+)/([0-9A-z_.-]+)(\.git)?|

@@ -38,7 +38,8 @@ set modeline
 set helplang=ja
 set runtimepath+=~/vimdoc-ja
 set t_Co=256
-set timeoutlen=2000
+set timeoutlen=2000   " マッピング待ち
+set ttimeoutlen=10    " キーコード待ち（-1にするとインサートモードからのESCでラグが生じるようになる）
 set updatetime=500
 set viminfo='600,s100,h
 set diffopt=filler,iwhite
@@ -272,7 +273,6 @@ inoremap <silent> <C-l> <Esc>g~awgi
 vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
-nnoremap <silent> <Esc>o <C-i>
 
 function! _SearchNext(dir)
   let line = line(".")
@@ -312,7 +312,7 @@ endfunction
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
 nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;<C-r><C-w>;gc<Left><Left><Left>
-nnoremap gS :<C-u>%s;\C\<<C-r><C-w>\>;;gc<Left><Left><Left>
+nnoremap <Space>S :<C-u>%s;\C\<<C-r><C-w>\>;;gc<Left><Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
@@ -331,7 +331,6 @@ nnoremap vis :<C-u>call _SelectString('i')<CR>
 nnoremap vas :<C-u>call _SelectString('a')<CR>
 nnoremap dis :<C-u>call _SelectString('i')<CR>d
 nnoremap das :<C-u>call _SelectString('a')<CR>d
-nnoremap cs  :<C-u>call _SelectString('i')<CR>c
 nnoremap cis :<C-u>call _SelectString('i')<CR>c
 nnoremap cas :<C-u>call _SelectString('a')<CR>c
 nnoremap <C-x><C-u> <Esc>mz:<C-u>.!urldecode<CR>`z
@@ -722,12 +721,6 @@ function! _FinishAbbreb()
   return ''
 endfunction
 
-call DefineAbbrev('vd', 'var_dump(#CURSOR#)', 'i', '')
-call DefineAbbrev('ph', '<?php  ?><left><left><left>', 'i', '')
-call DefineAbbrev('pe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbrev('phe', '<?php echo #CURSOR# ?>', 'i', '')
-call DefineAbbrev('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '')
-call DefineAbbrev('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '')
 call DefineAbbrev('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
 call DefineAbbrev('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
 call DefineAbbrev('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
@@ -1168,6 +1161,7 @@ function! HTML_Setting()
   inoremap <buffer> <C-x><C-c> <C-o>ma</<C-x><C-o><Esc>`aa
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
   let b:commentSymbol = '//'
+  call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
 endfunction
 
@@ -1236,7 +1230,6 @@ function! Perl_Setting()
   setlocal complete-=i
 endfunction
 
-
 function! PHP_Setting()
   "setlocal iskeyword+=-
   let b:commentSymbol = "//"
@@ -1255,11 +1248,19 @@ function! PHP_Setting()
   call InstallFunctionHint()
   nnoremap <silent> vf :<C-u>call PHP_SelectFunction()<CR>
   setlocal indentkeys=0{,0},0),:,!^F,o,O,e,*<Return>,=*/
-  "call DefineAbbrev('try', 'try {<Enter>;#CURSOR#<Enter><Up><End><Left><Left><Left><Left><Left><Left><Left><Left><Bs><Down>}<Enter>catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}<Enter>', 'i', '<buffer>')
   call DefineAbbrev('catch', 'catch (Exception $ex) {<Enter>echo $ex->getMessage();<Enter>}', 'i', '<buffer>')
+  call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
 endfunction
 
+function! _DefinePhpAbbrev()
+  call DefineAbbrev('vd', 'var_dump(#CURSOR#)', 'i', '<buffer>')
+  call DefineAbbrev('ph', '<?php  ?><left><left><left>', 'i', '<buffer>')
+  call DefineAbbrev('pe', '<?php echo #CURSOR# ?>', 'i', '<buffer>')
+  call DefineAbbrev('phe', '<?php echo #CURSOR# ?>', 'i', '<buffer>')
+  call DefineAbbrev('phf', '<?php foreach (#CURSOR#): ?><Enter><?php endforeach; ?>', 'i', '<buffer>')
+  call DefineAbbrev('phif', '<?php if (#CURSOR#): ?><Enter><?php endif; ?>', 'i', '<buffer>')
+endfunction
 
 function! JS_SyntaxCheck()
   if executable("js")
@@ -3062,6 +3063,23 @@ function! _Ghurl(start_lnum, end_lnum)
   let cmd = "ghurl " . shellescape("%:p:t") . " " . a:start_lnum . " " . a:end_lnum
   exe "!" . cmd
 endfunction
+
+" インサートモードでカーソルの色を変える
+function! _EnableChangeCursorColor(override)
+  let insert_mode_color = "#a820a8"   " 紫
+  "let insert_mode_color = "#20a820"   " 緑
+  let normal_mode_color = "#000000"
+  let t_SI = a:override ? '' : &t_SI
+  let t_EI = a:override ? '' : &t_EI
+  if &term =~ "screen.*"
+    let &t_SI = t_SI . "\eP\e]12;" . insert_mode_color . "\x7\e\\"
+    let &t_EI = t_EI . "\eP\e]12;" . normal_mode_color . "\x7\e\\"
+  else
+    let &t_SI = t_SI . "\<Esc>]12;" . insert_mode_color . "\x7"
+    let &t_EI = t_EI . "\<Esc>]12;" . normal_mode_color . "\x7"
+  endif
+endfunction
+call _EnableChangeCursorColor(0)
 
 "=============================================================================
 "   ▲実験室  Experimental
