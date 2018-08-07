@@ -2,7 +2,6 @@
 " vim: set list noet sts=12
 " for 256 colors terminal
 " Maintainer: Aoyama, Shotaro <aosho235@gmail.com>
-" Last Change:  2015/05/19
 
 " オンライン・カラースキームエディタ
 " http://bytefluent.com/vivify/
@@ -21,7 +20,6 @@ endif
 let colors_name = "aoyama_256"
 
 hi Comment              cterm=None              ctermfg=28              ctermbg=None
-"hi Comment              cterm=None              ctermfg=16              ctermbg=157
 hi Constant             cterm=None              ctermfg=None            ctermbg=None
 hi Continue             cterm=None              ctermfg=131             ctermbg=None
 hi Cursor               cterm=None              ctermfg=None            ctermbg=None
@@ -32,7 +30,6 @@ hi diffAdded            cterm=None              ctermfg=232             ctermbg=
 hi diffRemoved          cterm=None              ctermfg=None            ctermbg=225
 hi DiffChange           cterm=None              ctermfg=None            ctermbg=None 
 hi DiffDelete           cterm=bold              ctermfg=None            ctermbg=225
-"hi DiffText             cterm=bold              ctermfg=None            ctermbg=111
 hi DiffText             cterm=None              ctermfg=0               ctermbg=214
 hi Directory            cterm=None              ctermfg=blue            ctermbg=None
 hi Error                cterm=None              ctermfg=white           ctermbg=cyan
@@ -42,7 +39,7 @@ hi TabLineSel           cterm=bold                                      ctermbg=
 hi TabLineFill                                  ctermfg=252             ctermbg=0
 
 hi Function             cterm=None              ctermfg=232             ctermbg=None
-hi FunctionName cterm=bold ctermfg=93 ctermbg=none
+hi FunctionName         cterm=bold              ctermfg=93              ctermbg=none
 
 hi HintHL               cterm=None              ctermfg=None            ctermbg=None
 hi Identifier           cterm=None              ctermfg=None            ctermbg=None
@@ -102,15 +99,15 @@ hi pythonTripleQuotes cterm=Bold ctermfg=28
 hi Breakpoint           cterm=None              ctermfg=124             ctermbg=124
 
 let g:did_minibufexplorer_syntax_inits = 1
-hi MBENormal ctermfg=None ctermbg=None
-hi MBEChanged ctermfg=None ctermbg=None
-hi MBEVisibleNormal ctermfg=None ctermbg=None
-hi MBEVisibleChanged ctermfg=None ctermbg=None
-hi MBEVisibleActiveNormal ctermfg=63 ctermbg=None
-hi MBEVisibleActiveChanged ctermfg=None ctermbg=None
+hi MBENormal                ctermfg=None  ctermbg=None
+hi MBEChanged               ctermfg=None  ctermbg=None
+hi MBEVisibleNormal         ctermfg=None  ctermbg=None
+hi MBEVisibleChanged        ctermfg=None  ctermbg=None
+hi MBEVisibleActiveNormal   ctermfg=63    ctermbg=None
+hi MBEVisibleActiveChanged  ctermfg=None  ctermbg=None
 
 hi xmlTagName ctermfg=5 cterm=bold
-hi xmlEndTag ctermfg=5 cterm=bold
+hi xmlEndTag  ctermfg=5 cterm=bold
 hi link xmlCommentError xmlComment
 
 "Cursor		カーソル下の文字
