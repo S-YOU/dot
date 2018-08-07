@@ -3065,18 +3065,31 @@ function! _Ghurl(start_lnum, end_lnum)
 endfunction
 
 " インサートモードでカーソルの色を変える
-function! _EnableChangeCursorColor(override)
-  let insert_mode_color = "#a820a8"   " 紫
-  "let insert_mode_color = "#20a820"   " 緑
-  let normal_mode_color = "#000000"
-  let t_SI = a:override ? '' : &t_SI
-  let t_EI = a:override ? '' : &t_EI
-  if &term =~ "screen.*"
-    let &t_SI = t_SI . "\eP\e]12;" . insert_mode_color . "\x7\e\\"
-    let &t_EI = t_EI . "\eP\e]12;" . normal_mode_color . "\x7\e\\"
+function! _EnableChangeCursorColor(override) abort
+  let insert_mode_color = "a820a8"   " 紫
+  "let insert_mode_color = "20a820"   " 緑
+  let normal_mode_color = "000000"
+  if $VIM_TERM == "iTerm2"
+    " iTerm2の場合はSmart cursor colorのチェックを外しておくこと
+    "let si = "\e]Pl" . insert_mode_color . "\e\\"
+    "let ei = "\e]Pl" . normal_mode_color . "\e\\"
+    let si = "\e]1337;SetColors=curbg=" . insert_mode_color . "\x07"
+    let ei = "\e]1337;SetColors=curbg=" . normal_mode_color . "\x07"
   else
-    let &t_SI = t_SI . "\<Esc>]12;" . insert_mode_color . "\x7"
-    let &t_EI = t_EI . "\<Esc>]12;" . normal_mode_color . "\x7"
+    " xtermのエスケープシーケンス
+    let si = "\e]12;#" . insert_mode_color . "\x7"
+    let ei = "\e]12;#" . normal_mode_color . "\x7"
+  end
+  if &term =~ "screen.*"
+    let si = "\eP" . si . "\e\\"
+    let ei = "\eP" . ei . "\e\\"
+  endif
+  if a:override
+    let &t_SI = si
+    let &t_EI = ei
+  else
+    let &t_SI .= si
+    let &t_EI .= ei
   endif
 endfunction
 call _EnableChangeCursorColor(0)
