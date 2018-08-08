@@ -922,8 +922,8 @@ augroup MyAutocmd
   au FileType python      call Python_Setting()
   au FileType qf call AdjustWindowHeight(1)
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
-  au FileType qf nnoremap <buffer> <C-l> :<C-u>call _RotateQfList(+1)<CR>
-  au FileType qf nnoremap <buffer> <C-h> :<C-u>call _RotateQfList(-1)<CR>
+  au FileType qf nnoremap <buffer> <C-l> :<C-u>cnewer<CR>
+  au FileType qf nnoremap <buffer> <C-h> :<C-u>colder<CR>
   au FileType qf setlocal nobuflisted nonumber
   au FileType qf syn match qfError "warning" contained
   au FileType ruby        call Ruby_Setting() 
@@ -934,7 +934,6 @@ augroup MyAutocmd
   au FileType vim         call Vim_Setting()
   au FileType *           call _SetDict()
   au InsertLeave * set nopaste
-  au QuickFixCmdPost * call _AddQfHistory()
   au Syntax c,cpp,ruby,java,python,javascript,php,cs call _MySyntax() 
   au Syntax go call _GoSyntax() 
   au Syntax markdown call _MarkdownSyntax() 
@@ -962,29 +961,6 @@ function! _TextYankPost(event)
     let @2 = @1
     let @1 = @0
   endif
-endfunction
-
-let g:qfhistory_index = -1
-let g:qfhistory = []
-let g:qftitles = []
-function! _AddQfHistory() abort
-  call add(g:qfhistory, getqflist())
-  let a = getqflist({"title": 1})
-  call add(g:qftitles, a["title"])
-  let g:qfhistory_index = len(g:qfhistory) - 1
-endfunction
-function! _RotateQfList(delta) abort
-  let new_index = g:qfhistory_index + a:delta 
-  if new_index < 0
-    echomsg "Cannot back!"
-    return
-  elseif new_index >= len(g:qfhistory)
-    echomsg "Cannot go forward!"
-    return
-  endif
-  let g:qfhistory_index = new_index
-  call setqflist(g:qfhistory[g:qfhistory_index])
-  call setqflist([], ' ', {"title": g:qftitles[g:qfhistory_index]})
 endfunction
 
 function! _VimEnter()
