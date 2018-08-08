@@ -749,8 +749,8 @@ command! Unix w ++ff=unix | e
 command! -nargs=? Out call Out("<args>")
 command! -nargs=* Gxx set makeprg=g++\ $GXXFLAGS\ <args>\ % | make
 command! -nargs=* Gcc set makeprg=gcc\ $GCCFLAGS\ <args>\ % | make
-command! Ev e ~/.vimrc
-command! Evl e ~/.vimrc.local
+command! Ev e ~/dot/etc/.vim/.vimrc
+command! Evl e ~/dot/etc/.vim/.vimrc.local
 command! -nargs=? A  echo "Command A is deprecated. Use <C-x><C-h> instead."
 command! -nargs=? AA echo "Command AA is deprecated. Use <C-x>h instead."
 command! -nargs=? VA echo "Command VS is deprecated. Use <C-x>H instead."
