@@ -311,15 +311,14 @@ endfunction
 " 編集 -------------------------------------------------------------
 " タグを閉じる
 " smartindent, cindentによる「#でインデント削除」を無効化する
-nnoremap S :<C-u>%s;\C\<<C-r><C-w>\>;<C-r><C-w>;gc<Left><Left><Left>
-nnoremap <Space>S :<C-u>%s;\C\<<C-r><C-w>\>;;gc<Left><Left><Left>
 noremap <silent> # :call _ToggleCommentSelection()<CR>
 inoremap <C-z> <C-o>:set paste<CR><C-r>"<C-o>:set nopaste<CR>
 inoremap <C-b> <left>
 inoremap <C-f> <right>
 inoremap <C-d> <Del>
 " 選択範囲の単語を置換
-xnoremap s y:%s@\V\<<C-R>"\>@@g<Left><Left>
+xnoremap s y:%s;\V\C<C-R>";;g<Left><Left>
+xnoremap S y:%s;\V\C<C-R>";<C-R>";g<Left><Left>
 nnoremap <silent> d<CR> :call delete_blank_lines#DeleteBlankLines()<CR>
 " <C-u> をアンドゥできるようにする。insert.jax 参照
 inoremap <C-u> <C-g>u<C-u>
