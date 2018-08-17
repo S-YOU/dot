@@ -273,6 +273,8 @@ inoremap <silent> <C-l> <Esc>g~awgi
 vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
+noremap <silent> <Space>. `>
+noremap <silent> <Space>, `<
 
 function! _SearchNext(dir)
   let line = line(".")
