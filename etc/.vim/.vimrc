@@ -273,8 +273,7 @@ inoremap <silent> <C-l> <Esc>g~awgi
 vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
-noremap <silent> <Space>. `>
-noremap <silent> <Space>, `<
+noremap <silent> <Space>n `>
 
 function! _SearchNext(dir)
   let line = line(".")
@@ -545,7 +544,8 @@ fun! CompleteFiles(findstart, base)
   else
     " "a:base" にマッチする月を探す
     let res = []
-    let paths = filter(split(&path, ","), 'v:val != ""')
+    let paths = ["."] + filter(split(&path, ","), 'v:val != ""')
+    let paths = uniq(paths)
     if a:base[0] == "~"
       let base = expand("$HOME") . strpart(a:base, 1)
     else
