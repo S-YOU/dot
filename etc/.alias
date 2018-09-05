@@ -375,3 +375,5 @@ transfer() {
     fi
     cat $tmpfile; echo; command rm -f $tmpfile;
 }
+
+alias hubeny='distance'

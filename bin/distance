@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require "readline"
+
 # 緯度経度からの距離計算スクリプト
 #
 # かなり柔軟なフォーマットで入力を受け付ける
@@ -117,12 +119,13 @@ when 4
 when 2
   calc_distance_and_print(*(ARGV[0].split(/[^0-9.]+/) + ARGV[1].split(/[^0-9.]+/)))
 when 0
-  while line = gets
+  #while line = gets
+  while line = Readline.readline("> ", true)
     a = line.strip.split(/[^0-9.]+/)
     if a.length == 4
       calc_distance_and_print(*a)
     else
-      puts "Error: a.length = #{a.length}: #{line}"
+      puts "InputError: a.length = #{a.length}: #{line}"
     end
   end
 else
