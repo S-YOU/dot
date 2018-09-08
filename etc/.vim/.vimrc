@@ -897,7 +897,7 @@ augroup MyAutocmd
   au BufReadPost *.dat setl list
   au BufReadPost *.jax if &modifiable | call Help_Setting() | endif
   au BufReadPost *.thtml,*.inc set ft=php
-  au BufReadPost gita.tmp  nnoremap <silent> <C-d> :exe "cd" g:topdir<CR>:!clear && git diff <C-r><C-f><CR>
+  au BufReadPost gita.tmp.*  nnoremap <silent> <C-d> :exe "cd" g:topdir<CR>:!clear && git diff <C-r><C-f><CR>
   au BufReadPost *.gitcommit  set filetype=gitcommit
   au BufWritePost * call SetExecutable()
   au BufWritePost * call _AutoExecSystem()
@@ -1163,6 +1163,7 @@ function! HTML_Setting()
   setlocal dictionary+=~/.vim/dict/htmldict.txt
   inoremap <buffer> <C-x><C-c> <C-o>ma</<C-x><C-o><Esc>`aa
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('ce', 'console.error(#CURSOR#);', 'i', '<buffer>')
   let b:commentSymbol = '//'
   call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
@@ -1221,6 +1222,7 @@ function! JavaScript_Setting()
   let b:commentSymbol = "//"
   setlocal cinoptions=
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('ce', 'console.error(#CURSOR#);', 'i', '<buffer>')
 endfunction
 
 function! Lisp_Setting()

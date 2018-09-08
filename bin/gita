@@ -16,8 +16,8 @@ echoquestion() {
 OLD_HOME=$HOME
 export HOME=/
 
-TMP=/tmp/gita.tmp.$$
-DIFF=/tmp/gita.diff.$$.gitcommit
+TMP=gita.tmp.$$
+DIFF=gita.diff.$$.gitcommit
 
 cat > $TMP <<EOF
 # addしたい行を残して保存してください。
@@ -32,12 +32,7 @@ cp -a $TMP $TMP.orig
 # 一時ファイルの更新日時を古くしておく（そうしないと、エディタ起動して即保存終了したとき変更が検出されない）
 touch -t 200001010000 $TMP
 
-cat > $DIFF <<EOF
-# ------------------------ diff ------------------------
-EOF
-git diff >> $DIFF
-
-HOME="$OLD_HOME" vim -o $TMP $DIFF
+HOME="$OLD_HOME" vim $TMP
 
 # 一時ファイルの更新日時が新しくなっていたら（エディタで保存されていたら）
 if [ $TMP -nt $TMP.orig ]; then
