@@ -1155,7 +1155,7 @@ function! Help_Setting()
 endfunction
 
 function! HTML_Setting()
-  setlocal noet nolist
+  setlocal ts=2 sts=2 sw=2 et list
   setlocal completefunc=HTMLComplete
   setlocal cinoptions=
   setlocal indentkeys=
