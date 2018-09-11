@@ -13,6 +13,7 @@ alias ag='ag --follow'
 alias bg=' bg'
 alias com='command'
 alias cp='cp -i'
+alias dl='docker ps -l -q'   # 最後に起動したコンテナのID
 alias fd='fd --color never'
 alias fg=' fg'
 alias gdb='gdb --quiet -ex start'
