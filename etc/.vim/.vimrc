@@ -1244,7 +1244,7 @@ function! PHP_Setting()
   "setlocal indentkeys=0{,0},:,0#,!^F,o,O,e,0=,0),=EO,=else,=cat,=fina,=END,0\\
   setlocal formatoptions=nmMqrwcb
   "nnoremap <buffer> <F5> :!php %<CR>
-  nnoremap <C-^> :call ToggleMVC()<CR>
+  "nnoremap <C-^> :call ToggleMVC()<CR>
   "nnoremap <buffer> K :call GUReference(expand('<cword>'), 'php', '[php]')<CR>:set ft=php<CR>
   "nnoremap  <buffer> K :sil exe "PHPMan ".expand("<cword>")<CR>
   hi smartyZone cterm=bold
@@ -2394,64 +2394,46 @@ function! _GetAllDirectoriesToRoot()
   endwhile
 endfunction
 
+function! _SplitPath(fullpath) abort
+  let fullpath = a:fullpath
+  let ret = {}
+  let ret["dirname"] = substitute(fullpath, '/[^/]*$', '', '')
+  let ret["filename"] = strpart(fullpath, strlen(ret["dirname"]) + 1)
+  let ret["basename"] = substitute(ret["filename"], '\.[^.]*$', '', '')
+  let ret["ext"] = strpart(ret["filename"], strlen(ret["basename"]) + 1)
+  let ret["basename_short"] = substitute(ret["filename"], '\..*$', '', '')
+  let ret["ext_long"] = strpart(ret["filename"], strlen(ret["basename_short"]) + 1)
+  return ret
+endfunction
+
 function! ToggleSourceAndHeader(opencmd, ...) abort
-  let dirname = expand("%p:h")
-  let basename = expand("%:p:r")
-  let suffix = expand("%:e")
+  let fullpath = expand("%:p")
+  let components = _SplitPath(fullpath)
   let ft = &ft
   if a:0 >= 1 && a:1 != ''
-    let af = basename . "." . a:1
+    let candidate = basename . "." . a:1
   else
-    let af = ""
-    if suffix ==? "c"
-      let af = basename . ".h"
-    elseif suffix ==? "cpp"
-      if filereadable(basename . ".hpp")
-        let af = basename . ".hpp"
-      else
-        let af = basename . ".h"
+    " それ以外の場合:
+    " globして見つける
+    let pattern = components["dirname"] . "/" . components["basename_short"] . ".*"
+    let files = glob(pattern, 0, 1)
+    let candidate = ""
+    for file in files
+      if file > fullpath && (candidate == "" || file < candidate)
+        let candidate = file
       endif
-    elseif suffix ==? "h"
-      if filereadable(basename . ".cpp")
-        let af = basename . ".cpp"
-      else
-        let af = basename . ".c"
-      endif
-    elseif suffix ==? "php"
-      if file_readable(basename . "_v.inc")
-        let af = basename . "_v.inc"
-      elseif file_readable(basename . ".inc")
-        let af = basename . ".inc"
-      else
-        call _PHP_ToggleFile()
-      endif
-    elseif suffix ==? "ctp"
-      call _PHP_ToggleFile()
-    elseif suffix ==? "inc"
-      let af = substitute(basename, '_v$', '', '') . ".php"
-    else
-      " それ以外の場合:
-      " globして見つける
-      let pattern = basename . ".*"
-      let files = glob(pattern, 0, 1)
-      let af = ""
-      if len(files) > 0
-        call add(files, files[0])
-        for i in range(0, len(files) - 2)
-          let file = files[i]
-          let suf = substitute(file, '.*\.', '', '')
-          if suf == suffix
-            let af = files[i + 1]
-          endif
-        endfor
-      endif
-      if af == ""
-        call _Echo("WarningMsg", "切り替えるべきファイルが見つかりません")
-        return
-      endif
+    endfor
+    if len(files) > 0 && candidate == ""
+      "echomsg "not found desu"
+      let candidate = files[0]
+    endif
+    if candidate == ""
+      call _Echo("WarningMsg", "切り替えるべきファイルが見つかりません")
+      return
     endif
   endif
-  exe a:opencmd af
+  "echomsg "candidate=[" . candidate . "]"
+  exe a:opencmd candidate
 endfunction
 
 
