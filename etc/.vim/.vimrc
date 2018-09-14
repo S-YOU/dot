@@ -752,9 +752,10 @@ command! -nargs=* Gxx set makeprg=g++\ $GXXFLAGS\ <args>\ % | make
 command! -nargs=* Gcc set makeprg=gcc\ $GCCFLAGS\ <args>\ % | make
 command! Ev e ~/dot/etc/.vim/.vimrc
 command! Evl e ~/dot/etc/.vim/.vimrc.local
-command! -nargs=? A  echo "Command A is deprecated. Use <C-x><C-h> instead."
+command! -nargs=? A  echo "Command A is deprecated. Use <C-^> instead."
 command! -nargs=? AA echo "Command AA is deprecated. Use <C-x>h instead."
 command! -nargs=? VA echo "Command VS is deprecated. Use <C-x>H instead."
+nnoremap <C-^>      :<C-u>call ToggleSourceAndHeader("e")<CR>
 nnoremap <C-x><C-h> :<C-u>call ToggleSourceAndHeader("e")<CR>
 nnoremap <C-x>h     :<C-u>call ToggleSourceAndHeader("sp")<CR>
 nnoremap <C-x>H     :<C-u>call ToggleSourceAndHeader("vs")<CR>
@@ -2393,7 +2394,7 @@ function! _GetAllDirectoriesToRoot()
   endwhile
 endfunction
 
-function! ToggleSourceAndHeader(opencmd, ...)
+function! ToggleSourceAndHeader(opencmd, ...) abort
   let dirname = expand("%p:h")
   let basename = expand("%:p:r")
   let suffix = expand("%:e")

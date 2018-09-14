@@ -6,3 +6,4 @@
 .bundle
 node_modules
 tags
+gita.tmp*
