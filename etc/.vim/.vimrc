@@ -2135,7 +2135,7 @@ endfunction
 
 function! LoadTemplate2()
   let suffix = expand("%:e")
-  let template = expand("~/.vim/template." . suffix)
+  let template = expand("~/.vim/template/template." . suffix)
   if file_readable(template)
     exe "0r " . template
     silent $d
