@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地図</title>
+
+    <link rel="shortcut icon" href="./favicon.ico">
+
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?vim $GMAP_KEY ?>"></script>
+
+    <script>
+      var map;
+
+      $(function() {
+        var center = new google.maps.LatLng(35.6813095277778, 139.76723425);
+        var gmap_options = {
+          zoom: 15,
+          center: center,
+        };
+        map = new google.maps.Map(document.getElementById("gmap"), gmap_options);
+        map.addListener('click', function (e) {
+          console.log(e.latLng.lat(), e.latLng.lng());
+        });
+    </script>
+
+    <style>
+      html, body  { height: 100%; margin: 0; padding: 0; box-sizing: border-box; }
+      div.main    { float: left; height: 100%; padding-right: 200px; }
+      div#gmap { width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="gmap"></div>
+  </body>
+</html>
+<!-- vim: set ts=2 sts=2 sw=2 expandtab list: -->

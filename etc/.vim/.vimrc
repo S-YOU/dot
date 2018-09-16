@@ -701,6 +701,7 @@ inoreab cmain #include <stdio.h><cr>#include <stdlib.h><cr>#include <string.h><c
 inoreab cppmain #include <stdio.h><cr>#include <stdlib.h><cr>#include <string.h><cr>#include <vector><cr>#include <list><cr>#include <map><cr>#include <algorithm><cr><cr>using namespace std;<cr><cr>int main(int argc, char *argv[])<cr>{<cr>return 0;<cr>}<Esc>{
 inoreab shmain <Esc>:%d<CR>:0r~/.vim/_template.sh<CR>:set ft=sh<CR>
 inoreab rubymain <Esc>:%d<CR>:0r~/.vim/_template.rb<CR>:set ft=ruby<CR>
+inoreab htmlmap <Esc>:call LoadTemplate2("html", "map")<CR>
 "inoremap <C-j> <Esc>/\(break;\\|{\\|}\)\s*$<CR>:noh<CR>o
 inoreab date@ <C-r>=strftime("%Y-%m-%d")<CR>
 inoreab time@ <C-r>=strftime("%H:%M")<CR>
@@ -886,7 +887,7 @@ endif
 
 augroup MyAutocmd
   au!
-  au BufNewFile *.* call LoadTemplate2()
+  au BufNewFile *.* call LoadTemplate2(expand("%:e"), "default")
   au BufNewFile,BufReadPost  *.c,*.h,*.cpp,*.d,*.java   let b:commentSymbol="//"
   au BufNewFile,BufReadPost *.bas set ft=vb
   au BufNewFile,BufReadPost *tags set list ts=16
@@ -2133,24 +2134,19 @@ function! _ExpandTemplate()
   silent %s@<?vim\(.\{-}\)?>@\=eval(submatch(1))@ge
 endfunction
 
-function! LoadTemplate2()
-  let suffix = expand("%:e")
-  let template = expand("~/.vim/template/template." . suffix)
+function! LoadTemplate2(suffix, name) abort
+  let template = expand("~/.vim/template/" . a:suffix . "/" . a:name . "." . a:suffix)
   if file_readable(template)
     exe "0r " . template
     silent $d
     call _ExpandTemplate()
     1
-  else
-    if suffix ==? "cl"
-      call append(0, ["#!/usr/bin/env clisp"])
-    elseif suffix ==? "h" || suffix ==? "inl"
-      call _IncludeGuard() 
-    else
-      return
+    if search('#CURSOR#', 'Wp')
+      normal! 8x
     endif
   endif
 endfunction
+
 
 
 " Christian J. Robinson <infynity@onewest.net>
