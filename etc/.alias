@@ -378,4 +378,8 @@ transfer() {
     cat $tmpfile; echo; command rm -f $tmpfile;
 }
 
+checkhtml() {
+    tidy -qe "$@" 2>&1
+}
+
 alias hubeny='distance'
