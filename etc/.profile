@@ -16,7 +16,7 @@ pathmunge . after
 
 export BUNDLER_EDITOR='echo'
 export EDITOR='vim'
-export FZF_DEFAULT_OPTS='--preview-window=right:70% --no-mouse --color light,hl+:1,hl:1'
+export FZF_DEFAULT_OPTS='--preview-window=right:70% --no-mouse --color light,hl+:1,hl:1 --bind ctrl-space:toggle+down,ctrl-a:toggle-all'
 export FZF_TMUX_HEIGHT="95%"
 export IGNORED_DIRS='.git:.svn:CVS:bundle:node_modules'
 export LANG=ja_JP.UTF-8

@@ -241,6 +241,26 @@ cd-with-fzf() {
 zle -N cd-with-fzf
 bindkey '^X^G' cd-with-fzf
 
+_git-changed-files() {
+    setopt localoptions pipefail 2> /dev/null
+    git status --short | fzf --no-sort --tac --multi | cut -b4- | while read item; do
+        echo -n "${(q)item} "
+    done
+    local ret=$?
+    echo
+    return $ret
+}
+complete-git-changed-files() {
+    LBUFFER="${LBUFFER}$(_git-changed-files)"
+    local ret=$?
+    zle redisplay
+    typeset -f zle-line-init >/dev/null && zle zle-line-init
+    return $ret
+}
+zle -N complete-git-changed-files
+bindkey '^@^G' complete-git-changed-files
+
+
 if which fd > /dev/null 2>&1; then
     FZF_CTRL_T_COMMAND="fd -t f"
     FZF_ALT_C_COMMAND="fd -t d"
