@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# プロジェクトのルートディレクトリ以下のファイルを表示する。
+# ただしドットから始まるものは無視する
+#
+# Vimの中から呼ばれる
+
+set -e
+
+root=$(pjroot)
+if [ "$root" != "not exist" ]; then
+    cd "$root"
+    find -L . -mindepth 1 \
+        \( -path '*/\.*' -o -fstype sysfs -o -fstype devfs -o -fstype proc \) -prune \
+        -o -type f -print -o -type d -print -o -type l -print 2> /dev/null \
+        | cut -b3-
+fi

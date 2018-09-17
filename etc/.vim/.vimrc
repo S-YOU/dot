@@ -3088,7 +3088,7 @@ function! _InsertString(...)
     endif
   endif
 endfunction
-inoremap <C-@><C-f> <C-o>:call fzf#run({ 'sink': function('_InsertString') })<CR>
+inoremap <C-@><C-f> <C-o>:call fzf#run({ 'source': 'find-files-from-pjroot', 'sink': function('_InsertString') })<CR>
 
 
 "=============================================================================
