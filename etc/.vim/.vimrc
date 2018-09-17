@@ -3078,6 +3078,15 @@ function! _EnableChangeCursorColor(override) abort
 endfunction
 call _EnableChangeCursorColor(0)
 
+" インサートモードで <C-@><C-f> でfzfで選択したファイル名をバッファに挿入する
+function! _InsertString(...)
+  if len(a:000) == 1
+    exe 'normal! i' . a:000[0]
+  endif
+endfunction
+inoremap <C-@><C-f> <C-o>:call fzf#run({ 'sink': function('_InsertString') })<CR>
+
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
