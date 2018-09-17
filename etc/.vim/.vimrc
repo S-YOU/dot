@@ -3081,7 +3081,11 @@ call _EnableChangeCursorColor(0)
 " インサートモードで <C-@><C-f> でfzfで選択したファイル名をバッファに挿入する
 function! _InsertString(...)
   if len(a:000) == 1
-    exe 'normal! i' . a:000[0]
+    if col(".") == len(getline("."))
+      exe 'normal! a' . a:000[0]
+    else
+      exe 'normal! i' . a:000[0]
+    endif
   endif
 endfunction
 inoremap <C-@><C-f> <C-o>:call fzf#run({ 'sink': function('_InsertString') })<CR>
