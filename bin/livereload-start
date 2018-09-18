@@ -11,11 +11,12 @@ guardfile_name = "/tmp/Guardfile.#{Process.pid}"
 suffixes = ARGV.empty? ? %w[html css js md markdown] : ARGV
 
 puts "Watching files with suffixes: #{suffixes.join(',')}"
+puts
 
 watch_lines = suffixes.map {|s| "  watch(%r{\.#{s}$})"}.join("\n")
 
 guardfile_content = <<~EOF
-guard 'livereload' do
+guard 'livereload', grace_period: 0.5 do
   #{watch_lines}
 end
 EOF
