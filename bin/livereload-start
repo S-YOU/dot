@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+# カレントディレクトリをウォッチするguard-livereloadを立ち上げるスクリプト
+#
+# 使い方:
+#   $ livereload-start
+#   $ livereload-start html css
+
+guardfile_name = "/tmp/Guardfile.#{Process.pid}"
+
+suffixes = ARGV.empty? ? %w[html css js md markdown] : ARGV
+
+puts "Watching files with suffixes: #{suffixes.join(',')}"
+
+watch_lines = suffixes.map {|s| "  watch(%r{\.#{s}$})"}.join("\n")
+
+guardfile_content = <<~EOF
+guard 'livereload' do
+  #{watch_lines}
+end
+EOF
+
+File.write(guardfile_name, guardfile_content)
+
+system("ruby --version")
+command = "guard --guardfile '#{guardfile_name}'"
+puts command
+system(command)
