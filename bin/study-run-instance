@@ -41,7 +41,8 @@ case "$ami_name" in
         ;;
     freebsd)
         ami_id=ami-0a50b66c     # FreeBSD 11.1-RELEASE
-        username=root
+        #username=root
+        username=ec2-user
         ;;
     *)
         echo "Usage: ${0##*/} [ubuntu|centos|centos7|amazon]"
