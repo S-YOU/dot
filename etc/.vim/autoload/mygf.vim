@@ -32,14 +32,7 @@ function! mygf#MyGF(cf) abort
         return
       endif
     endfor
-    " 見つからなかったらCtrlPを使う
-    if exists("g:ctrlp_default_input")
-      let old = g:ctrlp_default_input
-    else
-      let old = ""
-    endif
-    let g:ctrlp_default_input = substitute(cfile, '.*/', '', '') 
-    CtrlP
-    let g:ctrlp_default_input = old
+    " 見つからなかったらfzfを使う
+    FZF
   endtry
 endfunction
