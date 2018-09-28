@@ -605,7 +605,7 @@ function! _Echon(highlight, msg)
   echohl None
 endfunction
 
-command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
+command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep! <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
 function! _SetSearchRegister(...) abort
   let len = len(a:000)
   let @/ = a:000[len - 1]
