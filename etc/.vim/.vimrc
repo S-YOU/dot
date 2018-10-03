@@ -2882,6 +2882,21 @@ function! _MyTabLine()
   return _BufListToTabLine(visible_buffers, curbufnr)
 endfunction
 
+function! _BufOnly()
+  let bufnums_to_be_deleted = []
+  for buf in g:tabline_visible_buffers
+    if buf["num"] != bufnr("%")
+      call add(bufnums_to_be_deleted, buf["num"])
+    endif
+  endfor
+  exe "bd " . join(bufnums_to_be_deleted, ' ')
+  let g:tabline_visible_buffers = []    " 今表示しているバッファのリストをクリアする
+  let g:tabline_all_buffers = []        " tablineで管理する全バッファのリスト
+  call _UpdateShowTabline()
+endfunction
+nnoremap <C-@><C-o> :<C-u>call _BufOnly()<CR>
+nnoremap <C-w><C-w> :<C-u>Bclose<CR>
+
 function! _UpdateShowTabline()
   if len(_UpdateBufferList()) >= 2
     set showtabline=2
