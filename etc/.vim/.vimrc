@@ -931,7 +931,8 @@ augroup MyAutocmd
   au FileType qf setlocal nobuflisted nonumber
   au FileType qf syn match qfError "warning" contained
   au FileType ruby        call Ruby_Setting() 
-  au FileType eruby        call Ruby_Setting() 
+  au FileType eruby       call Ruby_Setting()
+  au FileType scss        call HTML_Setting()
   au FileType scheme      call Scheme_Setting()
   au FileType sh,bash,zsh call Sh_Setting()
   au FileType vb          call VB_Setting()
