@@ -2,6 +2,8 @@
 
 \pset null '(NULL)'
 
+\setenv PAGER 'less -S'
+
 -- 詳しいエラー表示
 \set VERBOSITY verbose
 

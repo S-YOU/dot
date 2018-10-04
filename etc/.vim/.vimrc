@@ -890,6 +890,7 @@ augroup MyAutocmd
   au BufNewFile *.* call LoadTemplate2(expand("%:e"), "default")
   au BufNewFile,BufReadPost  *.c,*.h,*.cpp,*.d,*.java   let b:commentSymbol="//"
   au BufNewFile,BufReadPost *.bas set ft=vb
+  au BufNewFile,BufReadPost *.html.erb set ft=html
   au BufNewFile,BufReadPost *tags set list ts=16
   au BufRead,BufNewFile svn-commit* sil 1,3d | new | setl bufhidden=hide buftype=nofile noswapfile | if exists("g:topdir") | exe "cd" g:topdir | endif | silent 0r!svn --diff-cmd diff diff
   au BufReadPost * call _MemorizeModifiedTime()
