@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# in-placeでファイルを編集するスクリプト
+
+set -e
+
+if [ $# -lt 2 ]; then
+    cat <<EOF
+例:
+  in-place 'tr a A' *.rb
+EOF
+fi
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+command="$1"
+shift
+
+for i in "$@"; do
+    echo "Applying: $command < $i > $tmp"
+    sh -c "$command" < "$i" > "$tmp"
+    # mvを使うとシンボリックリンクが実体に置き換わってしまうのでリダイレクトを使う
+    cat "$tmp" > "$i"
+done
