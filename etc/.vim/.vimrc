@@ -378,9 +378,9 @@ xnoremap <silent> <space>J <Esc>:InsertSpaceBetweenHankakuZenkaku<CR>
 nnoremap <C-x>p :<C-u>r ~/tmp/screen-hardcopy.txt<CR>
 
 " 関数を範囲選択
-nnoremap vf ][v[[?^s*$<CR>
+"nnoremap vf ][v[[?^s*$<CR>
 " for などのブロックを選択。カーソル位置を for の行におく必要がある。
-nnoremap vb /{<CR>%v%0
+"nnoremap vb /{<CR>%v%0
 " １つの引数を選択
 nnoremap vaa ?\(,\\|(\)<CR>lv/\(,\\|)\)<CR>
 nmap caa vaac
