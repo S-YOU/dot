@@ -6,7 +6,7 @@ if [ "$1" = "" ]; then
     git log -1 || true
     if [ $? = 0 ]; then
         echo
-        git -c color.status=always status --short --branch | less
+        git -c color.status=always status --short --branch --untracked-files=all | less
         git skipped
     else
         git status
