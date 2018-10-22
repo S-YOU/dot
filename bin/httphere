@@ -2,6 +2,10 @@
 
 export port=${port:-7000}
 
+if [ -d "$1" ]; then
+    cd "$1"
+fi
+
 screen -t httphere ruby -rwebrick -e 'WEBrick::HTTPServer.new(:DocumentRoot => "./", :Port => '$port').start'
 
 url="http://localhost:${port}"
