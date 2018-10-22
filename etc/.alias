@@ -17,6 +17,7 @@ alias cp='cp -i'
 alias dl='docker ps -l -q'   # 最後に起動したコンテナのID
 alias fd='fd --color never'
 alias fg=' fg'
+alias g='git'
 alias gdb='gdb --quiet -ex start'
 alias gti='git'
 alias gosh='rlwrap --histsize 10000 -q "\"" --break-chars "(){}[].,#@;|\`\"" -f . -f ~/.vim/dict/schemedict.txt --complete-filenames gosh'

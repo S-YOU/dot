@@ -11,13 +11,14 @@ require_relative "./unicode-display_width/lib/unicode/display_width/string_ext.r
 $opt = {}
 $opt[:col_sep] = ","
 $opt[:max_lines_to_calc_width] = 10000
+$opt[:output_col_sep] = " | "
 
 opt = OptionParser.new
 opt.on("-a", "--all", "最後の行まで読んでから最大幅を計算する（デフォルトでは10000行目まで）") {|v| $opt[:max_lines_to_calc_width] = 10e12 }
 opt.on("-t", "--tsv", "入力をtsvファイルとして扱う") {|v| $opt[:col_sep] = "\t" }
+opt.on("-s", "--output-separator", "出力におけるカラムの区切り文字") {|v| $opt[:output_col_sep] = v }
 opt.parse!(ARGV)
 
-OUTPUT_COL_SEP          = " | "   # 出力の区切り文字
 AMBIGUOUS_DEFAULT       = 2       # 文字幅があいまいな文字はこの幅とする
 
 Signal.trap("PIPE", "EXIT")
@@ -50,5 +51,5 @@ csv.rewind
 csv.each.with_index(1) do |row, lineno|
   puts row.map.with_index {|field, i|
     field.to_s + " " * (@max_widths[i] - (@widths_cache["#{lineno}:#{i}"] || @max_widths[i]))
-  }.join(OUTPUT_COL_SEP)
+  }.join($opt[:output_col_sep])
 end
