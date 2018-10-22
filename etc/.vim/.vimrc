@@ -978,7 +978,8 @@ function! _VimEnter()
   endif
 
   " * では大文字小文字を区別しないようにする。vim-indexed-searchのマッピングを上書きしたいので、VimEnterの中でマッピングする。
-  nmap * /\C\<<C-r><C-w>\><CR>
+  " 2018-10-22 Rubyで@hogeや$mogeの上で*したとき正常に動かないのでコメントアウト
+  "nmap * /\C\<<C-r><C-w>\><CR>
   nmap g* :grep<space>-w <C-r><C-w>
 endfunction
 

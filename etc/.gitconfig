@@ -22,6 +22,8 @@
     ls = ls-files
     logv = log --name-status
     graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %Cgreen%d%Creset %s\" --all --date=short
+    # grep from root
+    grepr = !git grep
     cancel-previous-commit = reset HEAD~1
     # カレントブランチをoriginにプッシュする
     #pushorigin  = !git push --set-upstream origin `git symbolic-ref --short HEAD`
