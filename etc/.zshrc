@@ -243,7 +243,7 @@ bindkey '^X^G' cd-with-fzf
 
 _git-changed-files() {
     setopt localoptions pipefail 2> /dev/null
-    git status --short | fzf --no-sort --tac --multi | cut -b4- | while read item; do
+    git status --short | fzf --no-sort --multi --layout=reverse | cut -b4- | while read item; do
         echo -n "${(q)item} "
     done
     local ret=$?
