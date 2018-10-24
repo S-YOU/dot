@@ -5,3 +5,4 @@ each_with_index
 attr_accessor
 attr_reader
 attr_writer
+encode_www_form
