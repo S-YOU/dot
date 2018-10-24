@@ -701,7 +701,6 @@ inoreab cmain #include <stdio.h><cr>#include <stdlib.h><cr>#include <string.h><c
 inoreab cppmain #include <stdio.h><cr>#include <stdlib.h><cr>#include <string.h><cr>#include <vector><cr>#include <list><cr>#include <map><cr>#include <algorithm><cr><cr>using namespace std;<cr><cr>int main(int argc, char *argv[])<cr>{<cr>return 0;<cr>}<Esc>{
 inoreab shmain <Esc>:%d<CR>:0r~/.vim/_template.sh<CR>:set ft=sh<CR>
 inoreab rubymain <Esc>:%d<CR>:0r~/.vim/_template.rb<CR>:set ft=ruby<CR>
-inoreab htmlmap <Esc>:call LoadTemplate2("html", "map")<CR>
 "inoremap <C-j> <Esc>/\(break;\\|{\\|}\)\s*$<CR>:noh<CR>o
 inoreab date@ <C-r>=strftime("%Y-%m-%d")<CR>
 inoreab time@ <C-r>=strftime("%H:%M")<CR>
@@ -2150,6 +2149,23 @@ function! LoadTemplate2(suffix, name) abort
   endif
 endfunction
 
+" fzfでリストから選択してテンプレートを読み込む
+command! LoadTemplate call _LoadTemplateInteractive()
+command! LT           call _LoadTemplateInteractive()
+function! _LoadTemplateInteractive() abort
+  call fzf#run({ 'source': 'cd ~/.vim/template && find . -type f | sed "s@.*/template/@@" | sort', 'sink': function('_LoadTemplateFile') })
+endfunction
+function! _LoadTemplateFile(...)
+  if len(a:000) == 1
+    let path = '~/.vim/template/' . a:000[0]
+    silent! %d
+    exe 'silent! r ' . path
+    silent! 1d
+    call _Echo("Normal", "Loaded " . path)
+  endif
+endfunction
+
+
 
 
 " Christian J. Robinson <infynity@onewest.net>
@@ -3107,7 +3123,6 @@ function! _InsertString(...)
   endif
 endfunction
 inoremap <C-@><C-f> <C-o>:call fzf#run({ 'source': 'find-files-from-pjroot', 'sink': function('_InsertString') })<CR>
-
 
 "=============================================================================
 "   ▲実験室  Experimental
