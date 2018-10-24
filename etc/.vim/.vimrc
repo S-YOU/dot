@@ -2165,6 +2165,18 @@ function! _LoadTemplateFile(...)
   endif
 endfunction
 
+" fzfでリストから選択してテンプレートを編集する
+command! EditTemplate call _EditTemplateInteractive()
+command! ET           call _EditTemplateInteractive()
+function! _EditTemplateInteractive() abort
+  call fzf#run({ 'source': 'cd ~/.vim/template && find . -type f | sed "s@.*/template/@@" | sort', 'sink': function('_EditTemplateFile') })
+endfunction
+function! _EditTemplateFile(...)
+  if len(a:000) == 1
+    let path = '~/.vim/template/' . a:000[0]
+    exe "e " . path
+  endif
+endfunction
 
 
 
