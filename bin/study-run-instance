@@ -18,7 +18,8 @@ device_name="/dev/xvda"
 # https://moomindani.wordpress.com/2014/08/06/ec2-official-ami/
 case "$ami_name" in
     ubuntu)
-        ami_id=ami-80ca47e6     # 17.04  20171208
+        #ami_id=ami-80ca47e6     # 17.04  20171208
+        ami_id=ami-07ad4b1c3af1ea214    # 18.04 LTS
         username=ubuntu
         ;;
     debian)
