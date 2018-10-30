@@ -28,7 +28,7 @@ end
 
 def hm_to_mins(hm)
   sign = hm[0] == "-" ? -1 : 1
-  hm =~ /([0-9]+):([0-9]+)/
+  hm =~ /([0-9]+)\D([0-9]+)/
   h = sign * $1.to_i
   m = sign * $2.to_i
   return 60 * h + m
@@ -36,7 +36,7 @@ end
 
 total_mins = 0
 
-matches = ARGF.read.scan(/[-0-9]+:[0-9]+/)
+matches = ARGF.read.scan(/[-0-9]+\D[0-9]+/)
 matches.each do |m|
   mins = hm_to_mins(m)
   total_mins += mins
