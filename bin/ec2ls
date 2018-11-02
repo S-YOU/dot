@@ -3,12 +3,7 @@
 # AWS CLI の query による絞り込み - Qiita
 # http://qiita.com/draco/items/fa09ae0c2f51de9de449 
 
-if [ "$1" = "" ]; then
-    echo "Usage: $0 NAME_FILTER"
-    exit
-fi
-
 name="$1"
-shift
+filters="--filters=Name=tag:Name,Values=${name}*"
 
-exec aws ec2 describe-instances --filters "Name=tag:Name,Values=*${name}*" --query 'sort_by(Reservations[].Instances[].{InstanceId:InstanceId,Name:Tags[?Key==`Name`].Value|[0],InstanceType:InstanceType,State:State.Name,PrivateIp:PrivateIpAddress,AZ:Placement.AvailabilityZone,PublicIp:PublicIpAddress}, &Name)' --output table
+exec aws ec2 describe-instances $filters --query 'sort_by(Reservations[].Instances[].{InstanceId:InstanceId,Name:Tags[?Key==`Name`].Value|[0],InstanceType:InstanceType,State:State.Name,PrivateIp:PrivateIpAddress,AZ:Placement.AvailabilityZone,PublicIp:PublicIpAddress}, &Name)' --output table
