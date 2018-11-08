@@ -1,0 +1,13 @@
+#!/bin/bash
+
+tmpfile="Guardfile.$$"
+
+cat > "$tmpfile" <<'EOF'
+guard 'livereload' do
+  watch(%r{.*\..*$})
+end
+EOF
+
+guard --guardfile "$tmpfile"
+
+rm -f "$tmpfile"
