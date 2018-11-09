@@ -43,7 +43,7 @@ hi FunctionName         cterm=bold              ctermfg=93              ctermbg=
 
 hi HintHL               cterm=None              ctermfg=None            ctermbg=None
 hi Identifier           cterm=None              ctermfg=None            ctermbg=None
-hi IncSearch            cterm=None              ctermfg=7               ctermbg=50
+hi IncSearch            cterm=None              ctermfg=0               ctermbg=190
 hi LineNe               cterm=None              ctermfg=lightgreen      ctermbg=lightcyan
 hi LineNr               cterm=None              ctermfg=1               ctermbg=None
 hi Macro                cterm=None              ctermfg=129             ctermbg=None
