@@ -882,6 +882,18 @@ function! Eatchar(pat)
   return (c =~ a:pat) ? '' : c
 endfunction!
 
+" パーセンテージ指定でウィンドウの幅を変更する
+function! _Width(width)
+  let width = substitute(a:width, '%', '', 'g')
+  let new_width = &columns * width / 100
+  exe "vert res " . new_width
+endfunction
+command! -nargs=1 Width call _Width(<args>)
+nnoremap <C-w>4 :<C-u>Width 25<CR>
+nnoremap <C-w>3 :<C-u>Width 33<CR>
+nnoremap <C-w>2 :<C-u>Width 50<CR>
+nnoremap <C-w>1 :<C-u>Width 100<CR>
+
 if argv(0) =~ "mlreplace.rb"
   let g:fixdir=getcwd()
 endif

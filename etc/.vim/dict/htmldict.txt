@@ -162,3 +162,12 @@ speak-numeral
 speak-header
 content-box
 box-sizing
+flex-direction
+flex-flow
+flex-wrap
+justify-content
+align-items
+align-content
+flex-grow
+flex-shrink
+flex-basis
