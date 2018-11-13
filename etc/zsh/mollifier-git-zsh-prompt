@@ -45,9 +45,10 @@ if is-at-least 4.3.11; then
     # 各関数が最大3回呼び出される。
     zstyle ':vcs_info:git+set-message:*' hooks \
                                             git-hook-begin \
+                                            git-untracked \
                                             git-push-status \
                                             git-nomerge-branch \
-                                            git-stash-count
+                                            # git-stash-count
 
     # フックの最初の関数
     # git の作業コピーのあるディレクトリのみフック関数を呼び出すようにする
@@ -67,20 +68,20 @@ if is-at-least 4.3.11; then
     # untracked ファイル(バージョン管理されていないファイル)がある場合は
     # unstaged (%u) に ? を表示
     function +vi-git-untracked() {
-        # この機能はつかわない
-        return 0
-
         # zstyle formats, actionformats の2番目のメッセージのみ対象にする
         if [[ "$1" != "1" ]]; then
             return 0
         fi
 
-        if command git status --porcelain 2> /dev/null \
-            | awk '{print $1}' \
-            | command grep -F '??' > /dev/null 2>&1 ; then
-
+        local untracked_count=$(
+                                command git status --porcelain 2> /dev/null \
+                                    | awk '{print $1}' \
+                                    | command grep -F '??' \
+                                    | wc -l | awk '{print $1}' 2> /dev/null
+        )
+        if [ $untracked_count != 0 ]; then
             # unstaged (%u) に追加
-            hook_com[unstaged]+='?'
+            hook_com[unstaged]+="%F{yellow}  $untracked_count??%f"
         fi
     }
 
