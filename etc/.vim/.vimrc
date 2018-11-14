@@ -885,13 +885,15 @@ endfunction!
 " パーセンテージ指定でウィンドウの幅を変更する
 function! _Width(width)
   let width = substitute(a:width, '%', '', 'g')
-  let new_width = &columns * width / 100
+  let new_width = float2nr(ceil(&columns * width / 100.0))
   exe "vert res " . new_width
 endfunction
 command! -nargs=1 Width call _Width(<args>)
-nnoremap <C-w>4 :<C-u>Width 25<CR>
-nnoremap <C-w>3 :<C-u>Width 33<CR>
-nnoremap <C-w>2 :<C-u>Width 50<CR>
+nnoremap <C-w>6 :<C-u>Width 15<CR>
+nnoremap <C-w>5 :<C-u>Width 20<CR>
+nnoremap <C-w>4 :<C-u>Width 30<CR>
+nnoremap <C-w>3 :<C-u>Width 40<CR>
+nnoremap <C-w>2 :<C-u>Width 45<CR>
 nnoremap <C-w>1 :<C-u>Width 100<CR>
 
 if argv(0) =~ "mlreplace.rb"
