@@ -35,16 +35,18 @@ function! _GetCommitHash(line)
 endfunction
 
 function! _Gitlog_Diff()
+  " 現在位置をjumplistに入れる
+  exe "normal! " . line(".") . "G"
   let prev_file = b:prev_file
   let short_hash = _GetCommitHash(getline("."))
-  enew
+  keepjumps enew
   let b:gitlog_bufnr = bufnr("#")
   " commitウィンドウに対する設定
   exe "cd " . getbufvar(b:gitlog_bufnr, "dir")
   nnoremap <buffer> <space>h :<C-u>call _Gitlog_Back()<CR>
   set buftype=nofile bufhidden=wipe
-  sil exe "r!git show " . short_hash . ":./" . prev_file
-  sil 1d
+  sil exe "keepjumps r!git show " . short_hash . ":./" . prev_file
+  sil keepjumps 1d
   exe "file commit-" . short_hash
   diffoff
   diffthis
@@ -62,9 +64,9 @@ function! _Gitlog_Show()
   exe "cd " . getbufvar(b:gitlog_bufnr, "dir")
   nnoremap <buffer> <space>h :<C-u>call _Gitlog_Back()<CR>
   set buftype=nofile bufhidden=wipe
-  sil exe "r!git show " . short_hash
-  sil 1d
-  1,3s@^@# @
+  sil exe "keepjumps r!git show " . short_hash
+  sil keepjumps 1d
+  keepjumps 1,3s@^@# @
   set ft=gitcommit
 endfunction
 
