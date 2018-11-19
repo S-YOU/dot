@@ -8,8 +8,8 @@
 
     <link rel="shortcut icon" href="./favicon.ico">
 
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<?vim $GMAP_KEY ?>"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key="></script>
 
     <script>
       var map;
@@ -24,6 +24,7 @@
         map.addListener('click', function (e) {
           console.log(e.latLng.lat(), e.latLng.lng());
         });
+      });
     </script>
 
     <style>
