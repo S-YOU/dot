@@ -221,6 +221,7 @@ fi
 
 if [[ "$SELECTOR" = fzf* ]]; then
     source $DOT/etc/zsh/key-bindings.zsh
+    source $DOT/etc/zsh/completion.zsh
 fi
 source $DOT/etc/zsh/dabbrev-complete.zsh
 source $DOT/etc/zsh/format-line.zsh
