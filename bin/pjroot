@@ -34,7 +34,7 @@ file_exists_in_ancestors() {
 }
 
 if [ $# = 0 ]; then
-  file_exists_in_ancestors .git .svn CVS .root
+  file_exists_in_ancestors .git .svn CVS .root ,root
 else
   file_exists_in_ancestors "$@"
 fi

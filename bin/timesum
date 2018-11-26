@@ -21,9 +21,11 @@
 # timesum a.txt
 
 def mins_to_hm(minutes)
+  sign = minutes >= 0 ? "" : "-"
+  minutes = minutes.abs
   h = minutes / 60
   m = minutes % 60
-  return sprintf("%02d:%02d", h, m)
+  return sprintf("%s%02d:%02d", sign, h, m)
 end
 
 def hm_to_mins(hm)
