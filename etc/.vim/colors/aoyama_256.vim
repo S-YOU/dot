@@ -31,6 +31,8 @@ hi diffRemoved          cterm=None              ctermfg=None            ctermbg=
 hi DiffChange           cterm=None              ctermfg=None            ctermbg=None 
 hi DiffDelete           cterm=bold              ctermfg=None            ctermbg=225
 hi DiffText             cterm=None              ctermfg=0               ctermbg=214
+hi diffIndexLine        cterm=None              ctermfg=0               ctermbg=159
+hi diffFile             cterm=None              ctermfg=0               ctermbg=159
 hi Directory            cterm=None              ctermfg=blue            ctermbg=None
 hi Error                cterm=None              ctermfg=white           ctermbg=cyan
 hi ErrorMsg             cterm=None              ctermfg=16              ctermbg=217
