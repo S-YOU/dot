@@ -244,7 +244,8 @@ bindkey '^X^G' cd-with-fzf
 
 _git-changed-files() {
     setopt localoptions pipefail 2> /dev/null
-    git status --short | fzf --no-sort --multi --layout=reverse | cut -b4- | while read item; do
+    local prompt="${1:-> }"
+    git status --short | fzf --prompt="$prompt" --no-sort --multi --layout=reverse | cut -b4- | while read item; do
         echo -n "${(q)item} "
     done
     local ret=$?
@@ -261,6 +262,19 @@ complete-git-changed-files() {
 zle -N complete-git-changed-files
 bindkey '^@^G' complete-git-changed-files
 
+complete-git-changed-files2() {
+    local old_lbuffer="$LBUFFER"
+    LBUFFER="git add $(_git-changed-files 'git add >')"
+    local ret=$?
+    if [ "$ret" != 0 ]; then
+        LBUFFER="$old_lbuffer"
+    fi
+    zle redisplay
+    typeset -f zle-line-init >/dev/null && zle zle-line-init
+    return $ret
+}
+zle -N complete-git-changed-files2
+bindkey '^X^A' complete-git-changed-files2
 
 if which fd > /dev/null 2>&1; then
     FZF_CTRL_T_COMMAND="fd -t f"

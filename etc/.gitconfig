@@ -89,6 +89,7 @@
     meta = blue bold
 [diff]
     tool = vimdiff
+    noprefix = true
 [difftool]
     prompt = false
 [mergetool]
