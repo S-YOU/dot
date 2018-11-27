@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cmd="$1"
+
+tmp=$(mktemp)
+pbpaste > "$tmp"
+eval "$cmd < $tmp > $tmp.out"
+pbcopy < "$tmp.out"
+head -n 100 "$tmp.out"
+rm -f "$tmp" "$tmp.out"
