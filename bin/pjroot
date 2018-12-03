@@ -25,7 +25,7 @@ file_exists_in_ancestors() {
             fi
         done
         cd ..
-        if [ `pwd` = "$pwd" ]; then
+        if [ "$(pwd)" = "$pwd" ]; then
             cd "$origdir"
             echo "not exist"
             return 1
