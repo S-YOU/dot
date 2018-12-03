@@ -242,10 +242,24 @@ cd-with-fzf() {
 zle -N cd-with-fzf
 bindkey '^X^G' cd-with-fzf
 
+_git-files-selector() {
+    fzf --prompt="$prompt" --no-sort --multi --layout=reverse
+}
+
 _git-changed-files() {
     setopt localoptions pipefail 2> /dev/null
     local prompt="${1:-> }"
-    git status --short | fzf --prompt="$prompt" --no-sort --multi --layout=reverse | cut -b4- | while read item; do
+    git status --short | _git-files-selector | cut -b4- | while read item; do
+        echo -n "${(q)item} "
+    done
+    local ret=$?
+    echo
+    return $ret
+}
+_git-changed-files-exclude-staged() {
+    setopt localoptions pipefail 2> /dev/null
+    local prompt="${1:-> }"
+    git status --short | grep -v '^M ' | grep -v '^A ' | _git-files-selector | cut -b4- | while read item; do
         echo -n "${(q)item} "
     done
     local ret=$?
@@ -262,19 +276,14 @@ complete-git-changed-files() {
 zle -N complete-git-changed-files
 bindkey '^@^G' complete-git-changed-files
 
-complete-git-changed-files2() {
-    local old_lbuffer="$LBUFFER"
-    LBUFFER="git add $(_git-changed-files 'git add >')"
-    local ret=$?
-    if [ "$ret" != 0 ]; then
-        LBUFFER="$old_lbuffer"
-    fi
+selector-git-add() {
+    git add $(_git-changed-files-exclude-staged 'git add >')
+    git status --short --branch --ignored
+    echo
     zle redisplay
-    typeset -f zle-line-init >/dev/null && zle zle-line-init
-    return $ret
 }
-zle -N complete-git-changed-files2
-bindkey '^X^A' complete-git-changed-files2
+zle -N selector-git-add
+bindkey '^X^A' selector-git-add
 
 if which fd > /dev/null 2>&1; then
     FZF_CTRL_T_COMMAND="fd -t f"
