@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+def ieee754decode(str, bits)
+  case bits
+  when 32
+    return [str].pack("B*").unpack("g")
+  when 64
+    return [str].pack("B*").unpack("G")
+  else
+    raise "Invalid bits: #{bits}"
+  end
+end
+
+ARGV.each do |str|
+  puts "input:  #{str}"
+  puts "32 bit: #{ieee754decode(str, 32)}"
+  puts "64 bit: #{ieee754decode(str, 64)}"
+end

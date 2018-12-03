@@ -1,0 +1,21 @@
+#!/usr/bin/ruby
+
+def ieee754encode(float, bits)
+  case bits
+  when 32
+    return [float].pack("g").bytes.map{|n| "%08b" % n}.join
+  when 64
+    return [float].pack("G").bytes.map{|n| "%08b" % n}.join
+  else
+    raise "Invalid bits: #{bits}"
+  end
+end
+
+ARGV.each do |str|
+  float = str.to_f
+  e32 = ieee754encode(float, 32)
+  e64 = ieee754encode(float, 64)
+  puts "input:  #{float}"
+  puts "32 bit: #{e32}    (#{e32[0...1]} #{e32[1...9]} #{e32[9..-1]})"
+  puts "64 bit: #{e64}    (#{e64[0...1]} #{e64[1...11]} #{e64[11..-1]})"
+end
