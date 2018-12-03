@@ -90,6 +90,7 @@
 [diff]
     tool = vimdiff
     noprefix = true
+    indentHeuristic = true
 [difftool]
     prompt = false
 [mergetool]
