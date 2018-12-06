@@ -259,7 +259,7 @@ nnoremap <silent> w :<C-u>call ForwardWord(1)<CR>
 nnoremap <silent> b :<C-u>call BackwardWord(1)<CR>
 nnoremap <silent> } :<C-u>call ForwardParagraph()<CR>
 onoremap <silent> } :<C-u>call ForwardParagraph()<CR>
-xnoremap <silent> } <Esc>:<C-u>call ForwardParagraph()<CR>mzgv`z
+xnoremap <silent> } <Esc>:<C-u>call ForwardParagraph()<CR>kmzgv`z
 nnoremap <silent> [[ :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>[[:let &scrolloff = scrolloff_old<CR>
 nnoremap <silent> ]] :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR>]]:let &scrolloff = scrolloff_old<CR>
 nnoremap gg gg0
@@ -1784,10 +1784,11 @@ function! ForwardParagraph()
   let cnt = v:count1
   let i = 0
   while i < cnt
-    if !search('^\s*\n.*\S','W')
+    if !search('.\n\s*$','We')
       normal! G$
       return
     endif
+    normal! j0
     let i = i + 1
   endwhile
 endfunction
