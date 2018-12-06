@@ -2,7 +2,7 @@
 
 if [ $# = 0 ]; then
     COLUMN_LEN=$(git branch | awk 'BEGIN {m=0} {len = length(substr($0, 3)); if (len > m) m = len} END {print m}')
-    exec git for-each-ref --sort=-committerdate refs/heads/ --format="%(color:green)%(HEAD)%(color:reset) %(align:$COLUMN_LEN,left)%(refname:short)%(end) %(color:red)%(objectname:short)%(color:reset) %(contents:subject) (%(color:green)%(committerdate:relative)%(color:reset))"
+    exec git for-each-ref --sort=-committerdate refs/heads/ --format="%(color:green)%(HEAD)%(color:reset) %(align:$COLUMN_LEN,left)%(refname:short)%(end) %(color:red)%(objectname:short)%(color:reset) %(contents:subject) (%(color:blue)%(authorname)%(color:reset) %(color:green)%(committerdate:relative)%(color:reset))"
 else
     exec git branch "$@"
 fi
