@@ -72,11 +72,16 @@ set ambiwidth=double
 set nofixendofline
 set nobackup
 set backupskip=/tmp/*,/private/tmp/*
-if isdirectory(expand("~/tmp"))
-  set directory=~/tmp
+try
+  let g:swapdir = $HOME . "/.vimswap"
+  call mkdir(g:swapdir, "p", 0700)
+endtry
+if isdirectory(g:swapdir)
+  exe "set directory=" . g:swapdir
 else
   set noswapfile
 endif
+unlet g:swapdir
 set hidden
 set autoread
 set suffixes& suffixes-=.h
