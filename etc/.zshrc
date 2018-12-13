@@ -420,13 +420,15 @@ fixtitle() {
 }
 
 type() {
-    local ret
+    local ret s
     ret=$(builtin type "$@")
+    s=$?
     if [[ "$ret" == *"is a shell function from"* ]]; then
         whence -v "$@"
         whence -f "$@"
     else
         echo "$ret"
+        return $s
     fi
 }
 
