@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+if ARGV.length == 0
+  STDERR.puts "Usage: sponge FILE"
+  exit 1
+end
+
+filename = ARGV[0]
+File.write(filename, STDIN.read)
