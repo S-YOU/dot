@@ -461,9 +461,8 @@ nnoremap <C-@>4     :set ts=4 sts=4 sw=4<CR>:set ts?<CR>
 nnoremap <C-@>8     :set ts=8 sts=8 sw=8<CR>:set ts?<CR>
 nnoremap <C-@><C-e> :set expandtab!<CR>:set expandtab?<CR>
 nnoremap <C-@><C-f> :set foldenable!<CR>:set foldenable?<CR>
-nnoremap <C-@><C-n> :set number!<CR>:set number?<CR>
 nnoremap <C-@><C-w> :set wrap!<CR>:set wrap?<CR>
-nnoremap <C-@><C-r> :set number! wrap!<CR>
+nnoremap <C-@><C-n> :set number! wrap!<CR>
 nnoremap <C-@><C-u> :set cuc!<CR>
 nnoremap <C-@><C-@> :noh<CR>:redraw!<CR>
 
