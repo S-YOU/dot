@@ -463,6 +463,7 @@ nnoremap <C-@><C-e> :set expandtab!<CR>:set expandtab?<CR>
 nnoremap <C-@><C-f> :set foldenable!<CR>:set foldenable?<CR>
 nnoremap <C-@><C-n> :set number!<CR>:set number?<CR>
 nnoremap <C-@><C-w> :set wrap!<CR>:set wrap?<CR>
+nnoremap <C-@><C-o> :set number! wrap!<CR>
 nnoremap <C-@><C-u> :set cuc!<CR>
 nnoremap <C-@><C-@> :noh<CR>:redraw!<CR>
 
