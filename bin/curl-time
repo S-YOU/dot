@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 
-def get(url)
-  out = `curl -s -w "@$HOME/dot/bin/curl-time-format.txt" "#{url}" -o /dev/null`
+def get(args)
+  str_args = args.map {|x| "'" + x.gsub("'") { "'\"'\"'" } + "'"}.join(" ")
+  cmd = "curl -s -w \"@$HOME/dot/bin/curl-time-format.txt\" #{str_args} -o /dev/null"
+  out = `#{cmd}`
   a = out.split.map {|x| x.to_f}
   return a
 end
 
-url = ARGV[0]
-TRIAL_COUNT = (ARGV[1] || "5").to_i
+TRIAL_COUNT = (ENV["count"] || "5").to_i
 
 time_starttransfer_sum = 0
 time_total_sum = 0
@@ -17,7 +18,7 @@ puts "starttransfer  total"
 
 sums = [0, 0]
 (TRIAL_COUNT + 1).times do |i|
-  a = get(url)
+  a = get(ARGV)
 
   # 最初の1回目の結果は捨てる
   next if i == 0
