@@ -92,7 +92,7 @@
     noprefix = true
     indentHeuristic = true
 [difftool]
-    prompt = false
+    prompt = true
 [mergetool]
     prompt = false
 [init]
