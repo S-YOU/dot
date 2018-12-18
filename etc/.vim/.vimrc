@@ -969,7 +969,8 @@ augroup MyAutocmd
     source ~/.vim/macros/yanktofile.vim
   endif
   au VimEnter * call _VimEnter()
-  au CursorHold * silent! checktime
+  au BufEnter * if expand("%:p") == "/dev/null" | set buftype=nofile | endif
+  au CursorHold * checktime
   au WinEnter * checktime
 augroup END
 
@@ -1746,12 +1747,12 @@ function! _BufInfo()
   endif
 endfunction
 
-function! ForwardWord(no_move_line)
+function! ForwardWord(no_over_line)
   "call search('\(\W\|^\)\w', 'e')
   let i = 0
   while i < v:count1
     let c = matchstr(getline("."), ".", col(".") - 1)
-    let stopline = a:no_move_line ? line(".") : 0
+    let stopline = a:no_over_line ? line(".") : 0
 
     if c =~ '\W'
       call search('\(\W\|^\)\w\|[^\x00-\xFF]', 'eW', stopline)
@@ -1766,11 +1767,11 @@ function! ForwardWord(no_move_line)
   endwhile
 endfunction
 
-function! BackwardWord(no_move_line)
+function! BackwardWord(no_over_line)
   let i = 0
   while i < v:count1
     let c = matchstr(getline("."), ".", col(".") - 1)
-    let stopline = a:no_move_line ? line(".") : 0
+    let stopline = a:no_over_line ? line(".") : 0
 
     if c =~ '\W'
       call search('\(\W\|^\)\w', 'beW', stopline)
