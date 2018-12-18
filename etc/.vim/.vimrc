@@ -3159,6 +3159,34 @@ function! _InsertString(...)
 endfunction
 inoremap <C-@><C-f> <C-o>:call fzf#run({ 'source': 'find-files-from-pjroot', 'sink': function('_InsertString') })<CR>
 
+" MRU with FZF
+nnoremap <C-@><C-p> :<C-u>FZFMru<CR>
+command! FZFMru call s:fzf_wrap({
+    \'source':  'bash -c "'.
+    \               'echo -e \"'.s:old_files().'\";'.
+    \               'ag -l -g \"\"'.
+    \           '"',
+    \})
+
+function! s:fzf_wrap(dict)
+    let defaults = {
+    \'sink' : 'edit',
+    \'options' : '+s -e -m',
+    \'tmux_height': '40%',
+    \}
+    call extend(a:dict, defaults, 'keep')
+    call fzf#run(a:dict)
+endfunction
+
+function! s:old_files()
+    let oldfiles = copy(v:oldfiles)
+    call filter(oldfiles, 'v:val !~ "fugitive"')
+    call filter(oldfiles, 'v:val !~ "NERD_tree"')
+    call filter(oldfiles, 'v:val !~ "^/tmp/"')
+    call filter(oldfiles, 'v:val !~ ".git/"')
+    return join(oldfiles, '\n')
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================
