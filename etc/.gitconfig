@@ -92,9 +92,11 @@
     noprefix = true
     indentHeuristic = true
 [difftool]
-    prompt = true
+    prompt = false
+    trustExitCode = true
 [mergetool]
     prompt = false
+    trustExitCode = true
 [init]
     templatedir = ~/.git_template
 [filter "lfs"]
