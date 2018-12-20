@@ -2,6 +2,8 @@
 
 HOOK_TYPE="post-commit"
 
+GIT_DIR=${GIT_DIR:-".git"}
+
 if [ -f "$GIT_DIR"/hooks/_common ]; then
     . "$GIT_DIR"/hooks/_common
 fi

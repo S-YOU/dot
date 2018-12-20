@@ -20,6 +20,7 @@
     exec = !sh -c 'exec "$@"' $(which sh)
     sta = status --short --branch --ignored
     ls = ls-files
+    wt = worktree
     # git rootからgrepする
     rgrep = !git grep
     logv = log --name-status
