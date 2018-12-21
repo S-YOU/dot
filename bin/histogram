@@ -65,4 +65,4 @@ for s in splited
   percent = (n / total.to_f * 100).round
   printf("%#{$opt[:max]}s %6d (%3d%%) %s\n", "*" * ($opt[:max] * ratio).ceil, n, percent, name)
 end
-printf("%#{$opt[:max]}s %6d  %s\n", " " * $opt[:max], total, "合計")
+printf("%#{$opt[:max]}s %6d  %s  %s\n", " " * $opt[:max], total, "合計", splited.length)
