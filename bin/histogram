@@ -29,17 +29,16 @@ end
 
 total = 0
 n_max = 0
-splited = []
+rows = []
 
-linenum = 0
 lines.each do |line|
-  linenum += 1
+  line.chomp!
 
-  a = line.split()
+  a = line.split(nil, 2)
   n    = a[0].to_i
   name = a[1].to_s
     
-  splited.push([n, name])
+  rows.push([n, name])
 
   if n_max < n
     n_max = n
@@ -50,19 +49,19 @@ end
 
 case $opt[:sort]
 when :asc, nil
-  splited.sort! {|x, y| x[0] <=> y[0]}
+  rows.sort! {|x, y| x[0] <=> y[0]}
 when :desc
-  splited.sort! {|x, y| y[0] <=> x[0]}
+  rows.sort! {|x, y| y[0] <=> x[0]}
 else
   # do nothing
 end
 
-for s in splited
-  n    = s[0]
-  name = s[1]
+rows.each do |row|
+  n    = row[0]
+  name = row[1]
 
   ratio = n / n_max.to_f
   percent = (n / total.to_f * 100).round
   printf("%#{$opt[:max]}s %6d (%3d%%) %s\n", "*" * ($opt[:max] * ratio).ceil, n, percent, name)
 end
-printf("%#{$opt[:max]}s %6d  %s  %s\n", " " * $opt[:max], total, "合計", splited.length)
+printf("%#{$opt[:max]}s %6d  %s  %s\n", " " * $opt[:max], total, "合計", rows.length)
