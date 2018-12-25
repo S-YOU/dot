@@ -516,7 +516,7 @@ endfunction
 cnoremap <expr> <C-r>/ _GetLastSearchedWord()
 inoremap <expr> <C-r>/ _GetLastSearchedWord()
 cnoremap <C-z> <C-r>=substitute(getreg('"'), '\n', '', 'g')<CR>
-cnoremap <expr> <C-z> getcmdtype()=='/' ? '/e+1\<CR>' : '\<C-z>'
+cnoremap <expr> <C-z> getcmdtype()=='/' ? '/e\<CR>' : '\<C-z>'
 
 " コマンドラインへパスなどを挿入
 cnoremap <expr> <C-t>  "代わりに C-j を使ってください"
