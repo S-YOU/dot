@@ -1,4 +1,4 @@
---extra=+f
+--extras=+f
 --langmap=scheme:
 --langdef=scm
 --langmap=scm:.ss.scm

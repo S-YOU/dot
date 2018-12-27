@@ -1,3 +1,19 @@
 #!/bin/sh
 
-git ls-files | ctags --extra=+f -L -
+set -e
+
+git ls-files | ctags --extras=+f -L -
+
+if [ ! -e tags ]; then
+    echo "tags not found"
+    exit 1
+fi
+
+bytes=$(ruby -e 'puts File.size(ARGV[0])' tags)
+age_in_seconds=$(ruby -e 'puts (Time.now - File.mtime(ARGV[0])).to_i' tags)
+
+if [ $age_in_seconds -ge 1 ]; then
+    echo "tags is old"
+else
+    echo "OK: tags $bytes bytes, $(wc -l tags | awk '{print $1}') lines"
+fi
