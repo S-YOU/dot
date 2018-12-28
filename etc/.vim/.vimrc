@@ -924,7 +924,7 @@ augroup MyAutocmd
   au BufReadPost *.gitcommit  set filetype=gitcommit
   au BufWritePost * call SetExecutable()
   au BufWritePost * call _AutoExecSystem()
-  au BufWritePost * if !(exists('b:enable_syntax_check') && b:enable_syntax_check == 0) |  call GUSyntaxCheck(&ft) | endif
+  au BufWritePost * if !(exists('g:syntax_check_disabled_filetypes') && get(g:syntax_check_disabled_filetypes, &ft, 0)) | call GUSyntaxCheck(&ft) | endif
   au BufWritePost * if &ft == "" | filetype detect | endif 
   au FileType c           call C_Setting() 
   au FileType cpp         call Cpp_Setting() 
@@ -1004,8 +1004,9 @@ function! _VimEnter()
   nmap g* :grep<space>-w <C-r><C-w>
 endfunction
 
-command! EnableSyntaxCheck let b:enable_syntax_check = 1
-command! DisableSyntaxCheck let b:enable_syntax_check = 0
+let g:syntax_check_disabled_filetypes = {}
+command! EnableSyntaxCheck  let g:syntax_check_disabled_filetypes[&ft] = 0
+command! DisableSyntaxCheck let g:syntax_check_disabled_filetypes[&ft] = 1
 let g:syntaxCheckFunctions = {
       \ 'haskell' : 'Haskell_SyntaxCheck',
       \ 'javascript' : 'JS_SyntaxCheck',
