@@ -40,13 +40,18 @@ case "$ami_name" in
         ami_id=ami-28ddc154     # 2018-04
         username=ec2-user
         ;;
+    amazon2)
+        # Amazon Linux 2
+        ami_id=ami-0a2de1c3b415889d2
+        username=ec2-user
+        ;;
     freebsd)
         ami_id=ami-0a50b66c     # FreeBSD 11.1-RELEASE
         #username=root
         username=ec2-user
         ;;
     *)
-        echo "Usage: ${0##*/} [ubuntu|centos|centos7|amazon]"
+        echo "Usage: ${0##*/} [ubuntu|debian|centos6|centos7|amazon|amazon2|freebsd]"
         exit 1
         ;;
 esac
