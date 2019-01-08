@@ -338,6 +338,7 @@ source $DOT/etc/zsh/mollifier-git-zsh-prompt
 source $DOT/etc/zsh/safe-paste.plugin.zsh
 source $DOT/etc/zsh/auto-ls.zsh
 source $DOT/etc/zsh/zsh-vi-search.zsh
+source $DOT/etc/zsh/complete-cd-star-star.zsh
 
 
 #-----------------------------------------------------------------------------
