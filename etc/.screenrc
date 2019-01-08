@@ -144,15 +144,16 @@ bufferfile "$BUFFERFILE"
 # backtick 0 5 5 vmstat
 # backtick 1 60 60 date +'%H:%M'
 
-# C-t C-u で右のリージョンで前回のコマンドを再実行する
-bind ^U eval focus "stuff ^P^M" focus
+### 右のリージョンで何かをするコマンド
+# C-t C-r で右のリージョンで前回のコマンドを再実行する
+bind ^R eval focus "stuff ^P^M" focus
+# C-t C-e で右のリージョンにVimのレジスタ内容を貼り付ける
+bind ^E eval readbuf focus "paste ." "stuff ^M" focus
 
 ### レイアウト
 bind ^Y eval 'command -c layout'
 # C-t C-y 2 でレイアウトモードを開始する
 bind -c layout 2 eval only "select 0" "split -v" "resize 66%" focus next next focus
-# C-t C-y C-v で右のリージョンにVimのレジスタ内容を貼り付ける
-bind -c layout ^V eval readbuf focus "paste ." "stuff ^M" focus
 
 
 source $HOME/.screenrc.local
