@@ -12,6 +12,10 @@ cat > $SRC <<EOT
 
 int main(int argc, char* argv[])
 {
+EOT
+
+if [ $# -eq 0 ]; then
+cat >> $SRC <<EOT
 	printf("sizeof(char)      = %zu\n", sizeof(char));
 	printf("sizeof(short)     = %zu\n", sizeof(short));
 	printf("sizeof(int)       = %zu\n", sizeof(int));
@@ -20,6 +24,7 @@ int main(int argc, char* argv[])
 	printf("sizeof(size_t)    = %zu\n", sizeof(size_t));
 	printf("sizeof(void*)     = %zu\n", sizeof(void*));
 EOT
+fi
 
 for TYPE in "$@"; do
 	cat >> $SRC <<EOT
