@@ -88,13 +88,6 @@ bindkey -M menuselect '^N' down-line-or-history
 bindkey -M menuselect '^J' up-line-or-history
 bindkey -M menuselect '^K' down-line-or-history
 
-# https://github.com/davidshepherd7/dotfiles/blob/master/zsh/.zsh/zsh-bindings.sh#L9
-# shellword movement/deletes
-autoload -U select-word-style
-backward-kill-bashword () {select-word-style bash; zle backward-kill-word}
-zle -N backward-kill-bashword
-bindkey "\e^w" backward-kill-bashword
-
 #compctl -M 'm:{a-z}={A-Z}' # 大文字小文字を区別しない
 # 大文字小文字を区別しない。
 # ハイフンとアンダースコアで相互にマッチするようにする
