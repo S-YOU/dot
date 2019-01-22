@@ -113,29 +113,31 @@ def calc_distance_and_print(lat1, lng1, lat2, lng2)
   puts "#{sprintf('%.1f', Hubeny.distance(lat1, lng1, lat2, lng2))} メートル\t#{lat1}\t#{lng1}\t#{lat2}\t#{lng2}"
 end
 
-case ARGV.length 
-when 4
-  calc_distance_and_print(*ARGV)
-when 2
-  calc_distance_and_print(*(ARGV[0].split(/[^0-9.]+/) + ARGV[1].split(/[^0-9.]+/)))
-when 0
-  #while line = gets
-  while line = Readline.readline("> ", true)
-    a = line.strip.split(/[^0-9.]+/)
-    if a.length == 4
-      calc_distance_and_print(*a)
-    else
-      puts "InputError: a.length = #{a.length}: #{line}"
+if __FILE__ == $0
+  case ARGV.length 
+  when 4
+    calc_distance_and_print(*ARGV)
+  when 2
+    calc_distance_and_print(*(ARGV[0].split(/[^0-9.]+/) + ARGV[1].split(/[^0-9.]+/)))
+  when 0
+    #while line = gets
+    while line = Readline.readline("> ", true)
+      a = line.strip.split(/[^0-9.]+/)
+      if a.length == 4
+        calc_distance_and_print(*a)
+      else
+        puts "InputError: a.length = #{a.length}: #{line}"
+      end
     end
+  else
+    puts <<~EOF
+      Usage:
+        #{$0} lat1 lng1 lat2 lng2
+        #{$0} latlng1 latlng2
+        #{$0}
+          (read each input from stdin)
+        区切り文字は何でも可
+        緯度経度は逆でも可
+    EOF
   end
-else
-  puts <<~EOF
-    Usage:
-      #{$0} lat1 lng1 lat2 lng2
-      #{$0} latlng1 latlng2
-      #{$0}
-        (read each input from stdin)
-      区切り文字は何でも可
-      緯度経度は逆でも可
-  EOF
 end

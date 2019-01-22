@@ -19,6 +19,9 @@
         var gmap_options = {
           zoom: 15,
           center: center,
+          scaleControl: true,
+          clickableIcons: false,
+          gestureHandling: 'greedy',
         };
         map = new google.maps.Map(document.getElementById("gmap"), gmap_options);
         map.addListener('click', function (e) {
