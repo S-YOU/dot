@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+# URLを見やすく整形してvimで編集させるスクリプト
+
+require "uri"
+
+def edurl(url)
+  replaced = url.gsub(/&/, "\n&").gsub(/\?/, "\n?")
+
+  tmpfile = "/tmp/edurl.tmp.#{Process.pid}"
+  File.write(tmpfile, URI.unescape(replaced))
+
+  if system("vim #{tmpfile} < /dev/tty > /dev/tty")
+    modified = File.read(tmpfile)
+    modified.gsub!(/\n/, "")
+    puts URI.escape(modified)
+  else
+    warn "abort"
+  end
+end
+
+if ARGV.length == 0
+  edurl STDIN.read
+else
+  ARGV.each do |url|
+    edurl url
+  end
+end
