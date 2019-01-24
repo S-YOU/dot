@@ -18,11 +18,14 @@ def parse_url(url)
 
   u = URI.parse(url)
 
+  puts "\e[0;34m" + url.gsub(/\?.*/, "") + "\e[0m"
   if u.query
     parsed_query = CGI.parse(u.query)
+    index = 0
     parsed_query.each do |k, ary|
       ary.each do |v|
-        puts "\e[0;34m#{k}\e[0m=\e[0;35m#{v}\e[0m"
+        puts "#{index == 0 ? '?' : '&'}\e[0;34m#{k}\e[0m=\e[0;35m#{v}\e[0m"
+        index += 1
       end
     end
   end
