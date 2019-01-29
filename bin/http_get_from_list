@@ -55,7 +55,7 @@ def download(list, thread_id, thread_count)
   end
 
   # Keep-Aliveをつけるので、相手が同一ホストならTCPコネクションは1個しか使われないはず。
-  Net::HTTP.start(list.first.host, list.first.port) do |http|
+  Net::HTTP.start(list.first.host, list.first.port, use_ssl: (list.first.scheme == 'https'), verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
     # タイムアウトすると、自動的に1回だけリトライする。この挙動を変えることはできないようである。
     # https://bugs.ruby-lang.org/issues/10674
     #http.read_timeout = 1

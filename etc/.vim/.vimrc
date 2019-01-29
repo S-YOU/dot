@@ -20,6 +20,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'henrik/vim-indexed-search'
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
   Plug 'junegunn/fzf.vim'
+  Plug 'pangloss/vim-javascript'
   Plug 'scrooloose/nerdtree'
 call plug#end()
 
