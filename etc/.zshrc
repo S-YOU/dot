@@ -331,6 +331,7 @@ source $DOT/etc/zsh/auto-ls.zsh
 source $DOT/etc/zsh/zsh-vi-search.zsh
 source $DOT/etc/zsh/complete-cd-star-star.zsh
 
+source $DOT/etc/submodules/zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 
 #-----------------------------------------------------------------------------
 #   precmd & preexec
