@@ -2,11 +2,28 @@
 
 #$KCODE = "UTF-8"
 require "uri"
+require "optparse"
+
+$opt = {
+  component: false,
+}
+
+opt = OptionParser.new
+opt.on("-c", "--component", "encodeURIComponent相当にする。つまり&などをエスケープする") {|v| $opt[:component] = true }
+opt.parse!(ARGV)
+
+def encode(str)
+  if $opt[:component]
+    return URI.escape(str, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+  else
+    return URI.escape(str)
+  end
+end
 
 if ARGV.length == 0
 	while gets
-    puts URI.escape($_.chomp)
+    puts encode($_.chomp)
 	end
 else
-	puts URI.escape(ARGV.join(" "))
+	puts encode(ARGV.join(" "))
 end
