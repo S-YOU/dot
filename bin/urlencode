@@ -5,16 +5,25 @@ require "uri"
 require "optparse"
 
 $opt = {
-  component: false,
+  all: false,
+  js: false,
+  html5: false,
 }
 
 opt = OptionParser.new
-opt.on("-c", "--component", "encodeURIComponent相当にする。つまり&などをエスケープする") {|v| $opt[:component] = true }
+opt.on("-a", "--all", "英数以外のすべての文字をエスケープする") {|v| $opt[:all] = true }
+opt.on("-c", "--component", "--html5のエイリアス") {|v| $opt[:html5] = true }
+opt.on("-j", "--js", "JSのencodeURIComponentと同じ") {|v| $opt[:js] = true }
+opt.on("-5", "--html5", "W3CのHTML5仕様準拠。英数と*-._の4文字以外を全てエスケープする") {|v| $opt[:html5] = true }
 opt.parse!(ARGV)
 
 def encode(str)
-  if $opt[:component]
+  if $opt[:all]
+    return URI.escape(str, /[^A-Za-z0-9]/)
+  elsif $opt[:js]
     return URI.escape(str, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+  elsif $opt[:html5]
+    return URI.escape(str, /[^-*._A-Za-z0-9]/)
   else
     return URI.escape(str)
   end
