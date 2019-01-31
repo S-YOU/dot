@@ -1296,7 +1296,9 @@ function! _DefinePhpAbbrev()
 endfunction
 
 function! JS_SyntaxCheck()
-  if executable("js")
+  if executable("eslint")
+    let cmd = "eslint"
+  elseif executable("js")
     let cmd = "js -C"
   elseif executable("node")
     let cmd = "node -c"

@@ -47,6 +47,7 @@ link .alias
 link .bashrc
 link .bash_profile
 link .ctags
+link .eslintrc.json
 link .gdbinit
 link .ghci
 link .gitignore
