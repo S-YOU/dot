@@ -281,13 +281,13 @@ New Window</string>
 	<key>NSWindow Frame Preferences</key>
 	<string>496 573 606 456 0 0 1920 1057 </string>
 	<key>NSWindow Frame ProfilesPanel</key>
-	<string>345 625 735 382 0 0 1920 1057 </string>
+	<string>205 458 735 382 0 0 1440 877 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>650 512 620 392 0 0 1920 1057 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 126 606 469 0 0 1920 1057 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>759 428 796 473 0 0 1920 1057 </string>
+	<string>759 292 918 512 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
 	<string>534 54 1386 1003 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
@@ -626,13 +626,6 @@ New Window</string>
 					<integer>11</integer>
 					<key>Text</key>
 					<string>0x7f</string>
-				</dict>
-				<key>0x7f-0x0</key>
-				<dict>
-					<key>Action</key>
-					<integer>16</integer>
-					<key>Text</key>
-					<string></string>
 				</dict>
 				<key>0xf700-0x220000</key>
 				<dict>
