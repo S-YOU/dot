@@ -3193,18 +3193,22 @@ endfunction
 
 call DefineCommandAbbrev('drop', 'Drop')
 let g:dropbox_dir = expand('~/Dropbox/vim')
-command! -range -nargs=? Drop call _Drop('<args>')
+command! -range -nargs=1 Drop call _Drop('<args>')
 function! _Drop(title) abort range
   if a:title == ''
-    let title = 'notitle'
+    let title = strftime('%Y%m%d-%H%M%S')
   else
     let title = a:title
   endif
-  if title !~ '\.' && expand('%:e') != ''
-    let title .= '.' . expand('%:e')
+  let filename = title
+  if filename !~ '\.'
+    if expand('%:e') != ''
+      let filename .= '.' . expand('%:e')
+    else
+      let filename .= '.md'
+    endif
   endif
-  let filename = strftime('%Y%m%d-%H%M%S') . '-' . title
-  let path = g:dropbox_dir . '/' . strftime('%Y') . '/' . filename
+  let path = g:dropbox_dir . '/' . filename
   if a:firstline == a:lastline
     let lines = split(@", '\n')
   else
