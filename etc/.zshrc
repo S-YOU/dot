@@ -63,7 +63,7 @@ setopt prompt_subst         # プロンプトでコマンド置換等を展開�
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 is-at-least 5.2 && setopt glob_star_short  # **.c で **/*.c と同じ展開をする
 
-CDPATH=$HOME/bm:$HOME/git:$HOME
+CDPATH=$HOME/bm:$HOME/p:$HOME/git:$HOME
 HISTFILE=$HOME/.zhistory
 HISTSIZE=100000
 SAVEHIST=100000 
