@@ -3196,9 +3196,12 @@ let g:dropbox_dir = expand('~/Dropbox/vim')
 command! -range -nargs=? Drop call _Drop('<args>')
 function! _Drop(title) abort range
   if a:title == ''
-    let title = 'notitle.md'
+    let title = 'notitle'
   else
     let title = a:title
+  endif
+  if title !~ '\.' && expand('%:e') != ''
+    let title .= '.' . expand('%:e')
   endif
   let filename = strftime('%Y%m%d-%H%M%S') . '-' . title
   let path = g:dropbox_dir . '/' . strftime('%Y') . '/' . filename
