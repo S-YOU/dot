@@ -3221,6 +3221,7 @@ function! _Drop(title) abort range
   endif
   call mkdir(g:dropbox_dir, 'p', 0644)
   call writefile(lines, path)
+  call system('cd ' . g:dropbox_dir . ' && ls > LIST.txt')
   echomsg 'Wrote ' . len(lines) . ' lines to ' . path
   if confirm('Edit this file?', "&y\n&N") == 1
     exe 'sp ' . path
