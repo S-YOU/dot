@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "net/https"
+require "pp"
+
+@help = <<-EOF
+Usage: 
+    url="https://hooks.slack.com/services/*****/*****" channel="#general" username="slack_post" ./slack_post < message
+EOF
+
+def help
+  print @help
+end
+
+def help_exit
+  help
+  exit(1)
+end
+
+url        = ENV["url"]        || help_exit
+channel    = ENV["channel"]    || "#general"
+username   = ENV["username"]   || "slack_post"
+icon_emoji = ENV["icon_emoji"] || ":yellow_heart:"
+debug      = ENV["debug"]      || nil
+
+message = $stdin.read
+
+payload = {
+    "channel": channel,
+    "username": username,
+    "text": message,
+    "icon_emoji": icon_emoji,
+}
+if debug
+  pp payload
+end
+
+uri = URI.parse(url)
+http = Net::HTTP.new(uri.host, uri.port)
+
+http.use_ssl = true
+if debug
+  http.set_debug_output($stderr)
+end
+req = Net::HTTP::Post.new(uri.request_uri)
+req["Content-Type"] = "application/json"
+req.body = payload.to_json
+res = http.request(req)
+
+puts res.code
+puts res.body
+
+if res.code.to_i != 200
+  exit(2)
+end
