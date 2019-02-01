@@ -15,6 +15,7 @@ opt.on("-a", "--all", "英数以外のすべての文字をエスケープする
 opt.on("-c", "--component", "--html5のエイリアス") {|v| $opt[:html5] = true }
 opt.on("-j", "--js", "JSのencodeURIComponentと同じ") {|v| $opt[:js] = true }
 opt.on("-5", "--html5", "W3CのHTML5仕様準拠。英数と*-._の4文字以外を全てエスケープする") {|v| $opt[:html5] = true }
+opt.on("-h", "--help", "このヘルプを表示") {|v| puts opt.help; exit }
 opt.parse!(ARGV)
 
 def encode(str)
