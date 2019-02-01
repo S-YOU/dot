@@ -3193,13 +3193,12 @@ endfunction
 
 call DefineCommandAbbrev('drop', 'Drop')
 let g:dropbox_dir = expand('~/Dropbox/vim')
-command! -range -nargs=1 Drop call _Drop('<args>')
-function! _Drop(title) abort range
-  if a:title == ''
-    let title = strftime('%Y%m%d-%H%M%S')
-  else
-    let title = a:title
-  endif
+command! -range -nargs=? Drop call _Drop('<args>', <line1>, <line2>)
+function! _Drop(title, line1, line2) abort
+  let title = a:title
+  while title == ''
+    let title = input('タイトル: ')
+  endwhile
   let filename = title
   if filename !~ '\.'
     if expand('%:e') != ''
@@ -3209,23 +3208,24 @@ function! _Drop(title) abort range
     endif
   endif
   let path = g:dropbox_dir . '/' . filename
-  if a:firstline == a:lastline
+  if a:line1 == a:line2
     let lines = split(@", '\n')
   else
     let lines = []
-    let i = a:firstline
-    while i <= a:lastline
+    let i = a:line1
+    while i <= a:line2
       call add(lines, getline(i))
       let i += 1
     endwhile
   endif
+  if filereadable(path)
+    call insert(lines, '')
+  endif
   call mkdir(g:dropbox_dir, 'p', 0644)
-  call writefile(lines, path)
+  call writefile(lines, path, 'a')
   call system('cd ' . g:dropbox_dir . ' && ls > LIST.txt')
   echomsg 'Wrote ' . len(lines) . ' lines to ' . path
-  if confirm('Edit this file?', "&y\n&N") == 1
-    exe 'sp ' . path
-  endif
+  exe 'sp ' . path
 endfunction
 
 call DefineCommandAbbrev('drep', 'Dropgrep')
