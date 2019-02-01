@@ -735,9 +735,22 @@ call DefineAbbrev('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
 call DefineAbbrev('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
 
 function! DefineCommandAbbrev(abbrev, command)
-  let len = strlen(a:abbrev)
-  let cmd = printf("cnoreab <expr> %s (getcmdtype() == ':' && getcmdpos() == %d) ? '%s' : '%s'", a:abbrev, len + 1, a:command, a:abbrev)
+  let cmd = printf("cnoreab <expr> %s _GetDefineCommandAbbrevExpr('%s', '%s')", a:abbrev, a:abbrev, a:command)
   exe cmd
+endfunction
+
+function! _GetDefineCommandAbbrevExpr(abbrev, command)
+  let len = strlen(a:abbrev)
+  let match = matchstr(getcmdline(), "^'.,'.")
+  if match == ""
+    let add = 0
+  else
+    let add = len(match)
+  endif
+  let g:line = getcmdline()
+  let g:match = match
+  let g:add = add
+  return (getcmdtype() == ':' && getcmdpos() == len + 1 + add) ? a:command : a:abbrev
 endfunction
 
 call DefineCommandAbbrev('brep', 'Brep')
