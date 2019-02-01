@@ -750,7 +750,7 @@ function! _GetDefineCommandAbbrevExpr(abbrev, command)
   let g:line = getcmdline()
   let g:match = match
   let g:add = add
-  return (getcmdtype() == ':' && getcmdpos() == len + 1 + add) ? a:command : a:abbrev
+  return (getcmdtype() == ':' && (getcmdpos() == len + add || getcmdpos() == len + 1 + add)) ? a:command : a:abbrev
 endfunction
 
 call DefineCommandAbbrev('brep', 'Brep')
@@ -984,8 +984,8 @@ augroup MyAutocmd
   endif
   au VimEnter * call _VimEnter()
   au BufEnter * if expand("%:p") == "/dev/null" | set buftype=nofile | endif
-  au CursorHold * checktime
-  au WinEnter * checktime
+  au CursorHold * if &buftype == '' | checktime | endif
+  au WinEnter * if &buftype == '' | checktime | endif
 augroup END
 
 function! _TextYankPost(event)
