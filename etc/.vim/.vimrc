@@ -613,7 +613,7 @@ function! _Echon(highlight, msg)
   echohl None
 endfunction
 
-command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep! <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | botright cw | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
+command! -nargs=+ Grep let shellpipe_save = &shellpipe | set shellpipe=&> | silent grep! <args> | let &shellpipe=shellpipe_save | call _SetSearchRegister(<f-args>) | cclose | exe 'botright cw ' . max([1, min([8, len(getqflist())])]) | redraw! | if len(getqflist()) == 0 | call _Echo("WarningMsg","検索結果: 0件") | endif | set hls
 function! _SetSearchRegister(...) abort
   let len = len(a:000)
   let @/ = a:000[len - 1]
@@ -945,7 +945,7 @@ augroup MyAutocmd
   au FileType perl        call Perl_Setting()
   au FileType php         call PHP_Setting()
   au FileType python      call Python_Setting()
-  au FileType qf call AdjustWindowHeight(1)
+  "au FileType qf call AdjustWindowHeight(1)
   au FileType qf nnoremap <buffer> p <CR><C-w>wj
   au FileType qf nnoremap <buffer> <C-l> :<C-u>cnewer<CR>
   au FileType qf nnoremap <buffer> <C-h> :<C-u>colder<CR>
@@ -3189,6 +3189,43 @@ function! s:old_files()
     call filter(oldfiles, 'v:val !~ "^/tmp/"')
     call filter(oldfiles, 'v:val !~ ".git/"')
     return join(oldfiles, '\n')
+endfunction
+
+call DefineCommandAbbrev('drop', 'Drop')
+let g:dropbox_dir = expand('~/Dropbox/vim')
+command! -range -nargs=? Drop call _Drop('<args>')
+function! _Drop(title) abort range
+  if a:title == ''
+    let title = 'notitle.md'
+  else
+    let title = a:title
+  endif
+  let filename = strftime('%Y%m%d-%H%M%S') . '-' . title
+  let path = g:dropbox_dir . '/' . strftime('%Y') . '/' . filename
+  if a:firstline == a:lastline
+    let lines = split(@", '\n')
+  else
+    let lines = []
+    let i = a:firstline
+    while i <= a:lastline
+      call add(lines, getline(i))
+      let i += 1
+    endwhile
+  endif
+  call mkdir(g:dropbox_dir, 'p', 0644)
+  call writefile(lines, path)
+  echomsg 'Wrote ' . len(lines) . ' lines to ' . path
+  if confirm('Edit this file?', "&y\n&N") == 1
+    exe 'sp ' . path
+  endif
+endfunction
+
+call DefineCommandAbbrev('drep', 'Dropgrep')
+call DefineCommandAbbrev('dropgrep', 'Dropgrep')
+command -nargs=1 Dropgrep call _Dropgrep('<args>')
+function! _Dropgrep(keyword) abort
+  exe 'cd ' . g:dropbox_dir
+  exe 'Grep ' . a:keyword
 endfunction
 
 "=============================================================================

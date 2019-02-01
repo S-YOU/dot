@@ -386,4 +386,10 @@ checkhtml() {
     tidy -qe "$@" 2>&1
 }
 
+drop() {
+    local dir="$HOME/Dropbox/$(date +'%Y')"
+    mkdir -p "$dir"
+    command cp -iv "$@" "$dir"
+}
+
 alias hubeny='distance'
