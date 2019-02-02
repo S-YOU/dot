@@ -1690,14 +1690,6 @@ function! _ToggleQuote()
   call setpos('.', save_cursor)
 endfunction
 
-function! InsertIfdef() range
-  let sym = input("symbol:")
-  call append(a:firstline-1, "#ifdef " . sym)
-  call append(a:lastline+1, "#endif // " . sym)
-endfunction
-command! -nargs=0 -range Ifdef <line1>, <line2>:call InsertIfdef()
-
-
 function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
   let line = line('.')
   let column = col('.')
