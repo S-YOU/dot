@@ -886,10 +886,6 @@ nnoremap <C-w>3 :<C-u>Width 40<CR>
 nnoremap <C-w>2 :<C-u>Width 45<CR>
 nnoremap <C-w>1 :<C-u>Width 100<CR>
 
-if argv(0) =~ "mlreplace.rb"
-  let g:fixdir=getcwd()
-endif
-
 augroup MyAutocmd
   au!
   au BufNewFile *.* call LoadTemplate2(expand("%:e"), "default")
