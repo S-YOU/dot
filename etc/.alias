@@ -387,8 +387,11 @@ checkhtml() {
 }
 
 drop() {
-    local dir="$HOME/Dropbox/$(date +'%Y')"
-    mkdir -p "$dir"
+    local dir="$HOME/Dropbox"
+    if [ ! -d "$dir" ]; then
+        echo "Directory not exist: $dir" 1>&2
+        return 1
+    fi
     command cp -iv "$@" "$dir"
 }
 
