@@ -1248,16 +1248,9 @@ function! Perl_Setting()
 endfunction
 
 function! PHP_Setting()
-  "setlocal iskeyword+=-
   let b:commentSymbol = "//"
   setlocal autoindent
-  " ↓/**のコメントがおかしくなる
-  "setlocal indentkeys=0{,0},:,0#,!^F,o,O,e,0=,0),=EO,=else,=cat,=fina,=END,0\\
   setlocal formatoptions=nmMqrwcb
-  "nnoremap <buffer> <F5> :!php %<CR>
-  "nnoremap <C-^> :call ToggleMVC()<CR>
-  "nnoremap <buffer> K :call GUReference(expand('<cword>'), 'php', '[php]')<CR>:set ft=php<CR>
-  "nnoremap  <buffer> K :sil exe "PHPMan ".expand("<cword>")<CR>
   hi smartyZone cterm=bold
   syn keyword cakephp controller action
   hi cakephp cterm=None ctermfg=5
