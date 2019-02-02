@@ -146,9 +146,20 @@ bufferfile "$BUFFERFILE"
 
 ### 右のリージョンで何かをするコマンド
 # C-t C-r で右のリージョンで前回のコマンドを再実行する
-bind ^R eval focus "stuff ^P^M" focus
+bind ^R eval focus "stuff ^P^M" "focus prev"
 # C-t C-e で右のリージョンにVimのレジスタ内容を貼り付ける
-bind ^E eval readbuf focus "paste ." "stuff ^M" focus
+bind ^E eval readbuf focus "paste ." "stuff ^M" "focus prev"
+
+bind 1 resize 1
+bind 2 resize 2
+bind 3 resize 3
+bind 4 resize 4
+bind 5 resize 5
+bind 6 resize 6
+bind 7 resize 7
+bind 8 resize 8
+bind 9 resize 9
+bind 0 resize 10
 
 ### レイアウト
 bind ^Y eval 'command -c layout'
