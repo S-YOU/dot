@@ -686,9 +686,6 @@ inoreab cppmain #include <stdio.h><cr>#include <stdlib.h><cr>#include <string.h>
 inoreab shmain <Esc>:%d<CR>:0r~/.vim/_template.sh<CR>:set ft=sh<CR>
 inoreab rubymain <Esc>:%d<CR>:0r~/.vim/_template.rb<CR>:set ft=ruby<CR>
 "inoremap <C-j> <Esc>/\(break;\\|{\\|}\)\s*$<CR>:noh<CR>o
-inoreab date@ <C-r>=strftime("%Y-%m-%d")<CR>
-inoreab time@ <C-r>=strftime("%H:%M")<CR>
-inoreab datetime@ <C-r>=strftime("%Y-%m-%d %H:%M")<CR>
 noreab alerT alert
 noreab printF printf
 noreab fpf fprintf(stderr,);<Left><Left>
@@ -707,8 +704,6 @@ function! _FinishAbbreb()
 endfunction
 
 call DefineAbbrev('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
-call DefineAbbrev('css@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
-call DefineAbbrev('link@', '<link rel="stylesheet" href="#CURSOR#">', 'i', '')
 
 function! DefineCommandAbbrev(abbrev, command)
   let cmd = printf("cnoreab <expr> %s _GetDefineCommandAbbrevExpr('%s', '%s')", a:abbrev, a:abbrev, a:command)
