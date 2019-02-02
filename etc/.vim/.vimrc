@@ -379,10 +379,6 @@ function! _SelectString(mode)
 endfunction
 
 nnoremap vs v/["']/e-1<CR>v:nohl<CR>gv
-" カレント行、または選択範囲に全角と半角の間にスペースを入れる
-nnoremap <silent> <space>J V:InsertSpaceBetweenHankakuZenkaku<CR>
-xnoremap <silent> <space>J <Esc>:InsertSpaceBetweenHankakuZenkaku<CR>
-nnoremap <C-x>p :<C-u>r ~/tmp/screen-hardcopy.txt<CR>
 
 " 関数を範囲選択
 "nnoremap vf ][v[[?^s*$<CR>
@@ -1622,11 +1618,6 @@ function! _BufcloseCloseIt(bang)
     "execute("bdelete" . l:currentBufNum)
     execute("bwipe" . a:bang . " " . l:currentBufNum)
   endif
-endfunction
-
-command! -range InsertSpaceBetweenHankakuZenkaku call InsertSpaceBetweenHankakuZenkaku()
-function! InsertSpaceBetweenHankakuZenkaku() range
-  '<,'>s/\%(\([^\t -~。、]\)\%([!"#$%&'*+_\-./0-9<=>?A-Za-z~]\)\@=\|\([!"#$%&'*+_\-./0-9<=>?A-Za-z~]\)\%([^\t -~。、]\)\@=\)/\1\2 /ge
 endfunction
 
 " 数値を増加させながら行複製
