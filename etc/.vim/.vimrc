@@ -2185,6 +2185,8 @@ endfunction
 
 " Christian J. Robinson <infynity@onewest.net>
 " http://www.vim.org/scripts/script.php?script_id=1928
+" :Rename <C-r>%  で現在のファイル名を挿入できる
+cabbrev <expr> Rename ("Rename " . expand("%") . Eatchar('\s'))
 command! -nargs=* -complete=file -bang Rename :call Rename("<args>", "<bang>")
 function! Rename(name, bang) abort
   if stridx(a:name, '/') == -1
