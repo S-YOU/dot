@@ -1694,13 +1694,12 @@ function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
 endfunc 
 " Moving back and forth between lines of same or lower indentation.
 " 同じインデントへ移動（下方向）
-nnoremap <silent> +  :call _NextIndent(0, 1, 0, 1, 0)<cr>^
-" 同じインデントへ移動（上方向）
-nnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>^
+nnoremap <silent> +  <esc>: call _NextIndent(0, 1, 0, 1, 0)<cr>^
+nnoremap <silent> -  <esc>: call _NextIndent(0, 0, 0, 1, 0)<cr>^
 onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 0, 1, 0)<cr>
 onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
-xnoremap <silent> +  <esc>:call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
-xnoremap <silent> -  <esc>:call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
+xnoremap <silent> +  <esc>: call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
+xnoremap <silent> -  <esc>: call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
 nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 1, 1, 0)<cr>^
 nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 1, 1, 0)<cr>^
 " カレント行から同じインデントの行までを折りたたむ
