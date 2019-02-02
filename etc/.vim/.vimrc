@@ -271,13 +271,9 @@ nnoremap <silent> ]] :<C-u>let scrolloff_old = &scrolloff<CR>:set scrolloff=6<CR
 nnoremap gg gg0
 vnoremap <Esc> <Esc>`<
 xnoremap <silent> y y`>
-noremap <silent> ) /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
-noremap <silent> ( /)\\|;\\|\\./e<CR>:call _RemoveLastSearchHistory()<CR>
 inoremap <silent><C-a> <Esc>I
 inoremap <silent> <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 inoremap <silent> <C-@> <C-x><C-o>
-inoremap <silent> <C-l> <Esc>g~awgi
-vnoremap <silent> <C-l> g~
 nnoremap <silent> n :<C-u>call _SearchNext("n")<CR>
 nnoremap <silent> N :<C-u>call _SearchNext("N")<CR>
 noremap <silent> <Space>n `>
@@ -340,8 +336,6 @@ nnoremap dis :<C-u>call _SelectString('i')<CR>d
 nnoremap das :<C-u>call _SelectString('a')<CR>d
 nnoremap cis :<C-u>call _SelectString('i')<CR>c
 nnoremap cas :<C-u>call _SelectString('a')<CR>c
-nnoremap <C-x><C-u> <Esc>mz:<C-u>.!urldecode<CR>`z
-vnoremap <C-x><C-u> :!urldecode<CR>
 
 " ビジュアルモードで選択する
 function! _Visual(start, end)
@@ -487,20 +481,6 @@ function! _ToggleSearchType()
       return "\<C-u>" . strpart(cmdline, prefix_len, strlen(cmdline) - prefix_len - suffix_len)
     else
       return "\<C-u>" . prefix . cmdline . suffix
-    endif
-  else
-    return ""
-  endif
-endfunction
-cnoremap <expr> <C-l> _ToggleSearchIgnorecase()
-function! _ToggleSearchIgnorecase()
-  let cmdtype = getcmdtype()
-  if cmdtype == "/" || cmdtype == "?"
-    let cmdline = getcmdline()
-    if stridx(cmdline, '\c') >= 0
-      return "\<C-u>" . substitute(cmdline, '\\c', '', '')
-    else
-      return "\<C-u>" . cmdline . '\c'
     endif
   else
     return ""
