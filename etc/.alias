@@ -396,18 +396,18 @@ drop() {
 }
 
 snd() {
-    #filename=${1:-tmp}
-    #url="http://aosho235.com:8181/$filename"
-    #echo "Download url: $url"
-    #curl -T - "$url"
-    ssh arch03 "cat > p"
+    filename=${1:-tmp}
+    url="http://aosho235.com:8181/$filename"
+    echo "Download url: $url"
+    curl -T - "$url"
+    #ssh arch03 "cat > p"
 }
 
 rcv() {
-    #filename=${1:-tmp}
-    #url="http://aosho235.com:8181/$filename"
-    #curl -s "$url"
-    ssh arch03 "cat p"
+    filename=${1:-tmp}
+    url="http://aosho235.com:8181/$filename"
+    curl -s "$url"
+    #ssh arch03 "cat p"
 }
 
 alias hubeny='distance'
