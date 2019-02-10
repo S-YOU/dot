@@ -877,6 +877,7 @@ function! _Width(width)
   let width = substitute(a:width, '%', '', 'g')
   let new_width = float2nr(ceil(&columns * width / 100.0))
   exe "vert res " . new_width
+  setlocal nonumber
 endfunction
 command! -nargs=1 Width call _Width(<args>)
 nnoremap <C-w>6 :<C-u>Width 15<CR>

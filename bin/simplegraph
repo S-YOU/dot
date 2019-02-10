@@ -1,0 +1,69 @@
+#!/usr/bin/ruby
+
+# Graphvizを使っためちゃくちゃシンプルなグラフ可視化ツール
+# 
+# グラフのデータ形式:
+# v1 v2 label
+#
+# Usage:
+#   simplegraph < FILE
+
+out_type = "svg"
+out_filename = "simplegraph.#{out_type}"
+tmp_filename = "/tmp/simplegraph.dot"
+
+open(tmp_filename, "w") do |tmp|
+  tmp.puts <<EOF
+digraph graph_name {
+  graph [
+    charset = "UTF-8";
+    label = "simple graph",
+    labelloc = "t",
+    labeljust = "c",
+    bgcolor = "#ffffff",
+    fontcolor = "#000000",
+    fontsize = 12,
+    style = "filled",
+    rankdir = TB,
+    margin = 0.2,
+    splines = spline,
+    ranksep = 1.0,
+    nodesep = 0.9
+  ];
+
+  edge [
+    style = solid,
+    fontsize = 10,
+    fontcolor = "#000000",
+    fontname = "Migu 1M",
+    color = "#000000",
+    labelfloat = true,
+    labeldistance = 2.5,
+    labelangle = 70
+  ];
+EOF
+  
+  ARGF.each do |line|
+    line.chomp!
+    a = line.split
+    v1 = a[0]
+    v2 = a[1]
+    label = a[2].to_s
+    tmp.puts <<EOF
+      "#{v1}" -> "#{v2}" [label = "#{label}"];
+EOF
+  end
+
+tmp.puts <<EOF
+}
+EOF
+end
+
+cmd = "dot -T #{out_type} #{tmp_filename} -o #{out_filename}"
+system(cmd) or (puts "Error: #{cmd}"; exit 1)
+puts "Wrote: #{out_filename}"
+
+if Dir.exist?("/Library")
+  puts "open"
+  system("open #{out_filename}")
+end
