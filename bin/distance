@@ -110,7 +110,10 @@ def calc_distance_and_print(lat1, lng1, lat2, lng2)
   if lat2 > lng2
     lat2, lng2 = lng2, lat2
   end
-  puts "#{sprintf('%.1f', Hubeny.distance(lat1, lng1, lat2, lng2))} メートル\t#{lat1}\t#{lng1}\t#{lat2}\t#{lng2}"
+  puts "#{lat1}\t#{lng1}\t#{lat2}\t#{lng2}"
+  puts "直線: #{sprintf('%.1f', Hubeny.distance(lat1, lng1, lat2, lng2))} メートル"
+  puts "南北: #{sprintf('%.1f', Hubeny.distance(lat1, lng1, lat2, lng1))} メートル"
+  puts "東西: #{sprintf('%.1f', Hubeny.distance(lat1, lng1, lat1, lng2))} メートル"
 end
 
 if __FILE__ == $0
