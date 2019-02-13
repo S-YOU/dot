@@ -115,6 +115,7 @@ hi link xmlCommentError xmlComment
 hi jsAsyncKeyword           cterm=bold  ctermfg=1     ctermbg=None
 hi jsForAwait               cterm=bold  ctermfg=1     ctermbg=None
 hi jsReturn                 cterm=bold  ctermfg=1     ctermbg=None
+hi jsGlobalNodeObjects                  ctermfg=4
 
 "Cursor		カーソル下の文字
 "CursorIM	Cursorと同じだが、IMEモードにいるとき使われる|CursorIM|。
