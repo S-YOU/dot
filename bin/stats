@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+################################################################################
+#   標準入力から数値のリストを読み込み、ごく簡単な統計情報を表示する
+################################################################################
+
+lines = STDIN.readlines
+values = lines.map(&:to_f).sort
+
+count = values.length
+sum = values.reduce(0) {|s, x| s + x}
+min = values.min
+max = values.max
+avg = count == 0 ? 0 : (sum / count)
+median = values[values.length / 2]
+
+puts "count: #{count}"
+puts "sum: #{sum}"
+puts "min: #{min}"
+puts "max: #{max}"
+puts "avg: #{avg}"
+puts "median: #{median}"
