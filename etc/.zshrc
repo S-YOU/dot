@@ -386,6 +386,8 @@ source ~/.alias
 
 # zsh固有のalias
 
+alias -g L='2>&1 | less'
+
 cd() {
     if [ -f "$1" ]; then
         builtin cd -P $(dirname "$1")

@@ -3198,6 +3198,21 @@ function! _Dropgrep(keyword) abort
   exe 'Grep ' . a:keyword
 endfunction
 
+" ファイルの先頭に説明コメントを挿入する
+command! -nargs=0 FH call _FH()
+function! _FH() abort
+  let cs = _GetCommentSymbol()
+  normal! 1G
+  let line_char = cs
+  let line = strpart(cs . repeat(line_char, 80), 0, 80)
+  call append(0, line)
+  call append(0, cs . '   ')
+  call append(0, line)
+  call append(3, '')
+  normal! 2G$
+  startinsert!
+endfunction
+
 "=============================================================================
 "   ▲実験室  Experimental
 "=============================================================================

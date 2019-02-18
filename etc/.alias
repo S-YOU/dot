@@ -399,7 +399,11 @@ snd() {
     filename=${1:-tmp}
     url="http://aosho235.com:8181/$filename"
     echo "Download url: $url"
-    curl -T - "$url"
+    if [ "$1" = "" ]; then
+        curl -T - "$url"
+    else
+        curl -T - "$url" < "$1"
+    fi
     #ssh arch03 "cat > p"
 }
 
