@@ -2,10 +2,15 @@
 
 set -e
 
-REPO_NAME="$1"
-if [ "$REPO_NAME" = "" ]; then
-    REPO_NAME=`basename $PWD`
-fi
+REPO_NAME=`basename $PWD`
+
+private="false"
+for i in "$@"; do
+    if [ "$i" = "--private" ]; then
+        private="true"
+    fi
+done
+
 USER_NAME="aoyama-val"
 
 if [ "$GITHUB_TOKEN" = "" ]; then
@@ -15,8 +20,17 @@ fi
 
 echo "USER_NAME = $USER_NAME"
 echo "REPO_NAME = $REPO_NAME"
+echo "private = $private"
 
-curl -u "$USER_NAME:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}'
+# https://developer.github.com/v3/repos/#create
+tmpfile="/tmp/hub-create.$$.json"
+cat <<EOF > "$tmpfile"
+{
+    "name": "$REPO_NAME",
+    "private": $private
+}
+EOF
+curl -u "$USER_NAME:$GITHUB_TOKEN" https://api.github.com/user/repos -d @"$tmpfile"
 
 #git remote add origin https://github.com/$USER_NAME/$REPO_NAME.git
 git remote add origin git@github.com:$USER_NAME/$REPO_NAME.git
