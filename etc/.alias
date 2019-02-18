@@ -414,4 +414,13 @@ rcv() {
     #ssh arch03 "cat p"
 }
 
+aws() {
+    if [ "$1" = "" ]; then
+        aws-shell
+    else
+        command aws "$@"
+    fi
+}
+
+
 alias hubeny='distance'
