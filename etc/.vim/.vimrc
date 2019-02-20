@@ -691,17 +691,45 @@ noreab printF printf
 noreab fpf fprintf(stderr,);<Left><Left>
 noreab transtate translate
 
+"inoreab <expr> cl _ConsoleLog()
+"function! _ConsoleLog()
+"  if &ft =~? "javascript" || &ft =~? "html"
+"    return "console.log()"
+"  else
+"    return "cl"
+"  endif
+"endfunction
+
 function! DefineAbbrev(abb, content, type, modifier)
   exe a:type . "noreab " . a:modifier . " " . a:abb . " " . a:content . "<C-r>=_FinishAbbreb()<CR>"
 endfunction
 function! _FinishAbbreb()
   call Eatchar('\\s')
   let str = '#CURSOR#'
-  if search(str, 'bW') > 0
+  let stopline = line('.') - 10
+  if stopline < 0
+    let stopline = 0
+  endif
+  if search(str, 'bW', stopline) > 0
     normal! 8x
   endif
   return ''
 endfunction
+
+function! _InsertConsoleLog(func)
+  if &ft =~? 'javascript' || &ft =~? 'html'
+    echomsg "[" . GetTextAfterCursor(1) . "]"
+    if GetTextAfterCursor(1) =~? '^\s\+$'
+      return a:func . '(#CURSOR#);'
+    else
+      return a:func . "(#CURSOR#\<End>);"
+    end
+  else
+    return 'cl'
+  endif
+endfunction
+call DefineAbbrev('cl', '<C-r>=_InsertConsoleLog("console.log")<CR>', 'i', '')
+call DefineAbbrev('ce', '<C-r>=_InsertConsoleLog("console.error")<CR>', 'i', '')
 
 call DefineAbbrev('iss', 'isset($#CURSOR#) ? $ : ''''', 'i', '')
 
@@ -1171,8 +1199,6 @@ function! HTML_Setting()
   setlocal iskeyword+=-,@
   setlocal dictionary+=~/.vim/dict/htmldict.txt
   inoremap <buffer> <C-x><C-c> <C-o>ma</<C-x><C-o><Esc>`aa
-  call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
-  call DefineAbbrev('ce', 'console.error(#CURSOR#);', 'i', '<buffer>')
   let b:commentSymbol = '//'
   call _DefinePhpAbbrev()
   call _EnableCloseTagByCtrlP()
@@ -1230,8 +1256,6 @@ endfunction
 function! JavaScript_Setting()
   let b:commentSymbol = "//"
   setlocal cinoptions=
-  call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
-  call DefineAbbrev('ce', 'console.error(#CURSOR#);', 'i', '<buffer>')
   call DefineAbbrev('mA', "util.inspect.defaultOptions.maxArrayLength = null;", 'i', '<buffer>')
   call DefineAbbrev('asy', 'async ', 'i', '<buffer>')
 endfunction
@@ -1965,6 +1989,18 @@ function! GetParagraphText()
   return GetSelectedText()
 endfunction
 
+function! GetTextAfterCursor(includeCharOnCursor)
+  let line = getline(".")
+  let col = col(".") + (a:includeCharOnCursor ? 0 : 1)
+  return strpart(line, col - 1)
+endfunction
+
+function! GetTextBeforeCursor()
+  let line = getline(".")
+  let col = col(".")
+  return strpart(line, 0, col - 1)
+endfunction
+
 function! Bufsize()
   return line2byte(line("$") + 1) - 1
 endfunction
@@ -2166,8 +2202,6 @@ function! _EditTemplateFile(...)
     exe "e " . path
   endif
 endfunction
-
-
 
 " Christian J. Robinson <infynity@onewest.net>
 " http://www.vim.org/scripts/script.php?script_id=1928
