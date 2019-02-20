@@ -1232,6 +1232,8 @@ function! JavaScript_Setting()
   setlocal cinoptions=
   call DefineAbbrev('cl', 'console.log(#CURSOR#);', 'i', '<buffer>')
   call DefineAbbrev('ce', 'console.error(#CURSOR#);', 'i', '<buffer>')
+  call DefineAbbrev('mA', "util.inspect.defaultOptions.maxArrayLength = null;", 'i', '<buffer>')
+  call DefineAbbrev('asy', 'async ', 'i', '<buffer>')
 endfunction
 
 function! Lisp_Setting()
