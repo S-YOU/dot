@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
 
-puts STDIN.readlines.shuffle
-
+STDIN.readlines.shuffle.each do |line|
+  begin
+    puts line
+  rescue Errno::EPIPE
+    exit
+  end
+end
