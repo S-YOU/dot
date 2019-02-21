@@ -217,12 +217,18 @@ fi
 source $DOT/etc/zsh/dabbrev-complete.zsh
 source $DOT/etc/zsh/format-line.zsh
 
-find_file_in_project() {
+find-file-in-project() {
     tt
     zle fzf-file-widget
 }
-zle -N find_file_in_project
+zle -N find-file-in-project
 bindkey '^S' find_file_in_project
+
+find-file-in-cwd() {
+    zle fzf-file-widget
+}
+zle -N find-file-in-cwd
+bindkey '^X^S' find-file-in-cwd
 
 cd-with-fzf() {
     tt
