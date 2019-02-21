@@ -1,5 +1,14 @@
 #!/usr/bin/env ruby
 
+def get_current(profiles)
+  profiles.each do |k, v|
+    if v['aws_access_key_id'] == ENV['AWS_ACCESS_KEY_ID'] && v['aws_secret_access_key'] == ENV['AWS_SECRET_ACCESS_KEY']
+      return k
+    end
+  end
+  return nil
+end
+
 credentials_path = ENV["HOME"] + "/.aws/credentials"
 
 profiles = {}
@@ -18,7 +27,9 @@ open(credentials_path, "r").each do |line|
   end
 end
 
-if arg_profile_name = ARGV[0]
+if ARGV[0] == "--current"
+  puts get_current(profiles)
+elsif arg_profile_name = ARGV[0]
   if profiles.key?(arg_profile_name)
     prof = profiles[arg_profile_name]
     puts "export AWS_ACCESS_KEY_ID='#{prof["aws_access_key_id"]}';"

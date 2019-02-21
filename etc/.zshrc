@@ -306,7 +306,7 @@ bindkey '^W' backward-delete-word-or-region
 #   プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
-PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg)
+PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg) %F{green}[$(ruby ~/dot/bin/awsenv.rb --current)%f]
 [%~:%j]# '
 RPROMPT=''
 
@@ -447,6 +447,8 @@ _awsenv() {
     compadd -- $(grep '^\[' ~/.aws/credentials | tr -d '[]')
 }
 compdef _awsenv awsenv
+
+source <(awless completion zsh)
 
 if [ -e ~/.zshrc.local ]; then
     . ~/.zshrc.local
