@@ -422,5 +422,13 @@ aws() {
     fi
 }
 
+node() {
+    if [ $# = 0 ]; then
+        command node ~/dot/etc/custom-node-repl/index.js
+    else
+        command node "$@"
+    fi
+}
+
 
 alias hubeny='distance'
