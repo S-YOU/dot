@@ -306,7 +306,7 @@ bindkey '^W' backward-delete-word-or-region
 #   プロンプト
 #-----------------------------------------------------------------------------
 PROMPT_COLOR=$fg[red]
-PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg) %F{green}[$(ruby ~/dot/bin/awsenv.rb --current)%f]
+PROMPT='%{$PROMPT_COLOR%}$(get_prompt_hostname)%{${reset_color}%}$(exit_status_text)       $(get_vcs_info_msg) %F{green}$(get_awsenv_current)%f
 [%~:%j]# '
 RPROMPT=''
 
@@ -328,6 +328,13 @@ get_prompt_gip() {
             GIP=$(curl -s ipinfo.io | sed -ne '/"ip":/ {s/.*: "//; s/".*//; p;}')
         fi
         echo "$GIP"
+    fi
+}
+
+get_awsenv_current() {
+    ret=$(ruby ~/dot/bin/awsenv.rb --current)
+    if [ "$ret" != "" ]; then
+        echo "[$ret]"
     fi
 }
 
