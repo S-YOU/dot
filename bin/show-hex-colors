@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+################################################################################
+#     ファイル中にある16進カラーコードをhtmlで表示するスクリプト
+################################################################################
+
+
+# #ffcc00
+# #ffeecc
+
+filename = "/srv/http/_colors.html"
+
+content = ARGF.read
+
+color_codes = content.scan(/#[A-Za-z0-9]{3,8}/)
+
+open(filename, "w") do |out|
+  out.puts <<~EOF
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+      <meta charset="utf-8">
+      <style>
+        .a-color {
+          display: inline;
+        }
+        .color-box {
+          width: 30px;
+          height: 30px;
+          display: inline-block;
+          vertical-align: bottom;
+        }
+      </style>
+    </head>
+    <body>
+  EOF
+
+  color_codes.each do |code|
+    out.puts <<~EOF
+      <div class="a-color"><span class="color-box" style="background: #{code};"></span>#{code}</div>
+    EOF
+  end
+
+  out.puts <<~EOF
+    </body>
+    </html>
+  EOF
+end
+
+puts filename
+puts "http://aosho235.com/#{File.basename(filename)}"
