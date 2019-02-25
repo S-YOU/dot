@@ -1365,7 +1365,7 @@ function! Ruby_Setting()
   inoreab <buffer> ei each_with_index
   inoreab <buffer> bp binding.pry<Space><Space><Space>###BREAKPOINT###
   inoreab <buffer> bench <Esc>:r ~/.vim/bench.rb<CR>
-  let g:ruby_indent_access_modifier_style = "outdent"
+  "let g:ruby_indent_access_modifier_style = "outdent"
   "call DefineAbbrev('bb', 'byebug', '', '')
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
