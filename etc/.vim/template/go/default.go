@@ -5,6 +5,7 @@ import (
 
 	_ "github.com/jessevdk/go-flags"
 	_ "github.com/jinzhu/now"
+	_ "github.com/pkg/errors"
 	_ "golang.org/x/exp/utf8string"
 )
 
