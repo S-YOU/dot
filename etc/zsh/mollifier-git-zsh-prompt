@@ -81,7 +81,7 @@ if is-at-least 4.3.11; then
         )
         if [ $untracked_count != 0 ]; then
             # unstaged (%u) に追加
-            hook_com[unstaged]+="%F{yellow}  $untracked_count??%f"
+            hook_com[unstaged]+="%F{yellow}  Untracked: $untracked_count %f"
         fi
     }
 

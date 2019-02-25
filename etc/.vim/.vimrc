@@ -3221,17 +3221,21 @@ function! _Drop(title, line1, line2) abort
   endif
   call mkdir(g:dropbox_dir, 'p', 0644)
   call writefile(lines, path, 'a')
-  call system('cd ' . g:dropbox_dir . ' && ls > LIST.txt')
+  "call system('cd ' . g:dropbox_dir . ' && ls > LIST.txt')
   echomsg 'Wrote ' . len(lines) . ' lines to ' . path
   exe 'sp ' . path
 endfunction
 
 call DefineCommandAbbrev('drep', 'Dropgrep')
 call DefineCommandAbbrev('dropgrep', 'Dropgrep')
-command -nargs=1 Dropgrep call _Dropgrep('<args>')
-function! _Dropgrep(keyword) abort
-  exe 'cd ' . g:dropbox_dir
-  exe 'Grep ' . a:keyword
+command! -nargs=? Dropgrep call _Dropgrep(<f-args>)
+function! _Dropgrep(...) abort
+  if len(a:000) == 0
+    exe "sp" g:dropbox_dir
+  elseif len(a:000) == 1
+    exe 'cd ' . g:dropbox_dir
+    exe 'Grep -i ' . a:000[0]
+  endif
 endfunction
 
 " ファイルの先頭に説明コメントを挿入する
