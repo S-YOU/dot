@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+# - 現在のウィンドウの隣にウィンドウを開く
+# - シェルのカレントディレクトリをscreenのカレントディレクトリとする
+screen_window_num=$(screen -Q number | awk '{print $1}')
+next_window_num=$(( screen_window_num + 1 ))
+screen -X eval "chdir $PWD" screen "number $next_window_num"
