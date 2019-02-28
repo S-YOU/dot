@@ -508,7 +508,7 @@ function! _GetProjectRoot()
   if a == "not exist"
     let a = getcwd()
   end
-  let a = substitute(a, expand("$HOME"), "~", "")
+  let a = substitute(a, expand("$HOME") . '\>', "~", "")
   return a
 endfunction
 
@@ -1040,6 +1040,7 @@ augroup NoIgnoreCaseInInsertCompletion
 augroup END
 
 augroup AutoCd
+  au!
   au BufEnter,BufWritePost * if !exists('g:fixdir') && &buftype == "" && expand("%") != "" && isdirectory(expand("%:p:h")) |exe "lcd " . escape(expand("%:p:h"), ' (){}''"') |elseif exists("g:topdir")|exe "lcd ".g:topdir|endif
 augroup END
 
