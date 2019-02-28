@@ -1305,7 +1305,7 @@ function! JS_SyntaxCheck()
   else
     return -1
   endif
-  let result = system(cmd . " " . expand("%"))
+  let result = system(cmd . " " . shellescape(expand("%")))
   if result != ""
     echo result
     return 0
@@ -1325,7 +1325,7 @@ function! Haskell_SyntaxCheck()
   if _IsEnableAutoExecSystem()
     return 0
   endif
-  let result = system("stack --verbosity silent ghc -- ".expand("%") . " -e 'return 0'")
+  let result = system("stack --verbosity silent ghc -- ".shellescape(expand("%")) . " -e 'return 0'")
   if result !~? "^0"
     echo result
     return 0
@@ -1345,7 +1345,7 @@ function! PHP_SyntaxCheck()
   if !executable("php")
     return -1
   endif
-  let result = system("php -lq ".expand("%"))
+  let result = system("php -lq ".shellescape(expand("%")))
   if result !~? "^No syntax errors"
     echo result
     return 0
@@ -1370,9 +1370,9 @@ function! Ruby_Setting()
   hi rubyConstant ctermfg=19 ctermbg=None cterm=bold
   if !exists("b:_exec_system_last_cmd")
     if expand("%") =~ '_spec\.rb'
-      let b:_exec_system_last_cmd = "0r!rspec " . expand("%:p")
+      let b:_exec_system_last_cmd = "0r!rspec " . shellescape(expand("%:p"))
     else
-      let b:_exec_system_last_cmd = "0r!ruby " . expand("%:p")
+      let b:_exec_system_last_cmd = "0r!ruby " . shellescape(expand("%:p"))
     endif
   endif
   hi link rubyFunction FunctionName
@@ -1382,7 +1382,7 @@ function! Ruby_SyntaxCheck()
   if !executable("ruby")
     return -1
   endif
-  let result = system("ruby -c ".expand("%"))
+  let result = system("ruby -c ".shellescape(expand("%")))
   if result !~? "Syntax OK"
     echo result
     return 0
@@ -1404,9 +1404,9 @@ endfunction
 
 function! Python_SyntaxCheck()
   if executable("pyflakes")
-    let result = system("pyflakes ".expand("%"))
+    let result = system("pyflakes ".shellescape(expand("%")))
   else
-    let result = system("python3 -m py_compile ".expand("%"))
+    let result = system("python3 -m py_compile ".shellescape(expand("%")))
   endif
   if result != ""
     echo result
