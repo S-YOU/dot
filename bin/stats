@@ -12,11 +12,15 @@ sum = values.reduce(0) {|s, x| s + x}
 min = values.min
 max = values.max
 avg = count == 0 ? 0 : (sum / count)
+q1 = values[values.length / 4]
 median = values[values.length / 2]
+q3 = values[values.length * 3 / 4]
 
-puts "count: #{count}"
-puts "sum: #{sum}"
-puts "min: #{min}"
-puts "max: #{max}"
-puts "avg: #{avg}"
-puts "median: #{median}"
+puts "count:\t#{count}"
+puts "sum:\t#{sum}"
+puts "avg:\t#{avg}"
+puts "min:\t#{min}"
+puts "max:\t#{max}"
+puts "1/4:\t#{q1}"
+puts "median:\t#{median}"
+puts "3/4:\t#{q3}"
