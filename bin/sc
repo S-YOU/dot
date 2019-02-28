@@ -4,7 +4,7 @@
 # - シェルのカレントディレクトリをscreenのカレントディレクトリとする
 screen_window_num=$(screen -Q number 2> /dev/null | awk '{print $1}')
 if [ "$screen_window_num" = "" -o "$screen_window_num" = "No" ]; then   # No screen session found.の場合
-    screen
+    screen "$@"
 else
     next_window_num=$(( screen_window_num + 1 ))
     screen -X eval "chdir $PWD" screen "number $next_window_num"
