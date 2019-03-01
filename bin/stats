@@ -4,23 +4,44 @@
 #   標準入力から数値のリストを読み込み、ごく簡単な統計情報を表示する
 ################################################################################
 
-lines = STDIN.readlines
-values = lines.map(&:to_f).sort
+lines = ARGF.readlines
+rows = lines.map {|line| line.split}
 
-count = values.length
-sum = values.reduce(0) {|s, x| s + x}
-min = values.min
-max = values.max
-avg = count == 0 ? 0 : (sum / count)
-q1 = values[values.length / 4]
-median = values[values.length / 2]
-q3 = values[values.length * 3 / 4]
+column_count = rows[0].length
+results = []
+(0...column_count).each do |column_index|
+  values = rows.map {|row| row[column_index]}.map(&:to_f)
+  count = rows.select {|row| row[column_index] != ""}.length
+  sum = values.reduce(0) {|s, x| s + x}
+  min = values.min
+  max = values.max
+  avg = count == 0 ? 0 : (sum / count)
+  q1 = values[values.length / 4]
+  median = values[values.length / 2]
+  q3 = values[values.length * 3 / 4]
+  results << {
+    count: count,
+    sum: sum,
+    min: min,
+    max: max,
+    avg: avg,
+    q1: q1,
+    median: median,
+    q3: q3,
+  }
+end
 
-puts "count:\t#{count}"
-puts "sum:\t#{sum}"
-puts "avg:\t#{avg}"
-puts "min:\t#{min}"
-puts "max:\t#{max}"
-puts "1/4:\t#{q1}"
-puts "median:\t#{median}"
-puts "3/4:\t#{q3}"
+OUT_SEPARATOR = "\t"
+
+def float_format(float)
+  "%.2f" % float
+end
+
+puts (["count"]  + results.map {|r| r[:count]}).join(OUT_SEPARATOR)
+puts (["sum"]    + results.map {|r| float_format r[:sum]}).join(OUT_SEPARATOR)
+puts (["min"]    + results.map {|r| float_format r[:min]}).join(OUT_SEPARATOR)
+puts (["max"]    + results.map {|r| float_format r[:max]}).join(OUT_SEPARATOR)
+puts (["avg"]    + results.map {|r| float_format r[:avg]}).join(OUT_SEPARATOR)
+puts (["q1"]     + results.map {|r| float_format r[:q1]}).join(OUT_SEPARATOR)
+puts (["median"] + results.map {|r| float_format r[:median]}).join(OUT_SEPARATOR)
+puts (["q3"]     + results.map {|r| float_format r[:q3]}).join(OUT_SEPARATOR)
