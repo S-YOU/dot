@@ -8,6 +8,6 @@ set -eu
 key="$EWS_KEY"
 
 for station_code in "$@"; do
-    url="http://api.ekispert.jp/v1/json/station/light?key=$key&code=$station_code"
+    url="http://api.ekispert.jp/v1/json/station?key=$key&code=$station_code&gcs=wgs84"
     curl -s "$url" | jq .
 done
