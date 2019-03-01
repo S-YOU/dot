@@ -16,7 +16,7 @@ $opt[:output_col_sep] = " | "
 opt = OptionParser.new
 opt.on("-a", "--all", "最後の行まで読んでから最大幅を計算する（デフォルトでは10000行目まで）") {|v| $opt[:max_lines_to_calc_width] = 10e12 }
 opt.on("-t", "--tsv", "入力をtsvファイルとして扱う") {|v| $opt[:col_sep] = "\t" }
-opt.on("-s", "--output-separator", "出力におけるカラムの区切り文字") {|v| $opt[:output_col_sep] = v }
+opt.on("-s STR", "--output-separator=STR", "出力におけるカラムの区切り文字") {|v| if v == ""; v = " "; end; $opt[:output_col_sep] = v }
 opt.parse!(ARGV)
 
 AMBIGUOUS_DEFAULT       = 2       # 文字幅があいまいな文字はこの幅とする
