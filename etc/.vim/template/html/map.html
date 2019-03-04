@@ -11,6 +11,7 @@
 
     <script>
       var map;
+      var markers = {};
 
       $(function() {
         var center = getInitialView().center;
@@ -23,18 +24,16 @@
           gestureHandling: 'greedy',
         };
         map = new google.maps.Map(document.getElementById('gmap'), gmapOptions);
-        map.addListener('click', function (e) {
-          console.log(e.latLng.lat(), e.latLng.lng());
-        });
 
-        enableUpdateHash();
-        addAddressBox();
+        enableMapClickedPopup(map);
+        enableUpdateHash(map);
+        addAddressBox(map, 'address');
       });
 
-      function getInitialView() {
+      function getInitialView(lat, lng, zoom) {
         var result = {
-          center: { lat: 35.7, lng: 139.7 },
-          zoom: 15,
+          center: { lat: (lat || 35.7), lng: (lng || 139.7) },
+          zoom: (zoom || 15),
         };
         if (location.hash != '') {
           var a = location.hash.substr(1).split(',');
@@ -50,7 +49,37 @@
         return result;
       }
 
-      function enableUpdateHash() {
+      var mapClickedPopup = new google.maps.InfoWindow({
+        map: map,
+      });
+      function enableMapClickedPopup(map) {
+        map.addListener('click', function(e) {
+          var lat = e.latLng.lat();
+          var lng = e.latLng.lng();
+          var content = '';
+          content += '<a href="" onclick="setAs(\'origin\', ' + lat + ',' + lng + '); return false;" class="setAs">出発地に指定</a><br>';
+          content += '<a href="" onclick="setAs(\'destination\', ' + lat + ',' + lng + '); return false;" class="setAs">到着地に指定</a>';
+          mapClickedPopup.setContent(content);
+          mapClickedPopup.setPosition(e.latLng);
+          mapClickedPopup.open(map);
+        });
+      }
+      function setAs(type, lat, lng) {
+        mapClickedPopup.close();
+        if (!markers[type])
+          markers[type] = [];
+        markers[type].forEach(function(marker) { marker.setMap(null) });
+        var color = 'green';  // red | blue | green | purple | yellow
+        markers[type].push(new google.maps.Marker({
+          map: map,
+          position: { lat: lat, lng: lng },
+          title: type + ' (' + lat + ',' + lng + ')',
+          icon: 'https://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png',
+        }));
+        alert(type + ' = ' + lat + ',' + lng);
+      }
+
+      function enableUpdateHash(map) {
         function onViewChanged() {
           var center = map.getCenter();
           var pow = 1e6;
@@ -64,8 +93,8 @@
         map.addListener('zoom_changed', onViewChanged);
       }
 
-      function addAddressBox() {
-        var addressInput = document.getElementById('address');
+      function addAddressBox(map, addressInputId) {
+        var addressInput = document.getElementById(addressInputId);
         var searchBox = new google.maps.places.SearchBox(addressInput);
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(addressInput);
 
