@@ -9,34 +9,101 @@
     <link rel="shortcut icon" href="./favicon.ico">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key="></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=&libraries=places"></script>
 
     <script>
       var map;
 
       $(function() {
-        var center = new google.maps.LatLng(35.6813095277778, 139.76723425);
-        var gmap_options = {
-          zoom: 15,
+        var center = getInitialView().center;
+        var zoom = getInitialView().zoom;
+        var gmapOptions = {
           center: center,
+          zoom: zoom,
           scaleControl: true,
           clickableIcons: false,
           gestureHandling: 'greedy',
         };
-        map = new google.maps.Map(document.getElementById("gmap"), gmap_options);
+        map = new google.maps.Map(document.getElementById('gmap'), gmapOptions);
         map.addListener('click', function (e) {
           console.log(e.latLng.lat(), e.latLng.lng());
         });
+
+        enableUpdateHash();
+        addAddressBox();
       });
+
+      function getInitialView() {
+        var result = {
+          center: { lat: 35.7, lng: 139.7 },
+          zoom: 15,
+        };
+        if (location.hash != '') {
+          var a = location.hash.substr(1).split(',');
+          if (a.length >= 2) {
+            var lat = parseFloat(a[0]);
+            var lng = parseFloat(a[1]);
+            result.center = { lat: lat, lng: lng };
+          }
+          if (a.length >= 3) {
+            result.zoom = parseInt(a[2]);
+          }
+        }
+        return result;
+      }
+
+      function enableUpdateHash() {
+        function onViewChanged() {
+          var center = map.getCenter();
+          var pow = 1e6;
+          var lat = Math.floor(center.lat() * pow) / pow;
+          var lng = Math.floor(center.lng() * pow) / pow;
+          var zoom = map.getZoom();
+          location.hash = lat + ',' + lng + ',' + zoom;
+        }
+
+        map.addListener('center_changed', onViewChanged);
+        map.addListener('zoom_changed', onViewChanged);
+      }
+
+      function addAddressBox() {
+        var addressInput = document.getElementById('address');
+        var searchBox = new google.maps.places.SearchBox(addressInput);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(addressInput);
+
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+          if (places.length == 0) {
+            return;
+          }
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log('Returned place contains no geometry');
+              return;
+            }
+
+            if (place.geometry.viewport) {
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+      }
     </script>
 
     <style>
       html, body  { height: 100%; margin: 0; padding: 0; box-sizing: border-box; }
       div.main    { float: left; height: 100%; padding-right: 200px; }
       div#gmap { width: 100%; height: 100%; }
+      #address { width: 300px; font-size: 14px; margin-top: 10px; display: none; }
+      #gmap #address { display: block; }
     </style>
   </head>
   <body>
+    <input id="address" type="text" placeholder="住所">
     <div id="gmap"></div>
   </body>
 </html>
