@@ -29,10 +29,16 @@ EOF
 
 screen -t httphere ruby "$tmp" $port
 
-url="http://localhost:${port}"
+if [ -e index.html ]; then
+    path="index.html"
+else
+    path=$(ls *.html | head -1)
+fi
+url="http://localhost:${port}/${path}"
 
 case "$OSTYPE" in
     darwin*)
+        sleep 3
         open "$url"
         ;;
     *)
