@@ -1682,7 +1682,8 @@ function! _ToggleQuote()
   call setpos('.', save_cursor)
 endfunction
 
-function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
+" TODO: v:count1が効くようにする
+function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
   let line = line('.')
   let column = col('.')
   let lastline = line('$')
@@ -1696,14 +1697,14 @@ function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
       continue
     endif
     let skip_same_indent_lines_at_first = 0
-    if ( ! a:lowerlevel && indent(line) == start_indent ||  a:lowerlevel && indent(line) < start_indent)
+    if (a:lowerlevel && indent(line) < start_indent) || (a:samelevel && indent(line) == start_indent) || (a:higherlevel && indent(line) > start_indent)
       if (! a:skipblanks || strlen(getline(line)) > 0)
         if (a:exclusive)
           let line = line - stepvalue
         endif
         let line += a:offset
-        exe line
-        exe "normal! " column . "|"
+        " jumplistに入るようnormalを使う
+        exe 'normal! ' . line . 'G' . column . '|'
         return
       endif
     endif
@@ -1711,14 +1712,15 @@ function! _NextIndent(exclusive, fwd, lowerlevel, skipblanks, offset)
 endfunc 
 " Moving back and forth between lines of same or lower indentation.
 " 同じインデントへ移動（下方向）
-nnoremap <silent> +  <esc>: call _NextIndent(0, 1, 0, 1, 0)<cr>^
-nnoremap <silent> -  <esc>: call _NextIndent(0, 0, 0, 1, 0)<cr>^
-onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 0, 1, 0)<cr>
-onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 0, 1, 0)<cr>
-xnoremap <silent> +  <esc>: call _NextIndent(0, 1, 0, 1, 0)<cr>m'gv''
-xnoremap <silent> -  <esc>: call _NextIndent(0, 0, 0, 1, 0)<cr>m'gv''
-nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 1, 1, 0)<cr>^
-nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 1, 1, 0)<cr>^
+"function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+nnoremap <silent> +  <esc>: call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>^
+nnoremap <silent> -  <esc>: call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>^
+onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>
+onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>
+xnoremap <silent> +  <esc>: call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>m'gv''
+xnoremap <silent> -  <esc>: call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>m'gv''
+nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 0, 1, 0, 1, 0)<cr>^
+nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 0, 1, 0, 1, 0)<cr>^
 " カレント行から同じインデントの行までを折りたたむ
 nmap <silent> zq v+zf
 
