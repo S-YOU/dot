@@ -107,9 +107,12 @@ if [ "$FROM" = "shell" ]; then
     if [ -s "$TMPFILE" ]; then
         echo -ne "\x1b[0;33mNumber: \x1b[0m"
         read answer
-        if [ "$answer" != "" ]; then
-            vim -c "silent cfile $TMPFILE | silent cw | silent cc $answer"
+        if [ "$answer" = "" ]; then
+            answer=1
+        elif [ "$answer" = "q" ]; then
+            exit
         fi
+        vim -c "silent cfile $TMPFILE | silent cw | silent cc $answer"
     else
         echo "No match"
     fi

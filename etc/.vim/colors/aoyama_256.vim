@@ -23,7 +23,7 @@ hi Comment              cterm=None              ctermfg=28              ctermbg=
 hi Constant             cterm=None              ctermfg=None            ctermbg=None
 hi Continue             cterm=None              ctermfg=131             ctermbg=None
 hi Cursor               cterm=None              ctermfg=None            ctermbg=None
-hi CursorColumn         cterm=None              ctermfg=None            ctermbg=157
+hi CursorColumn         cterm=None              ctermfg=None            ctermbg=189
 hi CursorLine           cterm=None              ctermfg=None            ctermbg=51
 hi DiffAdd              cterm=None              ctermfg=232             ctermbg=158
 hi diffAdded            cterm=None              ctermfg=232             ctermbg=158
