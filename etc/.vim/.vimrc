@@ -398,6 +398,23 @@ function! _EnterPasteMode(is_below)
   set paste
 endfunction
 
+nnoremap <C-c> :<C-u>call _CopyAll()<CR>
+nnoremap <C-x><C-v> :<C-u>call _PasteAll()<CR>
+function! _CopyAll() abort
+  let tmpfile = "/tmp/_CopyAll.tmp"
+  silent! w !pbcopy
+  call system("pbcopy < " . tmpfile)
+  call delete(tmpfile)
+endfunction
+function! _PasteAll() abort
+  let tmpfile = "/tmp/_PasteAll.tmp"
+  call system("pbpaste > " . tmpfile)
+  silent %d _
+  exe "0r " . tmpfile
+  silent $d
+  call delete(tmpfile)
+endfunction
+
 " バッファ・ウィンドウ ----------------------------------------------
 nnoremap <silent> <C-p> :<C-u>Files <C-r>=_GetProjectRoot()<CR><CR>
 nnoremap <space>i :<C-u>Buffers<CR>
