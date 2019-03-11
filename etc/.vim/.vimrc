@@ -1703,17 +1703,17 @@ endfunction
 " 同じインデントへ移動
 nnoremap <silent> +   :<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>^
 nnoremap <silent> -   :<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>^
-onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>
-onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>
-xnoremap <silent> +   :<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>m'gv''
-xnoremap <silent> -   :<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>m'gv''
+onoremap <silent> +   :<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>
+onoremap <silent> -   :<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>
+xnoremap <silent> +   <Esc>:<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>m'gv''
+xnoremap <silent> -   <Esc>:<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>m'gv''
 nnoremap <silent> g+  :<C-u>call _NextIndent(0, 1, 0, 1, 1, 1, 0)<cr>^
 nnoremap <silent> g-  :<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>^
 nnoremap <silent> g=  :<C-u>call _NextIndent(0, 0, 0, 1, 0, 1, 0)<cr>^
 
-function! _GetNextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
-  let line = line('.')
-  let column = col('.')
+function! _GetNextIndent(line, column, exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+  let line = a:line
+  let column = a:column
   let lastline = line('$')
   let start_indent = indent(line)
   let stepvalue = a:fwd ? 1 : -1 
@@ -1743,14 +1743,18 @@ function! _GetNextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, ski
 endfunction
 
 function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+  let line = line('.')
+  let column = col('.')
   let i = 0
   let cnt = v:count1
   while i < cnt
-    let ni = _GetNextIndent(a:exclusive, a:fwd, a:lowerlevel, a:samelevel, a:higherlevel, a:skipblanks, a:offset)
+    let ni = _GetNextIndent(line, column, a:exclusive, a:fwd, a:lowerlevel, a:samelevel, a:higherlevel, a:skipblanks, a:offset)
     " jumplistに入るようnormalを使う
-    exe 'normal! ' . ni[0] . 'G' . ni[1] . '|'
+    let line = ni[0]
+    let column = ni[1]
     let i += 1
   endwhile
+  exe 'normal! ' . line . 'G' . column . '|'
 endfunc 
 
 " カレント行から同じインデントの行までを折りたたむ
