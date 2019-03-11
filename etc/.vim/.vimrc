@@ -1682,8 +1682,7 @@ function! _ToggleQuote()
   call setpos('.', save_cursor)
 endfunction
 
-" TODO: v:count1が効くようにする
-function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+function! _GetNextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
   let line = line('.')
   let column = col('.')
   let lastline = line('$')
@@ -1703,12 +1702,17 @@ function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipbl
           let line = line - stepvalue
         endif
         let line += a:offset
-        " jumplistに入るようnormalを使う
-        exe 'normal! ' . line . 'G' . column . '|'
-        return
+        return [line, column]
       endif
     endif
   endwhile
+endfunction
+
+" TODO: v:count1が効くようにする
+function! _NextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+  let ni = _GetNextIndent(exclusive, fwd, lowerlevel, samelevel, higherlevel, skipblanks, offset)
+  " jumplistに入るようnormalを使う
+  exe 'normal! ' . ni[0] . 'G' . ni[1] . '|'
 endfunc 
 " Moving back and forth between lines of same or lower indentation.
 " 同じインデントへ移動（下方向）
@@ -1719,10 +1723,16 @@ onoremap <silent> +  V:<C-u>call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>
 onoremap <silent> -  V:<C-u>call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>
 xnoremap <silent> +  <esc>: call _NextIndent(0, 1, 1, 1, 0, 1, 0)<cr>m'gv''
 xnoremap <silent> -  <esc>: call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>m'gv''
-nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 0, 1, 0, 1, 0)<cr>^
-nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 0, 1, 0, 1, 0)<cr>^
+nnoremap <silent> g+  <esc>:call _NextIndent(0, 1, 0, 1, 1, 1, 0)<cr>^
+nnoremap <silent> g-  <esc>:call _NextIndent(0, 0, 1, 1, 0, 1, 0)<cr>^
+nnoremap <silent> g=  <esc>:call _NextIndent(0, 0, 0, 1, 0, 1, 0)<cr>^
 " カレント行から同じインデントの行までを折りたたむ
-nmap <silent> zq v+zf
+nnoremap <silent> zq :<C-u>call _FoldUntilNextIndent()<CR>
+nmap <F12> zq
+function! _FoldUntilNextIndent()
+  let ni = _GetNextIndent(1, 1, 1, 1, 0, 1, 0)
+  exe 'normal! zf' . ni[0] . 'G'
+endfunction
 
 
 function! _BufInfo()
