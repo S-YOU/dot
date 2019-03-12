@@ -1760,8 +1760,10 @@ endfunc
 " カレント行から同じインデントの行までを折りたたむ
 nnoremap <silent> zq :<C-u>call _FoldUntilNextIndent()<CR>
 nmap <F6> zq
-function! _FoldUntilNextIndent()
-  let ni = _GetNextIndent(1, 1, 1, 1, 0, 1, 0)
+function! _FoldUntilNextIndent() abort
+  let line = line('.')
+  let column = col('.')
+  let ni = _GetNextIndent(line, column, 1, 1, 1, 1, 0, 1, 0)
   exe 'normal! zf' . ni[0] . 'G' . ni[1] . '|j'
 endfunction
 
