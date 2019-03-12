@@ -1,8 +1,7 @@
+#!/usr/bin/env ruby
 ################################################################################
 #   ./extreme @landmark1.txt 新宿 --answerCount=20
 ################################################################################
-
-#!/usr/bin/env ruby
 
 require "open-uri"
 require "json"
@@ -122,7 +121,7 @@ class ExtremeResult
           end
           if point_index < lines.length
             line = lines[point_index]
-            result << "        #{line["Name"]}    #{line["timeOnBoard"]}分"
+            result << "      #{'%3s' % line["timeOnBoard"]}分      #{line["Name"]}"
           end
         end
       end
