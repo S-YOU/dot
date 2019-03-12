@@ -1,0 +1,156 @@
+################################################################################
+#   ./extreme @landmark1.txt 新宿 --answerCount=20
+################################################################################
+
+#!/usr/bin/env ruby
+
+require "open-uri"
+require "json"
+
+class ExtremeCli
+  # 外部環境
+  EWS_ENDPOINT = "https://api.ekispert.jp"
+  EWS_KEY = ENV["EWS_KEY"]
+
+  def initialize
+    @print_url = true
+    @print_text = true
+    @print_json = false
+  end
+
+  def main(args)
+    if args.length < 2
+      exit 1
+    end
+
+    $stdout = IO.popen("less", "w")
+
+    viaList = []
+    params = {}
+
+    args.each do |arg|
+      case arg
+      when "--no-url"
+        @print_url = false
+      when "--no-text"
+        @print_text = false
+      when "--json"
+        @print_json = true
+      when /^--(\w+)=(.*)/
+        params[$1] = $2
+      else
+        viaList << create_landmark_if_file(arg)
+      end
+    end
+
+    ret = search(viaList, params)
+    puts ret[:url] if @print_url
+    puts ret[:result].to_text if @print_text
+    puts ret[:result].to_json if @print_json
+    $stdout.close
+  end
+
+  private
+
+  def create_landmark_if_file(str)
+    if str[0] == "@"
+      filename = str[1..-1]
+      landmark_name = filename
+      lines = File.readlines(filename)
+      lines = lines.select {|line| line.strip != ""}
+      stations = []
+      times = []
+      lines.each do |line|
+        line.gsub!(/#.*/, "")
+        a = line.split(",").map(&:strip)
+        stations << a[0]
+        times << a[1]
+      end
+      return "P-#{landmark_name}-#{stations.join(',')}-#{times.join(',')}----0----"
+    else
+      return str
+    end
+  end
+
+  def search(viaList, params={})
+    params[:viaList] = viaList.join(':')
+    params[:key] = EWS_KEY
+    str_params = URI.encode_www_form(params)
+    url = EWS_ENDPOINT + "/v1/json/closed/search/course/extreme?" + str_params
+    response_body = ""
+    open(url) do |f|
+      response_body = f.read
+    end
+    return {
+      url: url,
+      result: ExtremeResult.new(response_body),
+    }
+  end
+end
+
+class ExtremeResult
+  def initialize(res)
+    @res = res
+    @parsed = JSON.parse(@res)
+    if @parsed["ResultSet"] && @parsed["ResultSet"]["Course"]
+      @success = true
+    else
+      @success = false
+    end
+  rescue
+    puts $!.message
+  end
+
+  def to_text
+    result = []
+    if @parsed["ResultSet"] && @parsed["ResultSet"]["Course"]
+      courses = to_a(@parsed["ResultSet"]["Course"])
+      courses.each_with_index do |course, course_index|
+        result << "=" * 60
+        result << "経路 #{course_index + 1}"
+        result << ""
+        route = course["Route"]
+        points = to_a(route["Point"])
+        lines = to_a(route["Line"])
+        points.each_with_index do |point, point_index|
+          if point["Station"] && point["Station"]["Name"]
+            result << point["Station"]["Name"]
+          elsif point["Name"]
+            result << point["Name"]
+          else
+            result << ""
+          end
+          if point_index < lines.length
+            line = lines[point_index]
+            result << "        #{line["Name"]}    #{line["timeOnBoard"]}分"
+          end
+        end
+      end
+    end
+    return result.join("\n")
+  end
+
+  def to_a(obj)
+    if obj.nil?
+      return []
+    elsif obj.is_a?(Array)
+      return obj
+    else
+      return [obj]
+    end
+  end
+
+  def to_json
+    if system("which jq > /dev/null 2>&1")
+      return IO.popen("jq -C .", "r+") do |io|
+        io.write @res
+        io.close_write
+        io.read
+      end
+    else
+      return JSON.pretty_generate(JSON.parse(@res))
+    end
+  end
+end
+
+ExtremeCli.new.main(ARGV)
