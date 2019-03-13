@@ -33,17 +33,17 @@ datetime_format = "%Y-%m-%d %H:%M:%S"
 
 default_css = \
 """
-TABLE { border-collapse: collapse; border-spacing: 0px; }
+TABLE { border-collapse: collapse; border-spacing: 0px; font-size: 12px; }
 TD.linenum { color: #909090; 
              text-align: right;
              vertical-align: top;
              font-weight: bold;
              border-right: 1px solid black;
              border-left: 1px solid black; }
-TD.added { background-color: #DDDDFF; }
-TD.modified { background-color: #BBFFBB; }
-TD.removed { background-color: #FFCCCC; }
-TD.normal { background-color: #FFFFE1; }
+TD.added { background-color: #e6ffed; }
+TD.modified { background-color: #fff9eb; }
+TD.removed { background-color: #ffeef0; }
+TD.normal { background-color: #fff; }
 """
 
 def print_usage() :
