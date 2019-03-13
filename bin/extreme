@@ -54,7 +54,7 @@ class ExtremeCli
   def create_landmark_if_file(str)
     if str[0] == "@"
       filename = str[1..-1]
-      landmark_name = filename
+      landmark_name = filename.gsub(/-/, "ー")
       lines = File.readlines(filename)
       lines = lines.select {|line| line.strip != ""}
       stations = []
@@ -77,8 +77,14 @@ class ExtremeCli
     str_params = URI.encode_www_form(params)
     url = EWS_ENDPOINT + "/v1/json/closed/search/course/extreme?" + str_params
     response_body = ""
-    open(url) do |f|
-      response_body = f.read
+    begin
+      open(url) do |f|
+        response_body = f.read
+      end
+    rescue
+      STDERR.puts $!
+      STDERR.puts "url = #{url}"
+      exit 1
     end
     return {
       url: url,
