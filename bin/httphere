@@ -21,7 +21,16 @@ class NonCachingFileHandler < WEBrick::HTTPServlet::FileHandler
   end
 end
 
-server = WEBrick::HTTPServer.new :Port => ARGV[0]
+port = ARGV[0].to_i
+server = nil
+100.times do
+  begin
+    server = WEBrick::HTTPServer.new :Port => port
+    break
+  rescue Errno::EADDRINUSE
+    port += 1
+  end
+end
 server.mount '/', NonCachingFileHandler, Dir.pwd
 trap('INT') { server.stop }
 server.start

@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+################################################################################
+#   JSON（同じキーを持ったオブジェクトの配列）をTSVに変換するスクリプト
+################################################################################
+
+require "json"
+require "optparse"
+
+$opt = {}
+$opt[:separator] = "\t"
+
+opt = OptionParser.new(usage=usage)
+opt.on("-s", "--separator", "出力のセパレータ（デフォルト: タブ）") {|v| $opt[:separator] = v}
+opt.parse!(ARGV)
+
+json = ARGF.read
+parsed = JSON.parse(json)
+
+if !parsed.is_a?(Array) || parsed.length == 0
+  exit
+end
+
+headers = parsed[0].keys
+puts headers.join($opt[:separator])
+
+parsed.each do |item|
+  puts item.values.join($opt[:separator])
+end
