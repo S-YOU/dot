@@ -3290,11 +3290,16 @@ function! _FH() abort
   normal! 1G
   let line_char = cs
   let line = strpart(cs . repeat(line_char, 80), 0, 80)
-  call append(0, line)
-  call append(0, cs . '   ')
-  call append(0, line)
-  call append(3, '')
-  normal! 2G$
+  if getline(1) =~? '^#!'
+    let insert_position = 2
+  else
+    let insert_position = 0
+  endif
+  call append(insert_position, line)
+  call append(insert_position + 1, cs . '   ')
+  call append(insert_position + 2, line)
+  call append(insert_position + 3, '')
+  exe "normal! " . (insert_position + 2) . "G$"
   startinsert!
 endfunction
 
