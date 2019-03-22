@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+################################################################################
+#   Google Maps APIを使ってジオコーディングするスクリプト
+################################################################################
+
+require "net/http"
+require "json"
+
+unless ENV["GOOGLE_API_KEY"]
+  puts "環境変数 GOOGLE_API_KEY をセットしてください"
+  exit 1
+end
+GOOGLE_API_KEY = ENV["GOOGLE_API_KEY"]
+
+def geocode(address)
+  params = {
+    key: GOOGLE_API_KEY,
+    address: address,
+  }
+
+  res = Net::HTTP.get_response(URI.parse("https://maps.googleapis.com/maps/api/geocode/json?" + URI.encode_www_form(params)))
+  unless 200 <= res.code.to_i && res.code.to_i < 400
+    p res
+    exit 1
+  end
+  parsed = JSON.parse(res.body)
+  location = parsed.dig("results", 0, "geometry", "location")
+  unless location
+    p parsed
+    exit 1
+  end
+  puts "#{address},#{location['lat']},#{location['lng']}"
+end
+
+if $0 == __FILE__
+  if ARGV.length > 0
+    geocode(ARGV[0])
+  end
+end
